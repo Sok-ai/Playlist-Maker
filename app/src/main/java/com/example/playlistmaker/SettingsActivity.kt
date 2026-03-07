@@ -17,14 +17,14 @@ class SettingsActivity : AppCompatActivity() {
         val userAgree = findViewById<LinearLayout>(R.id.setting_user_agreement)
 
         share.setOnClickListener {
-            val intent = Intent(Intent.ACTION_SEND).apply {
+            val intentShare = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 putExtra(
                     Intent.EXTRA_TEXT,
-                    "https://practicum.yandex.ru/profile/android-developer-plus/"
+                    getString(R.string.course_link)
                 )
             }
-            startActivity(intent)
+            startActivity(intentShare)
         }
 
         support.setOnClickListener {
