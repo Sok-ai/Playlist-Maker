@@ -5,74 +5,50 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue_main_bg"
+    android:background="?attr/colorSecondary"
     android:orientation="vertical"
     android:paddingHorizontal="16dp"
     android:paddingBottom="28dp"
     tools:context=".MainActivity">
 
     <TextView
+        style="@style/TitleTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="@string/app_name"
-        android:textColor="@color/white"
-        android:textSize="@dimen/main_size_title" />
+        android:textColor="?attr/colorOnSecondary" />
 
     <Button
         android:id="@+id/btn_search"
+        style="@style/SecondaryButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="24dp"
         android:layout_weight="1"
-        android:backgroundTint="@color/white"
-        android:gravity="center"
-        android:inputType="textCapWords"
         android:text="@string/main_btn_search"
-        android:textColor="@color/black"
-        android:textSize="@dimen/main_size_text"
-        app:cornerRadius="@dimen/main_btn_radius"
         app:icon="@drawable/ic_search"
-        app:iconGravity="textStart"
-        app:iconPadding="8dp"
-        app:iconTint="@color/black"
         tools:ignore="TextViewEdits" />
 
     <Button
         android:id="@+id/btn_library"
+        style="@style/SecondaryButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_weight="1"
-        android:backgroundTint="@color/white"
-        android:gravity="center"
-        android:inputType="textCapWords"
         android:text="@string/main_btn_library"
-        android:textColor="@color/black"
-        android:textSize="@dimen/main_size_text"
-        app:cornerRadius="@dimen/main_btn_radius"
         app:icon="@drawable/ic_library"
-        app:iconGravity="textStart"
-        app:iconPadding="8dp"
-        app:iconTint="@color/black"
         tools:ignore="TextViewEdits" />
 
     <Button
         android:id="@+id/btn_settings"
+        style="@style/SecondaryButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_weight="1"
-        android:backgroundTint="@color/white"
-        android:gravity="center"
-        android:inputType="textCapWords"
         android:text="@string/main_btn_settings"
-        android:textColor="@color/black"
-        android:textSize="@dimen/main_size_text"
-        app:cornerRadius="@dimen/main_btn_radius"
         app:icon="@drawable/ic_settings"
-        app:iconGravity="textStart"
-        app:iconPadding="8dp"
-        app:iconTint="@color/black"
         tools:ignore="TextViewEdits" />
 </LinearLayout>
