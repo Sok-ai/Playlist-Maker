@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="SwitchStyle">
+        <item name="android:thumbTint">@color/YP_Blue</item>
+        <item name="android:trackTint">@color/YP_Blue_Light</item>
+    </style>
+
+    <style name="ImageStyle">
+        <item name="tint">@color/YP_White</item>
+    </style>
+</resources>
