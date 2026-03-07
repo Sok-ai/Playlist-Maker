@@ -29,7 +29,19 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         support.setOnClickListener {
-
+            val intentSupport = Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse("mailto:")
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.student_email)))
+                putExtra(
+                    Intent.EXTRA_SUBJECT,
+                    getString(R.string.email_subject)
+                )
+                putExtra(
+                    Intent.EXTRA_TEXT,
+                    getString(R.string.email_text)
+                )
+            }
+            startActivity(intentSupport)
         }
 
         userAgree.setOnClickListener {
