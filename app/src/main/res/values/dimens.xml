@@ -4,4 +4,5 @@
     <dimen name="main_size_text">22sp</dimen>
     <dimen name="settings_size_text">16sp</dimen>
     <dimen name="main_btn_radius">16dp</dimen>
+    <dimen name="btn_radius">8dp</dimen>
 </resources>
