@@ -11,6 +11,11 @@
     <string name="settings_text_share">Поделиться приложением</string>
     <string name="settings_text_support">Написать в поддержку</string>
     <string name="settings_text_user_agreement">Пользовательское соглашение</string>
+    <string name="student_email" translatable="false">ikonalona123@ya.ru</string>
+    <string name="email_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="email_text">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="course_link" translatable="false">https://practicum.yandex.ru/android-developer/?searchText=android&amp;from=catalog</string>
+    <string name="course_user_agreement" translatable="false">https://yandex.ru/legal/practicum_offer/ru/</string>
 
     <!--  Library  -->
     <string name="library_name_page">Медиатека</string>
