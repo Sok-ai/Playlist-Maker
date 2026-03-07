@@ -63,6 +63,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/setting_share"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
@@ -86,6 +87,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/setting_support"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
@@ -109,6 +111,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/setting_user_agreement"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
