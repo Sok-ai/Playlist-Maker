@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -32,7 +33,9 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         userAgree.setOnClickListener {
-
+            val intentUserAgree =
+                Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.course_user_agreement)))
+            startActivity(intentUserAgree)
         }
 
         btnBack.setOnClickListener {
