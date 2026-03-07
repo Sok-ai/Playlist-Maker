@@ -4,38 +4,35 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="?attr/colorPrimary"
     android:orientation="vertical"
-    android:paddingHorizontal="16dp"
     android:paddingTop="14dp"
     tools:context=".SettingsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp">
 
         <ImageButton
             android:id="@+id/btn_settings_to_main"
+            style="@style/ImageButtonStyle"
             android:layout_width="34dp"
             android:layout_height="34dp"
-            android:src="@drawable/ic_settings_back_arrow"
             android:layout_gravity="center"
-            android:background="@color/white"
-            android:importantForAccessibility="no" />
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_settings_back_arrow" />
 
         <TextView
+            style="@style/NormalTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="start"
             android:paddingStart="28dp"
             android:paddingEnd="0dp"
-            android:text="@string/settings_name_page"
-            android:textColor="@color/black"
-            android:textSize="@dimen/main_size_title"
-            android:textStyle="bold" />
+            android:text="@string/settings_name_page" />
     </LinearLayout>
 
     <LinearLayout
@@ -47,17 +44,18 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
             android:paddingVertical="21dp">
 
             <TextView
+                style="@style/SettingsOptionsTextStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/settings_text_theme"
-                android:textColor="@color/black"
-                android:textSize="@dimen/settings_size_text" />
+                android:text="@string/settings_text_theme" />
 
             <Switch
+                style="@style/SwitchStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
@@ -69,23 +67,21 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:foreground="?attr/selectableItemBackground"
+            android:paddingHorizontal="16dp"
             android:paddingVertical="21dp">
 
             <TextView
+                style="@style/SettingsOptionsTextStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_weight="1"
-                android:text="@string/settings_text_share"
-                android:textColor="@color/black"
-                android:textSize="@dimen/settings_size_text" />
+                android:text="@string/settings_text_share" />
 
             <ImageView
+                style="@style/ImageStyle"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center"
-                android:importantForAccessibility="no"
-                android:scaleType="fitCenter"
                 android:src="@drawable/ic_settings_share" />
         </LinearLayout>
 
@@ -94,23 +90,21 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:foreground="?attr/selectableItemBackground"
+            android:paddingHorizontal="16dp"
             android:paddingVertical="21dp">
 
             <TextView
+                style="@style/SettingsOptionsTextStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_weight="1"
-                android:text="@string/settings_text_support"
-                android:textColor="@color/black"
-                android:textSize="@dimen/settings_size_text" />
+                android:text="@string/settings_text_support" />
 
             <ImageView
+                style="@style/ImageStyle"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center"
-                android:importantForAccessibility="no"
-                android:scaleType="fitCenter"
                 android:src="@drawable/ic_settings_support" />
         </LinearLayout>
 
@@ -119,23 +113,21 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:foreground="?attr/selectableItemBackground"
+            android:paddingHorizontal="16dp"
             android:paddingVertical="21dp">
 
             <TextView
+                style="@style/SettingsOptionsTextStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_weight="1"
-                android:text="@string/settings_text_user_agreement"
-                android:textColor="@color/black"
-                android:textSize="@dimen/settings_size_text" />
+                android:text="@string/settings_text_user_agreement" />
 
             <ImageView
+                style="@style/ImageStyle"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center"
-                android:importantForAccessibility="no"
-                android:scaleType="fitCenter"
                 android:src="@drawable/ic_settings_arrow_forward" />
         </LinearLayout>
     </LinearLayout>
