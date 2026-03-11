@@ -22,4 +22,6 @@
 
     <!--  Search  -->
     <string name="search_name_page">Поиск</string>
+    <string name="search_hint">Поиск</string>
+
 </resources>
