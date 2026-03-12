@@ -1,21 +1,16 @@
 package com.example.playlistmaker
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doOnTextChanged
 
 class SearchActivity : AppCompatActivity() {
     private var inputText = INPUT_TEXT_DEF
-
-    companion object {
-        const val INPUT_TEXT_DEF = ""
-        const val INPUT_TEXT_KEY = "INPUT_TEXT_KEY"
-    }
 
     override fun onSaveInstanceState(
         outState: Bundle
@@ -33,9 +28,14 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+        val btnBack = findViewById<ImageButton>(R.id.btn_settings_to_main)
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
         val searchInput = findViewById<EditText>(R.id.inputEditText)
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+
+        btnBack.setOnClickListener {
+            finish()
+        }
 
         searchInput.setText(inputText)
 
@@ -45,30 +45,10 @@ class SearchActivity : AppCompatActivity() {
             searchInput.clearFocus()
         }
 
-        val textWatcher = object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(
-                s: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int
-            ) {
-            }
-
-            override fun onTextChanged(
-                s: CharSequence?,
-                start: Int,
-                before: Int,
-                count: Int
-            ) {
-                inputText = s.toString()
-                clearButton.visibility = clearButtonVisibility(s)
-            }
+        searchInput.doOnTextChanged { text, _, _, _ ->
+            inputText = text.toString()
+            clearButton.visibility = clearButtonVisibility(text)
         }
-
-        searchInput.addTextChangedListener(textWatcher)
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
@@ -77,5 +57,10 @@ class SearchActivity : AppCompatActivity() {
         } else {
             View.VISIBLE
         }
+    }
+
+    companion object {
+        const val INPUT_TEXT_DEF = ""
+        const val INPUT_TEXT_KEY = "INPUT_TEXT_KEY"
     }
 }
