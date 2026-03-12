@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="MyEditTextStyle" parent="EditTextStyle.Base">
+        <item name="android:drawableStart">@drawable/ic_search_edittext</item>
+        <item name="android:textColorHint">@color/YP_Black</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+</resources>
