@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +31,7 @@ class SettingsActivity : AppCompatActivity() {
 
         support.setOnClickListener {
             val intentSupport = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:")
+                data = "mailto:".toUri()
                 putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.student_email)))
                 putExtra(
                     Intent.EXTRA_SUBJECT,
@@ -46,7 +47,7 @@ class SettingsActivity : AppCompatActivity() {
 
         userAgree.setOnClickListener {
             val intentUserAgree =
-                Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.course_user_agreement)))
+                Intent(Intent.ACTION_VIEW, getString(R.string.course_user_agreement).toUri())
             startActivity(intentUserAgree)
         }
 
