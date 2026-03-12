@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="BaseButtonStyle" parent="Widget.MaterialComponents.Button">
+    <style name="BaseButtonStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:gravity">center</item>
         <item name="android:inputType">textCapWords</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:textSize">@dimen/main_size_text</item>
         <item name="cornerRadius">@dimen/btn_radius</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
-        <item name="android:textIsSelectable">false</item>
     </style>
 
     <style name="PrimaryButtonStyle" parent="BaseButtonStyle"></style>
@@ -31,20 +30,34 @@
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:textSize">@dimen/main_size_title</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
-
+        <item name="fontWeight">@dimen/font_weight_title_text</item>
     </style>
 
     <style name="NormalTextStyle">
         <item name="android:textColor">?attr/colorOnPrimary</item>
-        <item name="android:textSize">@dimen/main_size_title</item>
+        <item name="android:textSize">@dimen/second_size_text</item>
         <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
-        <item name="android:layout_gravity">center</item>
+        <item name="fontWeight">@dimen/font_weight_normal_text</item>
+    </style>
+
+    <style name="EditTextStyle.Base" parent="NormalTextStyle">
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:paddingVertical">10dp</item>
+        <item name="android:paddingStart">13dp</item>
+        <item name="android:inputType">text</item>
+        <item name="android:maxLength">30</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="MyEditTextStyle" parent="EditTextStyle.Base">
+        <item name="android:textColorHint">@color/YP_Text_Gray</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:drawableStart">@drawable/ic_search_edittext</item>
     </style>
 
     <style name="SettingsOptionsTextStyle" parent="NormalTextStyle">
         <item name="android:textStyle">normal</item>
-        <item name="android:textSize">@dimen/settings_size_text</item>
     </style>
 
     <style name="SwitchStyle" parent="Widget.MaterialComponents.CompoundButton.Switch">
