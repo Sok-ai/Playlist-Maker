@@ -7,19 +7,35 @@
     android:layout_height="match_parent"
     android:background="?attr/colorPrimary"
     android:orientation="vertical"
+    android:paddingHorizontal="16dp"
     android:paddingTop="14dp"
     tools:context=".SearchActivity">
 
-    <TextView
-        style="@style/ImageButtonStyle"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/search_name_page" />
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btn_settings_to_main"
+            style="@style/ImageButtonStyle"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_settings_back_arrow" />
+
+        <TextView
+            style="@style/TitleTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="28dp"
+            android:text="@string/search_name_page" />
+    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/bg_rounded"
         android:backgroundTint="@color/YP_Light_Gray">
