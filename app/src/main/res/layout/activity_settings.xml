@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingHorizontal="16dp">
+        android:paddingHorizontal="12dp">
 
         <ImageButton
             android:id="@+id/btn_settings_to_main"
@@ -25,7 +25,7 @@
             android:src="@drawable/ic_settings_back_arrow" />
 
         <TextView
-            style="@style/NormalTextStyle"
+            style="@style/TitleTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -59,7 +59,7 @@
                 style="@style/SwitchStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
+                android:checked="false"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
         </LinearLayout>
 
@@ -80,9 +80,8 @@
                 android:text="@string/settings_text_share" />
 
             <ImageView
-                style="@style/ImageStyle"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_settings_share" />
         </LinearLayout>
@@ -104,9 +103,8 @@
                 android:text="@string/settings_text_support" />
 
             <ImageView
-                style="@style/ImageStyle"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_settings_support" />
         </LinearLayout>
@@ -128,9 +126,8 @@
                 android:text="@string/settings_text_user_agreement" />
 
             <ImageView
-                style="@style/ImageStyle"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_settings_arrow_forward" />
         </LinearLayout>
