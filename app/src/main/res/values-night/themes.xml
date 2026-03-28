@@ -3,11 +3,12 @@
     <style name="Base.Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--  Primary  -->
         <item name="colorPrimary">@color/YP_Black</item>
-        <!--        <item name="colorPrimaryVariant">@color/YP_White</item>-->
         <item name="colorOnPrimary">@color/YP_White</item>
+
         <!--   Secondary     -->
         <item name="colorSecondary">@color/YP_Black</item>
-        <!--        <item name="colorSecondaryVariant">@color/YP_Blue</item>-->
         <item name="colorOnSecondary">@color/YP_White</item>
+
+        <item name="textColorInfo">@color/YP_White</item>
     </style>
 </resources>
