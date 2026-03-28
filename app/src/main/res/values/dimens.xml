@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="main_size_title">22sp</dimen>
-    <dimen name="main_size_text">22sp</dimen>
-    <dimen name="second_size_text">16sp</dimen>
-    <dimen name="main_btn_radius">16dp</dimen>
-    <dimen name="btn_radius">8dp</dimen>
-    <dimen name="font_weight_title_text">500</dimen>
-    <dimen name="font_weight_normal_text">400</dimen>
+    <!-- Текс -->
+    <dimen name="text_title_size">22sp</dimen>
+    <dimen name="text_body_size">22sp</dimen>
+    <dimen name="text_subtitle_size">16sp</dimen>
+    <dimen name="text_info_size">11sp</dimen>
+
+    <!-- Радиусы -->
+    <dimen name="radius_large">16dp</dimen>
+    <dimen name="radius_medium">8dp</dimen>
 </resources>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="PrimaryButtonStyle" parent="BaseButtonStyle"></style>
+
+    <style name="SecondaryButtonStyle" parent="BaseButtonStyle">
+        <item name="cornerRadius">@dimen/radius_large</item>
+        <item name="android:textColor">@color/YP_Black</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconTint">@color/YP_Black</item>
+        <item name="android:backgroundTint">@color/YP_White</item>
+        <item name="iconPadding">8dp</item>
+    </style>
+
+    <style name="ImageButtonStyle" parent="BaseButtonStyle">
+        <item name="android:backgroundTint">?attr/colorSecondary</item>
+    </style>
+</resources>
