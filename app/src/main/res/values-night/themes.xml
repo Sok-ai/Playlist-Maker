@@ -10,5 +10,7 @@
         <item name="colorOnSecondary">@color/YP_White</item>
 
         <item name="textColorInfo">@color/YP_White</item>
+        <item name="buttonInverseBackground">@color/YP_White</item>
+        <item name="buttonInverseTextColor">@color/YP_Black</item>
     </style>
 </resources>
