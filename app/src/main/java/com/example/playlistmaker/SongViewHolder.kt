@@ -8,15 +8,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
-class TrackViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
-    LayoutInflater.from(parent.context).inflate(R.layout.track_view, parent, false)
+class SongViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
+    LayoutInflater.from(parent.context).inflate(R.layout.song_view, parent, false)
 ) {
     private val trackName: TextView = itemView.findViewById(R.id.trackName)
     private val artistName: TextView = itemView.findViewById(R.id.trackNameArtist)
     private val trackTime: TextView = itemView.findViewById(R.id.trackTime)
 
     private val trackImage: ImageView = itemView.findViewById(R.id.trackImage)
-    fun bind(model: Track) {
+    fun bind(model: Song) {
         Glide
             .with(itemView)
             .load(model.artworkUrl100)
