@@ -45,8 +45,10 @@
             style="@style/MyEditTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/search_hint"
+            android:imeOptions="actionDone"
             android:inputType="text"
-            android:hint="@string/search_hint" />
+            android:singleLine="true" />
 
         <ImageView
             android:id="@+id/clearIcon"
@@ -67,4 +69,39 @@
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+    <LinearLayout
+        android:id="@+id/errorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/placeholderError"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/ic_network_error" />
+
+        <TextView
+            android:id="@+id/errorMessage"
+            style="@style/ErrorTextStyle"
+            android:layout_width="312dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            tools:text="@string/network_error" />
+
+        <Button
+            android:id="@+id/btnRefreshNetwork"
+            style="@style/RefreshNetworkButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="10dp"
+            android:text="@string/btn_refresh_activity"
+            android:visibility="gone" />
+    </LinearLayout>
 </LinearLayout>
