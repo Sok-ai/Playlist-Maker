@@ -10,20 +10,21 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
-    private val retrofit = Retrofit.Builder().baseUrl("https://itunes.apple.com/")
-        .addConverterFactory(GsonConverterFactory.create()).build()
 
-    private val trackService = retrofit.create(SongApi::class.java)
+    private val songApi = RetrofitClient.trackService
 
     private val adapter = SongAdapter()
 
@@ -51,7 +52,14 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_search)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { view, insets ->
+            val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            view.updatePadding(top = statusBar.top)
+            insets
+        }
+
 
         btnBack = findViewById(R.id.btn_settings_to_main)
         clearButton = findViewById(R.id.clearIcon)
@@ -79,13 +87,14 @@ class SearchActivity : AppCompatActivity() {
             searchInput.setText("")
             inputMethodManager?.hideSoftInputFromWindow(searchInput.windowToken, 0)
             searchInput.clearFocus()
-            adapter.songs.clear()
-            adapter.notifyDataSetChanged()
         }
 
         searchInput.doOnTextChanged { text, _, _, _ ->
             inputText = text.toString()
             clearButton.visibility = clearButtonVisibility(text)
+            if (text?.isEmpty() == true) {
+                clearSearchActivity()
+            }
         }
 
         searchInput.setOnEditorActionListener { _, actionId, _ ->
@@ -109,6 +118,13 @@ class SearchActivity : AppCompatActivity() {
         inputText = savedInstanceState.getString(INPUT_TEXT_KEY, INPUT_TEXT_DEF)
     }
 
+    private fun clearSearchActivity() {
+        adapter.songs.clear()
+        adapter.notifyDataSetChanged()
+        recyclerTask.visibility = View.VISIBLE
+        errorLayout.visibility = View.GONE
+    }
+
     private fun clearButtonVisibility(s: CharSequence?): Int {
         return if (s.isNullOrEmpty()) {
             View.GONE
@@ -118,16 +134,14 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun search(input: String) {
-        trackService.getSongs(input).enqueue(object : Callback<SongsResponse> {
+        songApi.getSongs(input).enqueue(object : Callback<SongsResponse> {
             override fun onResponse(
                 call: Call<SongsResponse?>, response: Response<SongsResponse?>
             ) {
-                recyclerTask.visibility = View.VISIBLE
-                errorLayout.visibility = View.GONE
+                clearSearchActivity()
                 when (response.code()) {
                     200 -> {
                         if (response.body()?.results?.isNotEmpty() == true) {
-                            songsList.clear()
                             songsList.addAll(response.body()?.results!!)
                             adapter.notifyDataSetChanged()
                         } else {
