@@ -23,5 +23,10 @@
     <!--  Search  -->
     <string name="search_name_page">Поиск</string>
     <string name="search_hint">Поиск</string>
+    <string name="network_error">Проблемы со связью\n\n Загрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="search_empty">Ничего не нашлось</string>
+    <string name="btn_refresh_activity">Обновить</string>
+
+
 
 </resources>
