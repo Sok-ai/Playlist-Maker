@@ -1,22 +1,33 @@
 package com.example.playlistmaker
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
+    private lateinit var btnBack: ImageButton
+    private lateinit var share: LinearLayout
+    private lateinit var support: LinearLayout
+    private lateinit var userAgree: LinearLayout
+    private lateinit var themeSwitcher: SwitchMaterial
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        val btnBack = findViewById<ImageButton>(R.id.btn_settings_to_main)
-        val share = findViewById<LinearLayout>(R.id.setting_share)
-        val support = findViewById<LinearLayout>(R.id.setting_support)
-        val userAgree = findViewById<LinearLayout>(R.id.setting_user_agreement)
+        val sharedPref = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+
+        btnBack = findViewById(R.id.btn_settings_to_main)
+        share = findViewById(R.id.setting_share)
+        support = findViewById(R.id.setting_support)
+        userAgree = findViewById(R.id.setting_user_agreement)
+        themeSwitcher = findViewById(R.id.themeSwitcher)
+
+        themeSwitcher.isChecked = sharedPref.getBoolean(THEME_KEY, false)
 
         share.setOnClickListener {
             val intentShare = Intent(Intent.ACTION_SEND).apply {
@@ -53,6 +64,10 @@ class SettingsActivity : AppCompatActivity() {
 
         btnBack.setOnClickListener {
             finish()
+        }
+
+        themeSwitcher.setOnCheckedChangeListener { _, checked ->
+            (applicationContext as App).switchTheme(checked)
         }
     }
 }
