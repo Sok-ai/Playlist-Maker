@@ -26,6 +26,9 @@
     <string name="network_error">Проблемы со связью\n\n Загрузка не удалась. Проверьте подключение к интернету</string>
     <string name="search_empty">Ничего не нашлось</string>
     <string name="btn_refresh_activity">Обновить</string>
+    <string name="text_search_history">Вы искали</string>
+    <string name="btn_clear_search_history">Очистить историю</string>
+
 
 
 
