@@ -21,6 +21,15 @@
         <item name="android:textColor">?attr/buttonInverseTextColor</item>
     </style>
 
+    <style name="SearchHistoryButtonStyle" parent="BaseButtonStyle">
+        <item name="android:backgroundTint">?attr/buttonInverseBackground</item>
+        <item name="android:textSize">@dimen/text_search_history_button_size</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="fontWeight">500</item>
+        <item name="cornerRadius">@dimen/radius_xlarge</item>
+        <item name="android:textColor">?attr/buttonInverseTextColor</item>
+    </style>
+
     <style name="ImageButtonStyle" parent="BaseButtonStyle">
         <item name="android:backgroundTint">?attr/colorSecondary</item>
     </style>
