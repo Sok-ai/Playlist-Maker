@@ -26,29 +26,27 @@ class SearchActivity : AppCompatActivity() {
 
     private val songApi = RetrofitClient.trackService
 
-    private val adapter = SongAdapter()
+    private lateinit var songAdapter: SongAdapter
+    private lateinit var searchHistoryAdapter: SearchHistoryAdapter
 
     private lateinit var searchInput: EditText
     private lateinit var clearButton: ImageView
     private lateinit var btnBack: ImageButton
+
+    private lateinit var searchHistoryLayout: LinearLayout
+    private lateinit var recyclerSearchHistory: RecyclerView
+    private lateinit var clearSearchHistory: Button
 
     private lateinit var errorLayout: LinearLayout
     private lateinit var errorImage: ImageView
     private lateinit var errorMessage: TextView
     private lateinit var errorButton: Button
 
-    private lateinit var recyclerTask: RecyclerView
+    private lateinit var recyclerTrack: RecyclerView
 
     private val songsList = arrayListOf<Song>()
     private var saveInputText = ""
     private var inputText = INPUT_TEXT_DEF
-
-    override fun onSaveInstanceState(
-        outState: Bundle
-    ) {
-        super.onSaveInstanceState(outState)
-        outState.putString(INPUT_TEXT_KEY, inputText)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,34 +57,48 @@ class SearchActivity : AppCompatActivity() {
             view.updatePadding(top = statusBar.top)
             insets
         }
-
-
-        btnBack = findViewById(R.id.btn_settings_to_main)
-        clearButton = findViewById(R.id.clearIcon)
-        searchInput = findViewById(R.id.inputEditText)
-        recyclerTask = findViewById(R.id.recyclerViewTrack)
-
-        errorImage = findViewById(R.id.placeholderError)
-        errorMessage = findViewById(R.id.errorMessage)
-        errorButton = findViewById(R.id.btnRefreshNetwork)
-        errorLayout = findViewById(R.id.errorLayout)
-
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+        val sharedPref = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+        val searchHistory = SearchHistory(sharedPref)
 
-        adapter.songs = songsList
+        initializationViews()
 
-        recyclerTask.adapter = adapter
+        searchInput.setText(inputText)
+
+        songAdapter = SongAdapter { song ->
+            searchHistory.putSongs(song)
+            searchHistoryAdapter.searchHistoryList = searchHistory.getSongs()
+            searchHistoryAdapter.notifyDataSetChanged()
+        }.apply {
+            songs = songsList
+        }
+
+        recyclerTrack.adapter = songAdapter
+
+        searchHistoryAdapter = SearchHistoryAdapter().apply {
+            searchHistoryList = searchHistory.getSongs()
+        }
+        recyclerSearchHistory.adapter = searchHistoryAdapter
 
         btnBack.setOnClickListener {
             finish()
         }
 
-        searchInput.setText(inputText)
+        searchInput.setOnFocusChangeListener { _, hasFocus ->
+            showSearchHistory(hasFocus)
+        }
 
         clearButton.setOnClickListener {
             searchInput.setText("")
             inputMethodManager?.hideSoftInputFromWindow(searchInput.windowToken, 0)
             searchInput.clearFocus()
+        }
+
+        clearSearchHistory.setOnClickListener {
+            searchHistory.clearSongsFromShared()
+            searchHistoryAdapter.searchHistoryList = emptyList()
+            searchHistoryAdapter.notifyDataSetChanged()
+            showSearchHistory(false)
         }
 
         searchInput.doOnTextChanged { text, _, _, _ ->
@@ -95,6 +107,7 @@ class SearchActivity : AppCompatActivity() {
             if (text?.isEmpty() == true) {
                 clearSearchActivity()
             }
+            showSearchHistory(searchInput.hasFocus())
         }
 
         searchInput.setOnEditorActionListener { _, actionId, _ ->
@@ -113,15 +126,24 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        inputText = savedInstanceState.getString(INPUT_TEXT_KEY, INPUT_TEXT_DEF)
+    private fun initializationViews() {
+        btnBack = findViewById(R.id.btn_settings_to_main)
+        clearButton = findViewById(R.id.clearIcon)
+        searchInput = findViewById(R.id.inputEditText)
+        recyclerTrack = findViewById(R.id.recyclerViewTrack)
+        searchHistoryLayout = findViewById(R.id.searchHistoryLayout)
+        recyclerSearchHistory = findViewById(R.id.recyclerSearchHistory)
+        clearSearchHistory = findViewById(R.id.clearSearchHistory)
+        errorImage = findViewById(R.id.placeholderError)
+        errorMessage = findViewById(R.id.errorMessage)
+        errorButton = findViewById(R.id.btnRefreshNetwork)
+        errorLayout = findViewById(R.id.errorLayout)
     }
 
     private fun clearSearchActivity() {
-        adapter.songs.clear()
-        adapter.notifyDataSetChanged()
-        recyclerTask.visibility = View.VISIBLE
+        songAdapter.songs.clear()
+        songAdapter.notifyDataSetChanged()
+        recyclerTrack.visibility = View.VISIBLE
         errorLayout.visibility = View.GONE
     }
 
@@ -143,7 +165,7 @@ class SearchActivity : AppCompatActivity() {
                     200 -> {
                         if (response.body()?.results?.isNotEmpty() == true) {
                             songsList.addAll(response.body()?.results!!)
-                            adapter.notifyDataSetChanged()
+                            songAdapter.notifyDataSetChanged()
                         } else {
                             showEmptyError()
                         }
@@ -168,7 +190,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showEmptyError() {
-        recyclerTask.visibility = View.GONE
+        recyclerTrack.visibility = View.GONE
         errorButton.visibility = View.GONE
         errorMessage.setText(R.string.search_empty)
         errorImage.setImageDrawable(getDrawable(R.drawable.ic_empty_song))
@@ -176,11 +198,30 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showNetworkError() {
-        recyclerTask.visibility = View.GONE
+        recyclerTrack.visibility = View.GONE
         errorButton.visibility = View.VISIBLE
         errorMessage.setText(R.string.network_error)
         errorImage.setImageDrawable(getDrawable(R.drawable.ic_network_error))
         errorLayout.visibility = View.VISIBLE
+    }
+
+    private fun showSearchHistory(hasFocus: Boolean) {
+        val checkField = hasFocus && searchInput.text.isEmpty()
+        searchHistoryLayout.visibility =
+            if (checkField && searchHistoryAdapter.searchHistoryList.isNotEmpty()) View.VISIBLE else View.GONE
+        recyclerTrack.visibility = if (!checkField) View.VISIBLE else View.GONE
+    }
+
+    override fun onSaveInstanceState(
+        outState: Bundle
+    ) {
+        super.onSaveInstanceState(outState)
+        outState.putString(INPUT_TEXT_KEY, inputText)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        inputText = savedInstanceState.getString(INPUT_TEXT_KEY, INPUT_TEXT_DEF)
     }
 
     companion object {

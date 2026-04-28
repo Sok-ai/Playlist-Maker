@@ -3,7 +3,8 @@ package com.example.playlistmaker
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-class SongAdapter() : RecyclerView.Adapter<SongViewHolder>() {
+class SongAdapter(val onSongActionListener: OnSongActionListener? = null) :
+    RecyclerView.Adapter<SongViewHolder>() {
     var songs: MutableList<Song> = mutableListOf()
 
     override fun onCreateViewHolder(
@@ -16,6 +17,9 @@ class SongAdapter() : RecyclerView.Adapter<SongViewHolder>() {
         holder: SongViewHolder, position: Int
     ) {
         holder.bind(songs[position])
+        holder.itemView.setOnClickListener {
+            onSongActionListener?.onSongClick(songs[position])
+        }
     }
 
     override fun getItemCount(): Int = songs.size

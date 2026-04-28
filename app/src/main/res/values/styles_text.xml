@@ -21,6 +21,13 @@
         <item name="fontWeight">400</item>
     </style>
 
+    <style name="SearchHistoryTextStyle">
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/text_search_history_size</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="fontWeight">500</item>
+    </style>
+
     <style name="InfoTextStyle" parent="NormalTextStyle">
         <item name="android:textColor">?attr/textColorInfo</item>
         <item name="android:textSize">@dimen/text_info_size</item>

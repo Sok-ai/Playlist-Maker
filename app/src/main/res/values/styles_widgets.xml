@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="SwitchStyle">
-        <item name="android:thumbTint">@color/switch_thumb_selector</item>
-        <item name="android:trackTint">@color/switch_track_selector</item>
+        <item name="thumbTint">@color/switch_thumb_selector</item>
+        <item name="trackTint">@color/switch_track_selector</item>
     </style>
 </resources>

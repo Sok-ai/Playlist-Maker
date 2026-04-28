@@ -10,6 +10,7 @@ data class SongsResponse(
 )
 
 data class Song(
+    @SerializedName("trackId") val trackId: Long,
     @SerializedName("trackName") val trackName: String,
     @SerializedName("artistName") val artistName: String,
     @SerializedName("trackTimeMillis") private val trackTimeMillis: Long,

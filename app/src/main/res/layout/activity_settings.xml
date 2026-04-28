@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -42,26 +43,15 @@
         android:layout_marginTop="24dp"
         android:orientation="vertical">
 
-        <LinearLayout
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/themeSwitcher"
+            style="@style/SwitchStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="16dp"
-            android:paddingVertical="21dp">
-
-            <TextView
-                style="@style/SettingsOptionsTextStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/settings_text_theme" />
-
-            <Switch
-                style="@style/SwitchStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="false"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-        </LinearLayout>
+            android:paddingVertical="21dp"
+            android:text="@string/settings_text_theme"
+            android:textAppearance="@style/NormalTextAppearance" />
 
         <LinearLayout
             android:id="@+id/setting_share"
