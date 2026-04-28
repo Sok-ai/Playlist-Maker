@@ -17,7 +17,9 @@ class SongAdapter(val onSongActionListener: OnSongActionListener? = null) :
         holder: SongViewHolder, position: Int
     ) {
         holder.bind(songs[position])
-        onSongActionListener?.onSongClick(holder.itemView)
+        holder.itemView.setOnClickListener {
+            onSongActionListener?.onSongClick(songs[position])
+        }
     }
 
     override fun getItemCount(): Int = songs.size
