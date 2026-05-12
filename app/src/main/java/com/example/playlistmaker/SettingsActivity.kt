@@ -23,12 +23,11 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_settings)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { view, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            view.updatePadding(top = statusBar.top, right = statusBar.right, left = statusBar.left, bottom = statusBar.bottom)
+            v.updatePadding(top = statusBar.top)
             insets
         }
-
         val sharedPref = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
 
         btnBack = findViewById(R.id.btn_settings_to_main)

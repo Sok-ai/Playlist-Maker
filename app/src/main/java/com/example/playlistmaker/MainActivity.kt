@@ -15,10 +15,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { view, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            view.updatePadding(top = statusBar.top)
+            v.updatePadding(top = statusBar.top)
             insets
         }
 

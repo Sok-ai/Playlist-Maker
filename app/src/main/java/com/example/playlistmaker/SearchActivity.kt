@@ -54,14 +54,9 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { view, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            view.updatePadding(
-                top = statusBar.top,
-                right = statusBar.right,
-                left = statusBar.left,
-                bottom = statusBar.bottom
-            )
+            v.updatePadding(top = statusBar.top)
             insets
         }
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
