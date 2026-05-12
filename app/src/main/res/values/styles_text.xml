@@ -14,6 +14,34 @@
         <item name="fontWeight">400</item>
     </style>
 
+    <style name="nameGroupTextStyle">
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/text_name_group_size</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="fontWeight">400</item>
+    </style>
+
+    <style name="InformationMusicNameStyle">
+        <item name="android:textColor">@color/YP_Text_Gray</item>
+        <item name="android:textSize">@dimen/name_information_music_size</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="fontWeight">400</item>
+    </style>
+
+    <style name="InformationMusicTextStyle">
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/text_information_music_size</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="fontWeight">400</item>
+    </style>
+
+    <style name="TimeToPlayStyle">
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/text_time_to_play_size</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="fontWeight">500</item>
+    </style>
+
     <style name="ErrorTextStyle">
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:textSize">@dimen/text_error_size</item>
