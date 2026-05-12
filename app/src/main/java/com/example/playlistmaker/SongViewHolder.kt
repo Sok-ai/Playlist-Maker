@@ -20,7 +20,7 @@ class SongViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         Glide
             .with(itemView)
             .load(model.artworkUrl100)
-            .placeholder(R.drawable.ic_placeholder)
+            .placeholder(R.drawable.ic_placeholder_45)
             .centerCrop()
             .transform(RoundedCorners(2))
             .into(trackImage)
