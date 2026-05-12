@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 
 const val MUSIC_TRANSFER_KEY = "music_transfer_key"
@@ -83,17 +84,18 @@ class LibraryActivity : AppCompatActivity() {
     }
 
     private fun gettingMusic() {
-        val jsonSong = intent.getStringExtra(MUSIC_TRANSFER_KEY)
-        if (jsonSong != null) {
-            sharedPref.edit().putString(SONG_LIBRARY_KEY, jsonSong).apply()
-            val songData = Gson().fromJson(jsonSong, Song::class.java)
+        val songData = intent.getParcelableExtra<Song>(MUSIC_TRANSFER_KEY)
+        if (songData != null) {
+            sharedPref.edit().putString(SONG_LIBRARY_KEY, Gson().toJson(songData)).apply()
             settingValuesToView(songData)
         }
     }
 
     private fun settingValuesToView(songData: Song) {
         Glide.with(applicationContext).load(songData.coverImagePlayer)
-            .placeholder(R.drawable.ic_placeholder_312).into(albumMusicImage)
+            .placeholder(R.drawable.ic_placeholder_312)
+            .transform(RoundedCorners(16))
+            .into(albumMusicImage)
 
         nameMusicText.text = songData.trackName
         nameAuthorText.text = songData.artistName
@@ -111,7 +113,7 @@ class LibraryActivity : AppCompatActivity() {
         nameAuthorText.setText(R.string.default_text)
         albumMusicText.text = ""
         yearMusicText.text = ""
-        durationMusicText.text = "00:00"
+        durationMusicText.text = Song.getEmptyTime()
         genreMusicText.text = ""
         countryMusicText.text = ""
     }
