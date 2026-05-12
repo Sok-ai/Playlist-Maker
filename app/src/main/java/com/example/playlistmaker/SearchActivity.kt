@@ -219,7 +219,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun openInformationAboutMusic(song: Song) {
         val intent = Intent(this, LibraryActivity::class.java).apply {
-            putExtra(MUSIC_TRANSFER_KEY, Gson().toJson(song))
+            putExtra(MUSIC_TRANSFER_KEY, song)
             putExtra("from_player", true)
         }
         startActivity(intent)
