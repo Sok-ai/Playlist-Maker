@@ -1,4 +1,7 @@
 <resources>
+    <string name="default_text">Empty</string>
+
+
     <!--  Main  -->
     <string name="app_name">Playlist Maker</string>
     <string name="main_btn_search">Поиск</string>
@@ -19,6 +22,11 @@
 
     <!--  Library  -->
     <string name="library_name_page">Медиатека</string>
+    <string name="library_duration_music_text">Длительность</string>
+    <string name="library_country_music_text">Страна</string>
+    <string name="library_genre_music_text">Жанр</string>
+    <string name="library_year_music_text">Год</string>
+    <string name="library_album_music_text">Альбом</string>
 
     <!--  Search  -->
     <string name="search_name_page">Поиск</string>
@@ -28,8 +36,6 @@
     <string name="btn_refresh_activity">Обновить</string>
     <string name="text_search_history">Вы искали</string>
     <string name="btn_clear_search_history">Очистить историю</string>
-
-
 
 
 </resources>
