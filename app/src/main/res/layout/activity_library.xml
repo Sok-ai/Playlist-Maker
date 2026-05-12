@@ -27,6 +27,20 @@
             android:orientation="vertical"
             app:layout_constraintGuide_end="24dp" />
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/left_info_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="16dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/right_info_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="16dp" />
+
         <ImageButton
             android:id="@+id/btn_library_to_main"
             style="@style/ImageButtonStyle"
@@ -41,7 +55,7 @@
             android:id="@+id/albumMusicImage"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="46dp"
+            android:layout_marginTop="30dp"
             android:src="@drawable/ic_placeholder_312"
             app:layout_constraintDimensionRatio="h,1:1"
             app:layout_constraintEnd_toStartOf="@id/right_guideline"
@@ -134,7 +148,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="30dp"
             android:text="@string/library_duration_music_text"
-            app:layout_constraintStart_toStartOf="@+id/left_guideline"
+            app:layout_constraintStart_toStartOf="@+id/left_info_guideline"
             app:layout_constraintTag="durationMusic"
             app:layout_constraintTop_toBottomOf="@+id/timeToPlayText" />
 
@@ -145,7 +159,7 @@
             android:layout_height="wrap_content"
             android:gravity="end"
             android:paddingTop="30dp"
-            app:layout_constraintEnd_toStartOf="@+id/right_guideline"
+            app:layout_constraintEnd_toStartOf="@+id/right_info_guideline"
             app:layout_constraintTop_toBottomOf="@+id/timeToPlayText"
             tools:text="5:35" />
 
@@ -156,7 +170,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="17dp"
             android:text="@string/library_album_music_text"
-            app:layout_constraintStart_toStartOf="@+id/left_guideline"
+            app:layout_constraintStart_toStartOf="@+id/left_info_guideline"
             app:layout_constraintTag="albumMusic"
             app:layout_constraintTop_toBottomOf="@+id/durationMusicName" />
 
@@ -165,14 +179,17 @@
             style="@style/InformationMusicTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:gravity="end"
+            android:maxLines="1"
             android:paddingTop="17dp"
-            app:layout_constraintEnd_toStartOf="@+id/right_guideline"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@+id/right_info_guideline"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toEndOf="@+id/namesBarrier"
             app:layout_constraintTag="albumMusicText"
             app:layout_constraintTop_toBottomOf="@+id/durationMusicText"
-            tools:text="Yesterday (Remastered 2009)" />
+            tools:text="«2025 – The Ultimate Super Deluxe Limited Extended Collector's Edition (Remastered Expanded) [feat. Various Artists] | Part One: The Beginning of the End»" />
 
         <TextView
             android:id="@+id/yearMusicName"
@@ -181,7 +198,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="17dp"
             android:text="@string/library_year_music_text"
-            app:layout_constraintStart_toStartOf="@+id/left_guideline"
+            app:layout_constraintStart_toStartOf="@+id/left_info_guideline"
             app:layout_constraintTag="yearMusic"
             app:layout_constraintTop_toBottomOf="@+id/albumMusicName" />
 
@@ -192,7 +209,7 @@
             android:layout_height="wrap_content"
             android:gravity="end"
             android:paddingTop="17dp"
-            app:layout_constraintEnd_toStartOf="@+id/right_guideline"
+            app:layout_constraintEnd_toStartOf="@+id/right_info_guideline"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toEndOf="@+id/namesBarrier"
             app:layout_constraintTag="yearMusicText"
@@ -206,7 +223,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="17dp"
             android:text="@string/library_genre_music_text"
-            app:layout_constraintStart_toStartOf="@+id/left_guideline"
+            app:layout_constraintStart_toStartOf="@+id/left_info_guideline"
             app:layout_constraintTag="genreMusic"
             app:layout_constraintTop_toBottomOf="@+id/yearMusicName" />
 
@@ -217,7 +234,7 @@
             android:layout_height="wrap_content"
             android:gravity="end"
             android:paddingTop="17dp"
-            app:layout_constraintEnd_toStartOf="@+id/right_guideline"
+            app:layout_constraintEnd_toStartOf="@+id/right_info_guideline"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toEndOf="@+id/namesBarrier"
             app:layout_constraintTop_toBottomOf="@+id/yearMusicText"
@@ -232,7 +249,7 @@
             android:paddingTop="17dp"
             android:text="@string/library_country_music_text"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/left_guideline"
+            app:layout_constraintStart_toStartOf="@+id/left_info_guideline"
             app:layout_constraintTag="countryMusic"
             app:layout_constraintTop_toBottomOf="@+id/genreMusicName" />
 
@@ -245,7 +262,7 @@
             android:gravity="end"
             android:paddingTop="17dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/right_guideline"
+            app:layout_constraintEnd_toStartOf="@+id/right_info_guideline"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toEndOf="@+id/namesBarrier"
             app:layout_constraintTop_toBottomOf="@+id/genreMusicText"

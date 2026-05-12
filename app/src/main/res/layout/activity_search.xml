@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:background="@drawable/bg_rounded"
+        android:background="@drawable/bg_rounded_8"
         android:backgroundTint="@color/YP_Light_Gray">
 
         <EditText
