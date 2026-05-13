@@ -4,6 +4,10 @@
     <dimen name="text_title_size">22sp</dimen>
     <dimen name="text_body_size">22sp</dimen>
     <dimen name="text_error_size">19sp</dimen>
+    <dimen name="text_name_group_size">14sp</dimen>
+    <dimen name="text_time_to_play_size">14sp</dimen>
+    <dimen name="name_information_music_size">13sp</dimen>
+    <dimen name="text_information_music_size">13sp</dimen>
     <dimen name="text_error_button_size">14sp</dimen>
     <dimen name="text_search_history_button_size">14sp</dimen>
     <dimen name="text_search_history_size">19sp</dimen>

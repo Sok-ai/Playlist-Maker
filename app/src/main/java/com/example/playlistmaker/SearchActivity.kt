@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -18,6 +19,7 @@ import androidx.core.view.updatePadding
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.network.RetrofitClient
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -52,9 +54,10 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { view, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            view.updatePadding(top = statusBar.top)
+            val navBar = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            v.updatePadding(top = statusBar.top, bottom = navBar.bottom)
             insets
         }
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -66,6 +69,7 @@ class SearchActivity : AppCompatActivity() {
         searchInput.setText(inputText)
 
         songAdapter = SongAdapter { song ->
+            openInformationAboutMusic(song)
             searchHistory.putSongs(song)
             searchHistoryAdapter.searchHistoryList = searchHistory.getSongs()
             searchHistoryAdapter.notifyDataSetChanged()
@@ -75,7 +79,9 @@ class SearchActivity : AppCompatActivity() {
 
         recyclerTrack.adapter = songAdapter
 
-        searchHistoryAdapter = SearchHistoryAdapter().apply {
+        searchHistoryAdapter = SearchHistoryAdapter { song ->
+            openInformationAboutMusic(song)
+        }.apply {
             searchHistoryList = searchHistory.getSongs()
         }
         recyclerSearchHistory.adapter = searchHistoryAdapter
@@ -210,6 +216,14 @@ class SearchActivity : AppCompatActivity() {
         searchHistoryLayout.visibility =
             if (checkField && searchHistoryAdapter.searchHistoryList.isNotEmpty()) View.VISIBLE else View.GONE
         recyclerTrack.visibility = if (!checkField) View.VISIBLE else View.GONE
+    }
+
+    private fun openInformationAboutMusic(song: Song) {
+        val intent = Intent(this, LibraryActivity::class.java).apply {
+            putExtra(MUSIC_TRANSFER_KEY, song)
+            putExtra("from_player", true)
+        }
+        startActivity(intent)
     }
 
     override fun onSaveInstanceState(

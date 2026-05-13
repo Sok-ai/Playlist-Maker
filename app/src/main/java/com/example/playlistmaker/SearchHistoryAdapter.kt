@@ -17,6 +17,9 @@ class SearchHistoryAdapter(val onSongActionListener: OnSongActionListener? = nul
         position: Int
     ) {
         holder.bind(searchHistoryList[position])
+        holder.itemView.setOnClickListener {
+            onSongActionListener?.onSongClick(searchHistoryList[position])
+        }
     }
 
     override fun getItemCount(): Int = searchHistoryList.size
