@@ -40,7 +40,8 @@ class LibraryActivity : AppCompatActivity() {
         setContentView(R.layout.activity_library)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            v.updatePadding(top = statusBar.top)
+            val navBar = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            v.updatePadding(top = statusBar.top, bottom = navBar.bottom)
             insets
         }
 

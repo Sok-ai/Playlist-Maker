@@ -56,7 +56,8 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            v.updatePadding(top = statusBar.top)
+            val navBar = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            v.updatePadding(top = statusBar.top, bottom = navBar.bottom)
             insets
         }
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
