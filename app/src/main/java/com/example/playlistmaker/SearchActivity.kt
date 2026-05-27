@@ -20,10 +20,13 @@ import androidx.core.view.updatePadding
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.network.RetrofitClient
-import com.google.gson.Gson
+import com.example.playlistmaker.utils.Debounce
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
+private typealias SearchDebounce = Debounce
+private typealias ClickDebounce = Debounce
 
 class SearchActivity : AppCompatActivity() {
 
@@ -46,10 +49,16 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var errorButton: Button
 
     private lateinit var recyclerTrack: RecyclerView
+    private lateinit var progressBar: ProgressBar
+
+    val searchDebounce = SearchDebounce(2000)
+    val clickDebounce = ClickDebounce(500)
 
     private val songsList = arrayListOf<Song>()
     private var saveInputText = ""
     private var inputText = INPUT_TEXT_DEF
+
+    private var debounceClickSong = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,10 +79,12 @@ class SearchActivity : AppCompatActivity() {
         searchInput.setText(inputText)
 
         songAdapter = SongAdapter { song ->
-            openInformationAboutMusic(song)
-            searchHistory.putSongs(song)
-            searchHistoryAdapter.searchHistoryList = searchHistory.getSongs()
-            searchHistoryAdapter.notifyDataSetChanged()
+            if (clickDebounce()) {
+                openInformationAboutMusic(song)
+                searchHistory.putSongs(song)
+                searchHistoryAdapter.searchHistoryList = searchHistory.getSongs()
+                searchHistoryAdapter.notifyDataSetChanged()
+            }
         }.apply {
             songs = songsList
         }
@@ -81,7 +92,9 @@ class SearchActivity : AppCompatActivity() {
         recyclerTrack.adapter = songAdapter
 
         searchHistoryAdapter = SearchHistoryAdapter { song ->
-            openInformationAboutMusic(song)
+            if (clickDebounce()) {
+                openInformationAboutMusic(song)
+            }
         }.apply {
             searchHistoryList = searchHistory.getSongs()
         }
@@ -99,6 +112,7 @@ class SearchActivity : AppCompatActivity() {
             searchInput.setText("")
             inputMethodManager?.hideSoftInputFromWindow(searchInput.windowToken, 0)
             searchInput.clearFocus()
+            searchDebounce.cancel()
         }
 
         clearSearchHistory.setOnClickListener {
@@ -113,6 +127,9 @@ class SearchActivity : AppCompatActivity() {
             clearButton.visibility = clearButtonVisibility(text)
             if (text?.isEmpty() == true) {
                 clearSearchActivity()
+            }
+            searchDebounce.run {
+                search(text.toString())
             }
             showSearchHistory(searchInput.hasFocus())
         }
@@ -151,8 +168,21 @@ class SearchActivity : AppCompatActivity() {
     private fun clearSearchActivity() {
         songAdapter.songs.clear()
         songAdapter.notifyDataSetChanged()
-        recyclerTrack.visibility = View.VISIBLE
-        errorLayout.visibility = View.GONE
+        recyclerTrack.visibility = VISIBLE
+        errorLayout.visibility = GONE
+        progressBar.visibility = GONE
+        searchHistoryLayout.visibility = GONE
+    }
+
+    private fun clickDebounce(): Boolean {
+        val current = debounceClickSong
+        if (debounceClickSong) {
+            debounceClickSong = false
+            clickDebounce.run {
+                debounceClickSong = true
+            }
+        }
+        return current
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
@@ -246,6 +276,13 @@ class SearchActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         inputText = savedInstanceState.getString(INPUT_TEXT_KEY, INPUT_TEXT_DEF)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        super.onDestroy()
+        clickDebounce.cancel()
+        searchDebounce.cancel()
     }
 
     companion object {
