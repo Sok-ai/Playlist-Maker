@@ -72,13 +72,21 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:visibility="gone" />
 
+    <ProgressBar
+        android:id="@+id/progressBarSongs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="140dp"
+        android:indeterminateTint="@color/YP_Blue"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/searchHistoryLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/textSearchHistory"
