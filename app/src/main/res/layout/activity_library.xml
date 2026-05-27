@@ -136,7 +136,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingTop="5dp"
-            android:text="0:30"
+            android:text="@string/default_duration"
             app:layout_constraintEnd_toStartOf="@+id/right_guideline"
             app:layout_constraintStart_toStartOf="@+id/left_guideline"
             app:layout_constraintTop_toBottomOf="@+id/playMusicButton" />
