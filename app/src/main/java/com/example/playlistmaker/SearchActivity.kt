@@ -2,7 +2,8 @@ package com.example.playlistmaker
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -187,9 +188,9 @@ class SearchActivity : AppCompatActivity() {
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
         return if (s.isNullOrEmpty()) {
-            View.GONE
+            GONE
         } else {
-            View.VISIBLE
+            VISIBLE
         }
     }
 
@@ -266,7 +267,7 @@ class SearchActivity : AppCompatActivity() {
     private fun openInformationAboutMusic(song: Song) {
         val intent = Intent(this, LibraryActivity::class.java).apply {
             putExtra(MUSIC_TRANSFER_KEY, song)
-            putExtra("from_player", true)
+            putExtra(FROM_PLAYER_KEY, true)
         }
         startActivity(intent)
     }
@@ -293,5 +294,6 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         const val INPUT_TEXT_DEF = ""
         const val INPUT_TEXT_KEY = "INPUT_TEXT_KEY"
+        const val FROM_PLAYER_KEY = "from_player"
     }
 }
