@@ -36,6 +36,7 @@
     <string name="btn_refresh_activity">Обновить</string>
     <string name="text_search_history">Вы искали</string>
     <string name="btn_clear_search_history">Очистить историю</string>
+    <string name="default_duration">00:30</string>
 
 
 </resources>
