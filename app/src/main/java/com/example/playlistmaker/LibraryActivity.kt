@@ -162,7 +162,7 @@ class LibraryActivity : AppCompatActivity() {
             playMusicButton.setImageResource(R.drawable.ic_button_start_song)
             playerState = STATE_PREPARED
             stopUpdatingTime()
-            timeToPlayText.text = Song.formatDuration(getString(R.string.default_duration).toInt())
+            timeToPlayText.text = Song.formatDuration(30)
         }
     }
 
