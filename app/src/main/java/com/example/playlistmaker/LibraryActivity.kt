@@ -39,7 +39,7 @@ class LibraryActivity : AppCompatActivity() {
     private lateinit var genreMusicText: TextView
     private lateinit var countryMusicText: TextView
     private var playerState = STATE_DEFAULT
-    private val periodicDebounce = PeriodicAction(500L)
+    private val periodicUpdater = PeriodicAction(500L)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -162,7 +162,7 @@ class LibraryActivity : AppCompatActivity() {
             playMusicButton.setImageResource(R.drawable.ic_button_start_song)
             playerState = STATE_PREPARED
             stopUpdatingTime()
-            timeToPlayText.text = Song.formatDuration(30)
+            timeToPlayText.text = Song.formatDuration(0)
         }
     }
 
@@ -171,7 +171,6 @@ class LibraryActivity : AppCompatActivity() {
         playMusicButton.setImageResource(R.drawable.ic_button_pause_song)
         playerState = STATE_PLAYING
         startUpdatingTime()
-        timeToPlayText.text = ""
     }
 
     private fun pausePlayer() {
@@ -182,7 +181,7 @@ class LibraryActivity : AppCompatActivity() {
     }
 
     private fun startUpdatingTime() {
-        periodicDebounce.start {
+        periodicUpdater.start {
             if (playerState == STATE_PLAYING) {
                 timeToPlayText.text = Song.formatDuration(mediaPlayer.currentPosition)
             }
@@ -190,7 +189,7 @@ class LibraryActivity : AppCompatActivity() {
     }
 
     private fun stopUpdatingTime() {
-        periodicDebounce.stop()
+        periodicUpdater.stop()
     }
 
     override fun onPause() {
@@ -200,7 +199,7 @@ class LibraryActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        periodicDebounce.stop()
+        periodicUpdater.stop()
     }
 
     override fun onDestroy() {
