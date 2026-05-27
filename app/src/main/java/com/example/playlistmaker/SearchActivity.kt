@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -139,6 +140,7 @@ class SearchActivity : AppCompatActivity() {
         recyclerTrack = findViewById(R.id.recyclerViewTrack)
         searchHistoryLayout = findViewById(R.id.searchHistoryLayout)
         recyclerSearchHistory = findViewById(R.id.recyclerSearchHistory)
+        progressBar = findViewById(R.id.progressBarSongs)
         clearSearchHistory = findViewById(R.id.clearSearchHistory)
         errorImage = findViewById(R.id.placeholderError)
         errorMessage = findViewById(R.id.errorMessage)
@@ -162,6 +164,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun search(input: String) {
+        showUiLoadingData()
         songApi.getSongs(input).enqueue(object : Callback<SongsResponse> {
             override fun onResponse(
                 call: Call<SongsResponse?>, response: Response<SongsResponse?>
@@ -208,7 +211,14 @@ class SearchActivity : AppCompatActivity() {
         errorButton.visibility = View.VISIBLE
         errorMessage.setText(R.string.network_error)
         errorImage.setImageDrawable(getDrawable(R.drawable.ic_network_error))
-        errorLayout.visibility = View.VISIBLE
+        errorLayout.visibility = VISIBLE
+    }
+
+    private fun showUiLoadingData() {
+        progressBar.visibility = VISIBLE
+        recyclerTrack.visibility = GONE
+        searchHistoryLayout.visibility = GONE
+        errorLayout.visibility = GONE
     }
 
     private fun showSearchHistory(hasFocus: Boolean) {
