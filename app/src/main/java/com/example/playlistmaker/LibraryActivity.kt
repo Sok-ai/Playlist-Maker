@@ -1,6 +1,8 @@
 package com.example.playlistmaker
 
 import android.content.SharedPreferences
+import android.media.MediaPlayer
+import android.os.Build
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -18,6 +20,8 @@ const val MUSIC_TRANSFER_KEY = "music_transfer_key"
 const val SONG_LIBRARY_KEY = "song_library_key"
 
 class LibraryActivity : AppCompatActivity() {
+
+    private val mediaPlayer = MediaPlayer()
     private lateinit var sharedPref: SharedPreferences
     private lateinit var buttonBack: ImageButton
     private lateinit var albumMusicImage: ImageView
@@ -32,7 +36,7 @@ class LibraryActivity : AppCompatActivity() {
     private lateinit var yearMusicText: TextView
     private lateinit var genreMusicText: TextView
     private lateinit var countryMusicText: TextView
-
+    private var playerState = STATE_DEFAULT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +51,7 @@ class LibraryActivity : AppCompatActivity() {
 
         initView()
 
-        val fromPlayer = intent.getBooleanExtra("from_player", false)
+        val fromPlayer = intent.getBooleanExtra(FROM_PLAYER_KEY, false)
 
         if (fromPlayer) {
             gettingMusic()
@@ -59,6 +63,10 @@ class LibraryActivity : AppCompatActivity() {
             } else {
                 defaultValueForView()
             }
+        }
+
+        playMusicButton.setOnClickListener {
+            playbackControl()
         }
 
         buttonBack.setOnClickListener {
@@ -85,7 +93,13 @@ class LibraryActivity : AppCompatActivity() {
     }
 
     private fun gettingMusic() {
-        val songData = intent.getParcelableExtra<Song>(MUSIC_TRANSFER_KEY)
+        val songData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(MUSIC_TRANSFER_KEY, Song::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra(MUSIC_TRANSFER_KEY)
+        }
+
         if (songData != null) {
             sharedPref.edit().putString(SONG_LIBRARY_KEY, Gson().toJson(songData)).apply()
             settingValuesToView(songData)
@@ -107,6 +121,8 @@ class LibraryActivity : AppCompatActivity() {
         durationMusicText.text = songData.trackTime
         genreMusicText.text = songData.primaryGenreName
         countryMusicText.text = songData.country
+
+        preparePlayer(songData.previewUrl)
     }
 
     private fun defaultValueForView() {
@@ -118,4 +134,59 @@ class LibraryActivity : AppCompatActivity() {
         genreMusicText.text = ""
         countryMusicText.text = ""
     }
+
+    private fun playbackControl() {
+        when (playerState) {
+            STATE_PLAYING -> {
+                pausePlayer()
+            }
+
+            STATE_PREPARED, STATE_PAUSED -> {
+                startPlayer()
+            }
+        }
+    }
+
+    private fun preparePlayer(previewUrl: String) {
+        mediaPlayer.setDataSource(previewUrl)
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnPreparedListener {
+            playMusicButton.isEnabled = true
+            playerState = STATE_PREPARED
+        }
+        mediaPlayer.setOnCompletionListener {
+            playMusicButton.setImageResource(R.drawable.ic_button_start_song)
+            playerState = STATE_PREPARED
+        }
+    }
+
+    private fun startPlayer() {
+        mediaPlayer.start()
+        playMusicButton.setImageResource(R.drawable.ic_button_pause_song)
+        playerState = STATE_PLAYING
+    }
+
+    private fun pausePlayer() {
+        playMusicButton.setImageResource(R.drawable.ic_button_start_song)
+        mediaPlayer.pause()
+        playerState = STATE_PAUSED
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mediaPlayer.pause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
+    }
+
+    companion object {
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+    }
+
 }
