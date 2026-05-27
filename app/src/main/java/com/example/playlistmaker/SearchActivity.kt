@@ -229,16 +229,18 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showEmptyError() {
-        recyclerTrack.visibility = View.GONE
-        errorButton.visibility = View.GONE
+        recyclerTrack.visibility = GONE
+        errorButton.visibility = GONE
+        searchHistoryLayout.visibility = GONE
         errorMessage.setText(R.string.search_empty)
         errorImage.setImageDrawable(getDrawable(R.drawable.ic_empty_song))
-        errorLayout.visibility = View.VISIBLE
+        errorLayout.visibility = VISIBLE
     }
 
     private fun showNetworkError() {
-        recyclerTrack.visibility = View.GONE
-        errorButton.visibility = View.VISIBLE
+        recyclerTrack.visibility = GONE
+        errorButton.visibility = VISIBLE
+        searchHistoryLayout.visibility = GONE
         errorMessage.setText(R.string.network_error)
         errorImage.setImageDrawable(getDrawable(R.drawable.ic_network_error))
         errorLayout.visibility = VISIBLE
@@ -252,10 +254,13 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showSearchHistory(hasFocus: Boolean) {
-        val checkField = hasFocus && searchInput.text.isEmpty()
+        val showHistory = hasFocus && searchInput.text.isEmpty()
         searchHistoryLayout.visibility =
-            if (checkField && searchHistoryAdapter.searchHistoryList.isNotEmpty()) View.VISIBLE else View.GONE
-        recyclerTrack.visibility = if (!checkField) View.VISIBLE else View.GONE
+            if (showHistory && searchHistoryAdapter.searchHistoryList.isNotEmpty()) VISIBLE else GONE
+        if (showHistory) {
+            recyclerTrack.visibility = GONE
+            errorLayout.visibility = GONE
+        }
     }
 
     private fun openInformationAboutMusic(song: Song) {
