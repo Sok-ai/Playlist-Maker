@@ -14,6 +14,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.SearchActivity.Companion.FROM_PLAYER_KEY
+import com.example.playlistmaker.utils.PeriodicAction
 import com.google.gson.Gson
 
 const val MUSIC_TRANSFER_KEY = "music_transfer_key"
@@ -37,6 +39,7 @@ class LibraryActivity : AppCompatActivity() {
     private lateinit var genreMusicText: TextView
     private lateinit var countryMusicText: TextView
     private var playerState = STATE_DEFAULT
+    private val periodicDebounce = PeriodicAction(500L)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,7 +133,7 @@ class LibraryActivity : AppCompatActivity() {
         nameAuthorText.setText(R.string.default_text)
         albumMusicText.text = ""
         yearMusicText.text = ""
-        durationMusicText.text = Song.getEmptyTime()
+        durationMusicText.text = Song.formatDuration(0)
         genreMusicText.text = ""
         countryMusicText.text = ""
     }
@@ -150,6 +153,7 @@ class LibraryActivity : AppCompatActivity() {
     private fun preparePlayer(previewUrl: String) {
         mediaPlayer.setDataSource(previewUrl)
         mediaPlayer.prepareAsync()
+        mediaPlayer.setVolume(0.6f, 0.6f)
         mediaPlayer.setOnPreparedListener {
             playMusicButton.isEnabled = true
             playerState = STATE_PREPARED
@@ -157,6 +161,8 @@ class LibraryActivity : AppCompatActivity() {
         mediaPlayer.setOnCompletionListener {
             playMusicButton.setImageResource(R.drawable.ic_button_start_song)
             playerState = STATE_PREPARED
+            stopUpdatingTime()
+            timeToPlayText.text = Song.formatDuration(getString(R.string.default_duration).toInt())
         }
     }
 
@@ -164,17 +170,37 @@ class LibraryActivity : AppCompatActivity() {
         mediaPlayer.start()
         playMusicButton.setImageResource(R.drawable.ic_button_pause_song)
         playerState = STATE_PLAYING
+        startUpdatingTime()
+        timeToPlayText.text = ""
     }
 
     private fun pausePlayer() {
         playMusicButton.setImageResource(R.drawable.ic_button_start_song)
         mediaPlayer.pause()
         playerState = STATE_PAUSED
+        stopUpdatingTime()
+    }
+
+    private fun startUpdatingTime() {
+        periodicDebounce.start {
+            if (playerState == STATE_PLAYING) {
+                timeToPlayText.text = Song.formatDuration(mediaPlayer.currentPosition)
+            }
+        }
+    }
+
+    private fun stopUpdatingTime() {
+        periodicDebounce.stop()
     }
 
     override fun onPause() {
         super.onPause()
-        mediaPlayer.pause()
+        pausePlayer()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        periodicDebounce.stop()
     }
 
     override fun onDestroy() {
