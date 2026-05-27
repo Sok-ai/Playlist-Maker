@@ -286,7 +286,6 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        super.onDestroy()
         clickDebounce.cancel()
         searchDebounce.cancel()
     }
