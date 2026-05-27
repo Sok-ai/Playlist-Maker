@@ -34,8 +34,8 @@ data class Song(
         get() = releaseDate.substring(0, 4)
 
     companion object {
-        fun getEmptyTime(): String {
-            return SimpleDateFormat("mm:ss", Locale.getDefault()).format(0)
+        fun formatDuration(time: Int): String {
+            return SimpleDateFormat("mm:ss", Locale.getDefault()).format(time)
         }
     }
 }
