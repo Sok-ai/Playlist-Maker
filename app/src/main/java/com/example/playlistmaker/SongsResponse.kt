@@ -21,8 +21,9 @@ data class Song(
     @SerializedName("primaryGenreName") val primaryGenreName: String,
     @SerializedName("country") val country: String,
     @SerializedName("trackTimeMillis") private val trackTimeMillis: Long,
-    @SerializedName("artworkUrl100") val artworkUrl100: String
-): Parcelable {
+    @SerializedName("artworkUrl100") val artworkUrl100: String,
+    @SerializedName("previewUrl") val previewUrl: String
+) : Parcelable {
     val trackTime: String
         get() = SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackTimeMillis)
 
