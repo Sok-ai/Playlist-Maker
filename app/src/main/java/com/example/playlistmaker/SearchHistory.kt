@@ -43,4 +43,11 @@ class SearchHistory(val sharedPreferences: SharedPreferences) {
     private fun convertSongToJson(song: List<Song>): String {
         return Gson().toJson(song)
     }
+
+    fun getSongById(trackIdParam: Long): Song? {
+        val currentList = getSongs().asSequence()
+        return currentList.firstOrNull {
+            it.trackId == trackIdParam
+        }
+    }
 }
