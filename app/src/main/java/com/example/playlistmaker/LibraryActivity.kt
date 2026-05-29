@@ -1,7 +1,6 @@
 package com.example.playlistmaker
 
 import android.content.SharedPreferences
-import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.widget.ImageButton
@@ -15,6 +14,7 @@ import androidx.core.view.updatePadding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.SearchActivity.Companion.FROM_PLAYER_KEY
+import com.example.playlistmaker.player.MediaPlayerImpl
 import com.example.playlistmaker.utils.PeriodicAction
 import com.google.gson.Gson
 
@@ -23,7 +23,6 @@ const val SONG_LIBRARY_KEY = "song_library_key"
 
 class LibraryActivity : AppCompatActivity() {
 
-    private val mediaPlayer = MediaPlayer()
     private lateinit var sharedPref: SharedPreferences
     private lateinit var buttonBack: ImageButton
     private lateinit var albumMusicImage: ImageView
@@ -38,8 +37,8 @@ class LibraryActivity : AppCompatActivity() {
     private lateinit var yearMusicText: TextView
     private lateinit var genreMusicText: TextView
     private lateinit var countryMusicText: TextView
-    private var playerState = STATE_DEFAULT
     private val periodicUpdater = PeriodicAction(500L)
+    private val mediaPlayerImpl = MediaPlayerImpl()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +68,19 @@ class LibraryActivity : AppCompatActivity() {
         }
 
         playMusicButton.setOnClickListener {
-            playbackControl()
+            when {
+                mediaPlayerImpl.isPlayer() -> {
+                    mediaPlayerImpl.pausePlayer()
+                    playMusicButton.setImageResource(R.drawable.ic_button_start_song)
+                    stopUpdatingTime()
+                }
+
+                mediaPlayerImpl.isPreparedOrPause() -> {
+                    mediaPlayerImpl.startPlayer()
+                    playMusicButton.setImageResource(R.drawable.ic_button_pause_song)
+                    startUpdatingTime()
+                }
+            }
         }
 
         buttonBack.setOnClickListener {
@@ -125,7 +136,17 @@ class LibraryActivity : AppCompatActivity() {
         genreMusicText.text = songData.primaryGenreName
         countryMusicText.text = songData.country
 
-        preparePlayer(songData.previewUrl)
+
+        mediaPlayerImpl.apply {
+            preparePlayer(songData.previewUrl) {
+                playMusicButton.isEnabled = true
+            }
+            setOnCompletionListener {
+                playMusicButton.setImageResource(R.drawable.ic_button_start_song)
+                stopUpdatingTime()
+                timeToPlayText.text = Song.formatDuration(0)
+            }
+        }
     }
 
     private fun defaultValueForView() {
@@ -138,52 +159,11 @@ class LibraryActivity : AppCompatActivity() {
         countryMusicText.text = ""
     }
 
-    private fun playbackControl() {
-        when (playerState) {
-            STATE_PLAYING -> {
-                pausePlayer()
-            }
-
-            STATE_PREPARED, STATE_PAUSED -> {
-                startPlayer()
-            }
-        }
-    }
-
-    private fun preparePlayer(previewUrl: String) {
-        mediaPlayer.setDataSource(previewUrl)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setVolume(0.6f, 0.6f)
-        mediaPlayer.setOnPreparedListener {
-            playMusicButton.isEnabled = true
-            playerState = STATE_PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
-            playMusicButton.setImageResource(R.drawable.ic_button_start_song)
-            playerState = STATE_PREPARED
-            stopUpdatingTime()
-            timeToPlayText.text = Song.formatDuration(0)
-        }
-    }
-
-    private fun startPlayer() {
-        mediaPlayer.start()
-        playMusicButton.setImageResource(R.drawable.ic_button_pause_song)
-        playerState = STATE_PLAYING
-        startUpdatingTime()
-    }
-
-    private fun pausePlayer() {
-        playMusicButton.setImageResource(R.drawable.ic_button_start_song)
-        mediaPlayer.pause()
-        playerState = STATE_PAUSED
-        stopUpdatingTime()
-    }
 
     private fun startUpdatingTime() {
         periodicUpdater.start {
-            if (playerState == STATE_PLAYING) {
-                timeToPlayText.text = Song.formatDuration(mediaPlayer.currentPosition)
+            if (mediaPlayerImpl.isPlayer()) {
+                timeToPlayText.text = Song.formatDuration(mediaPlayerImpl.currentPosition())
             }
         }
     }
@@ -194,24 +174,15 @@ class LibraryActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        pausePlayer()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        periodicUpdater.stop()
+        if (mediaPlayerImpl.isPlayer()) {
+            mediaPlayerImpl.pausePlayer()
+            playMusicButton.setImageResource(R.drawable.ic_button_start_song)
+            stopUpdatingTime()
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
+        mediaPlayerImpl.release()
     }
-
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-    }
-
 }
