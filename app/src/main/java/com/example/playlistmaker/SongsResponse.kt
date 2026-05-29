@@ -21,8 +21,9 @@ data class Song(
     @SerializedName("primaryGenreName") val primaryGenreName: String,
     @SerializedName("country") val country: String,
     @SerializedName("trackTimeMillis") private val trackTimeMillis: Long,
-    @SerializedName("artworkUrl100") val artworkUrl100: String
-): Parcelable {
+    @SerializedName("artworkUrl100") val artworkUrl100: String,
+    @SerializedName("previewUrl") val previewUrl: String
+) : Parcelable {
     val trackTime: String
         get() = SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackTimeMillis)
 
@@ -33,8 +34,8 @@ data class Song(
         get() = releaseDate.substring(0, 4)
 
     companion object {
-        fun getEmptyTime(): String {
-            return SimpleDateFormat("mm:ss", Locale.getDefault()).format(0)
+        fun formatDuration(time: Int): String {
+            return SimpleDateFormat("mm:ss", Locale.getDefault()).format(time)
         }
     }
 }

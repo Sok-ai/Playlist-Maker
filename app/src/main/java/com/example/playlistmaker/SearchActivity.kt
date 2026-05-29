@@ -2,7 +2,8 @@ package com.example.playlistmaker
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -10,6 +11,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -19,10 +21,13 @@ import androidx.core.view.updatePadding
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.network.RetrofitClient
-import com.google.gson.Gson
+import com.example.playlistmaker.utils.Debounce
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
+private typealias SearchDebounce = Debounce
+private typealias ClickDebounce = Debounce
 
 class SearchActivity : AppCompatActivity() {
 
@@ -45,10 +50,16 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var errorButton: Button
 
     private lateinit var recyclerTrack: RecyclerView
+    private lateinit var progressBar: ProgressBar
+
+    val searchDebounce = SearchDebounce(2000)
+    val clickDebounce = ClickDebounce(500)
 
     private val songsList = arrayListOf<Song>()
     private var saveInputText = ""
     private var inputText = INPUT_TEXT_DEF
+
+    private var debounceClickSong = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,10 +80,12 @@ class SearchActivity : AppCompatActivity() {
         searchInput.setText(inputText)
 
         songAdapter = SongAdapter { song ->
-            openInformationAboutMusic(song)
-            searchHistory.putSongs(song)
-            searchHistoryAdapter.searchHistoryList = searchHistory.getSongs()
-            searchHistoryAdapter.notifyDataSetChanged()
+            if (clickDebounce()) {
+                searchHistory.putSongs(song)
+                openInformationAboutMusic(song.trackId)
+                searchHistoryAdapter.searchHistoryList = searchHistory.getSongs()
+                searchHistoryAdapter.notifyDataSetChanged()
+            }
         }.apply {
             songs = songsList
         }
@@ -80,7 +93,9 @@ class SearchActivity : AppCompatActivity() {
         recyclerTrack.adapter = songAdapter
 
         searchHistoryAdapter = SearchHistoryAdapter { song ->
-            openInformationAboutMusic(song)
+            if (clickDebounce()) {
+                openInformationAboutMusic(song.trackId)
+            }
         }.apply {
             searchHistoryList = searchHistory.getSongs()
         }
@@ -98,6 +113,7 @@ class SearchActivity : AppCompatActivity() {
             searchInput.setText("")
             inputMethodManager?.hideSoftInputFromWindow(searchInput.windowToken, 0)
             searchInput.clearFocus()
+            searchDebounce.cancel()
         }
 
         clearSearchHistory.setOnClickListener {
@@ -112,6 +128,9 @@ class SearchActivity : AppCompatActivity() {
             clearButton.visibility = clearButtonVisibility(text)
             if (text?.isEmpty() == true) {
                 clearSearchActivity()
+            }
+            searchDebounce.run {
+                search(text.toString())
             }
             showSearchHistory(searchInput.hasFocus())
         }
@@ -139,6 +158,7 @@ class SearchActivity : AppCompatActivity() {
         recyclerTrack = findViewById(R.id.recyclerViewTrack)
         searchHistoryLayout = findViewById(R.id.searchHistoryLayout)
         recyclerSearchHistory = findViewById(R.id.recyclerSearchHistory)
+        progressBar = findViewById(R.id.progressBarSongs)
         clearSearchHistory = findViewById(R.id.clearSearchHistory)
         errorImage = findViewById(R.id.placeholderError)
         errorMessage = findViewById(R.id.errorMessage)
@@ -149,19 +169,33 @@ class SearchActivity : AppCompatActivity() {
     private fun clearSearchActivity() {
         songAdapter.songs.clear()
         songAdapter.notifyDataSetChanged()
-        recyclerTrack.visibility = View.VISIBLE
-        errorLayout.visibility = View.GONE
+        recyclerTrack.visibility = VISIBLE
+        errorLayout.visibility = GONE
+        progressBar.visibility = GONE
+        searchHistoryLayout.visibility = GONE
+    }
+
+    private fun clickDebounce(): Boolean {
+        val current = debounceClickSong
+        if (debounceClickSong) {
+            debounceClickSong = false
+            clickDebounce.run {
+                debounceClickSong = true
+            }
+        }
+        return current
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
         return if (s.isNullOrEmpty()) {
-            View.GONE
+            GONE
         } else {
-            View.VISIBLE
+            VISIBLE
         }
     }
 
     private fun search(input: String) {
+        showUiLoadingData()
         songApi.getSongs(input).enqueue(object : Callback<SongsResponse> {
             override fun onResponse(
                 call: Call<SongsResponse?>, response: Response<SongsResponse?>
@@ -196,32 +230,43 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showEmptyError() {
-        recyclerTrack.visibility = View.GONE
-        errorButton.visibility = View.GONE
+        recyclerTrack.visibility = GONE
+        errorButton.visibility = GONE
+        searchHistoryLayout.visibility = GONE
         errorMessage.setText(R.string.search_empty)
         errorImage.setImageDrawable(getDrawable(R.drawable.ic_empty_song))
-        errorLayout.visibility = View.VISIBLE
+        errorLayout.visibility = VISIBLE
     }
 
     private fun showNetworkError() {
-        recyclerTrack.visibility = View.GONE
-        errorButton.visibility = View.VISIBLE
+        recyclerTrack.visibility = GONE
+        errorButton.visibility = VISIBLE
+        searchHistoryLayout.visibility = GONE
         errorMessage.setText(R.string.network_error)
         errorImage.setImageDrawable(getDrawable(R.drawable.ic_network_error))
-        errorLayout.visibility = View.VISIBLE
+        errorLayout.visibility = VISIBLE
+    }
+
+    private fun showUiLoadingData() {
+        progressBar.visibility = VISIBLE
+        recyclerTrack.visibility = GONE
+        searchHistoryLayout.visibility = GONE
+        errorLayout.visibility = GONE
     }
 
     private fun showSearchHistory(hasFocus: Boolean) {
-        val checkField = hasFocus && searchInput.text.isEmpty()
+        val showHistory = hasFocus && searchInput.text.isEmpty()
         searchHistoryLayout.visibility =
-            if (checkField && searchHistoryAdapter.searchHistoryList.isNotEmpty()) View.VISIBLE else View.GONE
-        recyclerTrack.visibility = if (!checkField) View.VISIBLE else View.GONE
+            if (showHistory && searchHistoryAdapter.searchHistoryList.isNotEmpty()) VISIBLE else GONE
+        if (showHistory) {
+            recyclerTrack.visibility = GONE
+            errorLayout.visibility = GONE
+        }
     }
 
-    private fun openInformationAboutMusic(song: Song) {
+    private fun openInformationAboutMusic(songId: Long) {
         val intent = Intent(this, LibraryActivity::class.java).apply {
-            putExtra(MUSIC_TRANSFER_KEY, song)
-            putExtra("from_player", true)
+            putExtra(TRACK_ID_KEY, songId)
         }
         startActivity(intent)
     }
@@ -236,6 +281,12 @@ class SearchActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         inputText = savedInstanceState.getString(INPUT_TEXT_KEY, INPUT_TEXT_DEF)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        clickDebounce.cancel()
+        searchDebounce.cancel()
     }
 
     companion object {
