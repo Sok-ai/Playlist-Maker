@@ -81,8 +81,8 @@ class SearchActivity : AppCompatActivity() {
 
         songAdapter = SongAdapter { song ->
             if (clickDebounce()) {
-                openInformationAboutMusic(song)
                 searchHistory.putSongs(song)
+                openInformationAboutMusic(song.trackId)
                 searchHistoryAdapter.searchHistoryList = searchHistory.getSongs()
                 searchHistoryAdapter.notifyDataSetChanged()
             }
@@ -94,7 +94,7 @@ class SearchActivity : AppCompatActivity() {
 
         searchHistoryAdapter = SearchHistoryAdapter { song ->
             if (clickDebounce()) {
-                openInformationAboutMusic(song)
+                openInformationAboutMusic(song.trackId)
             }
         }.apply {
             searchHistoryList = searchHistory.getSongs()
@@ -264,10 +264,9 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun openInformationAboutMusic(song: Song) {
+    private fun openInformationAboutMusic(songId: Long) {
         val intent = Intent(this, LibraryActivity::class.java).apply {
-            putExtra(MUSIC_TRANSFER_KEY, song)
-            putExtra(FROM_PLAYER_KEY, true)
+            putExtra(TRACK_ID_KEY, songId)
         }
         startActivity(intent)
     }
@@ -293,6 +292,5 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         const val INPUT_TEXT_DEF = ""
         const val INPUT_TEXT_KEY = "INPUT_TEXT_KEY"
-        const val FROM_PLAYER_KEY = "from_player"
     }
 }
