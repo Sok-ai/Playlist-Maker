@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.search
 
 import android.content.Intent
 import android.os.Bundle
@@ -20,18 +20,20 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.network.RetrofitClient
+import com.example.playlistmaker.R
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.domain.api.SearchResult
+import com.example.playlistmaker.domain.model.Song
+import com.example.playlistmaker.ui.library.LibraryActivity
+import com.example.playlistmaker.ui.library.TRACK_ID_KEY
 import com.example.playlistmaker.utils.Debounce
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 private typealias SearchDebounce = Debounce
 private typealias ClickDebounce = Debounce
 
 class SearchActivity : AppCompatActivity() {
 
-    private val songApi = RetrofitClient.trackService
+    private val songInteractor = Creator.provideSongsInteractor()
 
     private lateinit var songAdapter: SongAdapter
     private lateinit var searchHistoryAdapter: SearchHistoryAdapter
@@ -72,8 +74,6 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
-        val sharedPref = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
-        val searchHistory = SearchHistory(sharedPref)
 
         initializationViews()
 
@@ -81,9 +81,9 @@ class SearchActivity : AppCompatActivity() {
 
         songAdapter = SongAdapter { song ->
             if (clickDebounce()) {
-                searchHistory.putSongs(song)
+                songInteractor.addToHistory(song)
                 openInformationAboutMusic(song.trackId)
-                searchHistoryAdapter.searchHistoryList = searchHistory.getSongs()
+                searchHistoryAdapter.searchHistoryList = songInteractor.getHistory()
                 searchHistoryAdapter.notifyDataSetChanged()
             }
         }.apply {
@@ -97,7 +97,7 @@ class SearchActivity : AppCompatActivity() {
                 openInformationAboutMusic(song.trackId)
             }
         }.apply {
-            searchHistoryList = searchHistory.getSongs()
+            searchHistoryList = songInteractor.getHistory()
         }
         recyclerSearchHistory.adapter = searchHistoryAdapter
 
@@ -117,7 +117,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         clearSearchHistory.setOnClickListener {
-            searchHistory.clearSongsFromShared()
+            songInteractor.clearHistory()
             searchHistoryAdapter.searchHistoryList = emptyList()
             searchHistoryAdapter.notifyDataSetChanged()
             showSearchHistory(false)
@@ -196,37 +196,26 @@ class SearchActivity : AppCompatActivity() {
 
     private fun search(input: String) {
         showUiLoadingData()
-        songApi.getSongs(input).enqueue(object : Callback<SongsResponse> {
-            override fun onResponse(
-                call: Call<SongsResponse?>, response: Response<SongsResponse?>
-            ) {
-                clearSearchActivity()
-                when (response.code()) {
-                    200 -> {
-                        if (response.body()?.results?.isNotEmpty() == true) {
-                            songsList.addAll(response.body()?.results!!)
-                            songAdapter.notifyDataSetChanged()
-                        } else {
-                            showEmptyError()
-                        }
-                    }
-
-                    else -> {
-                        saveInputText = searchInput.text.toString()
-                        showNetworkError()
+        songInteractor.searchSongs(input) { result ->
+            clearSearchActivity()
+            when (result) {
+                is SearchResult.Success -> {
+                    if (result.songs.isNotEmpty()) {
+                        songsList.addAll(result.songs)
+                        songAdapter.notifyDataSetChanged()
+                    } else {
+                        showEmptyError()
                     }
                 }
-            }
 
-            override fun onFailure(
-                call: Call<SongsResponse?>, t: Throwable
-            ) {
-                saveInputText = searchInput.text.toString()
-                showNetworkError()
-                t.stackTrace
-            }
+                is SearchResult.Empty -> showEmptyError()
 
-        })
+                is SearchResult.Error -> {
+                    saveInputText = searchInput.text.toString()
+                    showNetworkError()
+                }
+            }
+        }
     }
 
     private fun showEmptyError() {
