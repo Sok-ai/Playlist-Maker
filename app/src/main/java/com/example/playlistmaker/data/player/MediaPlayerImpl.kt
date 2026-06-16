@@ -7,8 +7,7 @@ import com.example.playlistmaker.domain.state.PlayerState.STATE_PAUSED
 import com.example.playlistmaker.domain.state.PlayerState.STATE_PLAYING
 import com.example.playlistmaker.domain.state.PlayerState.STATE_PREPARED
 
-class MediaPlayerImpl : MusicPlayer {
-    private val mediaPlayer = MediaPlayer()
+class MediaPlayerImpl(private val mediaPlayer: MediaPlayer) : MusicPlayer {
     private var playerState = STATE_DEFAULT
     private var onCompletionCallback: (() -> Unit)? = null
 
