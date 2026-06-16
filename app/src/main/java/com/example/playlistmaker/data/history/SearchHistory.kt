@@ -1,9 +1,11 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data.history
 
 import android.content.SharedPreferences
+import com.example.playlistmaker.domain.model.Song
 import com.google.gson.Gson
 
 const val SONG_SEARCH_HISTORY_KEY = "song_history_key"
+const val SONG_LAST_TRACK_KEY = "song_last_track_key"
 
 class SearchHistory(val sharedPreferences: SharedPreferences) {
     fun getSongs(): List<Song> {
@@ -44,10 +46,24 @@ class SearchHistory(val sharedPreferences: SharedPreferences) {
         return Gson().toJson(song)
     }
 
-    fun getSongById(trackIdParam: Long): Song? {
+    fun getSongById(songIdParam: Long): Song? {
         val currentList = getSongs().asSequence()
         return currentList.firstOrNull {
-            it.trackId == trackIdParam
+            it.trackId == songIdParam
+        }
+    }
+
+    fun saveLastTrack(song: Song) {
+        val json = Gson().toJson(song)
+        sharedPreferences.edit().putString(SONG_LAST_TRACK_KEY, json).apply()
+    }
+
+    fun getLastTrack(): Song? {
+        val json = sharedPreferences.getString(SONG_LAST_TRACK_KEY, null)
+        return if (json.isNullOrEmpty()) {
+            null
+        } else {
+            Gson().fromJson(json, Song::class.java)
         }
     }
 }

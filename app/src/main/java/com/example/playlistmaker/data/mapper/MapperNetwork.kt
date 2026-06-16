@@ -1,0 +1,19 @@
+package com.example.playlistmaker.data.mapper
+
+import com.example.playlistmaker.data.dto.SongDto
+import com.example.playlistmaker.domain.model.Song
+
+class MapperNetwork {
+    fun toSong(dto: SongDto) = Song(
+        trackId = dto.trackId,
+        trackName = dto.trackName,
+        artistName = dto.artistName,
+        collectionName = dto.collectionName,
+        releaseDate = dto.releaseDate,
+        primaryGenreName = dto.primaryGenreName,
+        country = dto.country,
+        trackTimeMillis = dto.trackTimeMillis,
+        artworkUrl100 = dto.artworkUrl100,
+        previewUrl = dto.previewUrl
+    )
+}

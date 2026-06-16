@@ -1,6 +1,5 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.library
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -12,17 +11,16 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.player.MediaPlayerImpl
+import com.example.playlistmaker.R
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.domain.model.Song
 import com.example.playlistmaker.utils.PeriodicAction
 import com.google.gson.Gson
 
 const val TRACK_ID_KEY = "track_id_key"
-const val SONG_LIBRARY_KEY = "song_library_key"
 
 class LibraryActivity : AppCompatActivity() {
 
-    private lateinit var sharedPref: SharedPreferences
-    private lateinit var searchHistory: SearchHistory
     private lateinit var buttonBack: ImageButton
     private lateinit var albumMusicImage: ImageView
     private lateinit var nameMusicText: TextView
@@ -37,7 +35,10 @@ class LibraryActivity : AppCompatActivity() {
     private lateinit var genreMusicText: TextView
     private lateinit var countryMusicText: TextView
     private val periodicUpdater = PeriodicAction(500L)
-    private val mediaPlayerImpl = MediaPlayerImpl()
+
+    private val musicPlayer = Creator.provideMusicPlayer()
+    private val songInteractor = Creator.provideSongsInteractor()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,14 +56,14 @@ class LibraryActivity : AppCompatActivity() {
 
         playMusicButton.setOnClickListener {
             when {
-                mediaPlayerImpl.isPlayer() -> {
-                    mediaPlayerImpl.pausePlayer()
+                musicPlayer.isPlayer() -> {
+                    musicPlayer.pausePlayer()
                     playMusicButton.setImageResource(R.drawable.ic_button_start_song)
                     stopUpdatingTime()
                 }
 
-                mediaPlayerImpl.isPreparedOrPause() -> {
-                    mediaPlayerImpl.startPlayer()
+                musicPlayer.isPreparedOrPause() -> {
+                    musicPlayer.startPlayer()
                     playMusicButton.setImageResource(R.drawable.ic_button_pause_song)
                     startUpdatingTime()
                 }
@@ -75,9 +76,6 @@ class LibraryActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        sharedPref = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
-        searchHistory = SearchHistory(sharedPref)
-
         albumMusicImage = findViewById(R.id.albumMusicImage)
         buttonBack = findViewById(R.id.btn_library_to_main)
         nameMusicText = findViewById(R.id.nameMusicText)
@@ -96,7 +94,7 @@ class LibraryActivity : AppCompatActivity() {
     private fun gettingMusic() {
         val songId: Long = intent.getLongExtra(TRACK_ID_KEY, 0)
 
-        val resSong = searchHistory.getSongById(songId)
+        val resSong = songInteractor.getSongById(songId)
 
         if (resSong != null) {
             saveIfNewTrack(resSong)
@@ -107,18 +105,18 @@ class LibraryActivity : AppCompatActivity() {
     }
 
     private fun saveIfNewTrack(song: Song) {
-        val currentSavedJson = sharedPref.getString(SONG_LIBRARY_KEY, "")
+        val lastTrack = songInteractor.getLastTrack()
+        val lastTrackJson = lastTrack?.let { Gson().toJson(it) } ?: ""
         val newSongJson = Gson().toJson(song)
 
-        if (currentSavedJson != newSongJson) {
-            sharedPref.edit().putString(SONG_LIBRARY_KEY, newSongJson).apply()
+        if (lastTrackJson != newSongJson) {
+            songInteractor.saveLastTrack(song)
         }
     }
 
     private fun loadLastTrack() {
-        val savedJson = sharedPref.getString(SONG_LIBRARY_KEY, "")
-        if (savedJson?.isNotEmpty() == true) {
-            val songData = Gson().fromJson(savedJson, Song::class.java)
+        val songData  = songInteractor.getLastTrack()
+        if (songData != null) {
             settingValuesToView(songData)
         } else {
             defaultValueForView()
@@ -142,7 +140,7 @@ class LibraryActivity : AppCompatActivity() {
         countryMusicText.text = songData.country
 
 
-        mediaPlayerImpl.apply {
+        musicPlayer.apply {
             preparePlayer(songData.previewUrl) {
                 playMusicButton.isEnabled = true
             }
@@ -167,8 +165,8 @@ class LibraryActivity : AppCompatActivity() {
 
     private fun startUpdatingTime() {
         periodicUpdater.start {
-            if (mediaPlayerImpl.isPlayer()) {
-                timeToPlayText.text = Song.formatDuration(mediaPlayerImpl.currentPosition())
+            if (musicPlayer.isPlayer()) {
+                timeToPlayText.text = Song.formatDuration(musicPlayer.currentPosition())
             }
         }
     }
@@ -179,8 +177,8 @@ class LibraryActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        if (mediaPlayerImpl.isPlayer()) {
-            mediaPlayerImpl.pausePlayer()
+        if (musicPlayer.isPlayer()) {
+            musicPlayer.pausePlayer()
             playMusicButton.setImageResource(R.drawable.ic_button_start_song)
             stopUpdatingTime()
         }
@@ -188,6 +186,6 @@ class LibraryActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayerImpl.release()
+        musicPlayer.release()
     }
 }

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="?attr/colorPrimary"
     android:fillViewport="true"
-    tools:context=".LibraryActivity">
+    tools:context=".ui.library.LibraryActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
