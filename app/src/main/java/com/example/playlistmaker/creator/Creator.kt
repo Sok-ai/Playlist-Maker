@@ -11,9 +11,11 @@ import com.example.playlistmaker.data.mapper.MapperNetwork
 import com.example.playlistmaker.data.network.RetrofitClient
 import com.example.playlistmaker.data.network.api.SongApi
 import com.example.playlistmaker.data.player.MediaPlayerImpl
+import com.example.playlistmaker.data.repository.ThemeRepositoryImpl
 import com.example.playlistmaker.domain.api.MusicPlayer
 import com.example.playlistmaker.domain.api.SongsInteractor
 import com.example.playlistmaker.domain.api.SongsRepository
+import com.example.playlistmaker.domain.api.ThemeRepository
 import com.example.playlistmaker.domain.impl.SongsInteractorImpl
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -30,6 +32,10 @@ object Creator {
             PLAYLIST_MAKER_PREFERENCES,
             Context.MODE_PRIVATE
         )
+    }
+
+    fun provideThemeRepository(): ThemeRepository {
+        return ThemeRepositoryImpl(getSharedPreferences())
     }
 
     private fun getSearchHistory(): SearchHistory {
