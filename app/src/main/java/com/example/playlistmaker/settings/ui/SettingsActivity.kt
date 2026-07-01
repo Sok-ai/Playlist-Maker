@@ -25,10 +25,20 @@ class SettingsActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
             val navBar = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-            v.updatePadding(top = statusBar.top, bottom = navBar.bottom)
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
+            val totalLeft = systemBars.left + cutout.left
+            val totalRight = systemBars.right + cutout.right
+
+            v.updatePadding(
+                left = v.paddingLeft + totalLeft,
+                top = statusBar.top,
+                right = v.paddingRight + totalRight,
+                bottom = navBar.bottom
+            )
             insets
         }
 
