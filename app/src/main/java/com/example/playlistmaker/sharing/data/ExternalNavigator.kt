@@ -15,6 +15,7 @@ class ExternalNavigator(private val context: Context) : Navigator {
                 Intent.EXTRA_TEXT,
                 link
             )
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         context.startActivity(intentShare)
     }
@@ -34,6 +35,7 @@ class ExternalNavigator(private val context: Context) : Navigator {
                 Intent.EXTRA_TEXT,
                 body
             )
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         context.startActivity(intentSupport)
     }
@@ -41,7 +43,9 @@ class ExternalNavigator(private val context: Context) : Navigator {
     override fun openUrl() {
         val url = context.getString(R.string.course_user_agreement)
         val intentUserAgree =
-            Intent(Intent.ACTION_VIEW, url.toUri())
+            Intent(Intent.ACTION_VIEW, url.toUri()).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
         context.startActivity(intentUserAgree)
     }
 
