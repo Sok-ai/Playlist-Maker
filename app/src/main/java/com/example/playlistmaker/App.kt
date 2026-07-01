@@ -7,7 +7,7 @@ import com.example.playlistmaker.creator.Creator
 const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
 
 class App : Application() {
-    val themeSwitcher = Creator.provideThemeRepository()
+    val themeSwitcher by lazy { Creator.provideThemeRepository() }
     val darkTheme: Boolean
         get() = themeSwitcher.getTheme()
 
