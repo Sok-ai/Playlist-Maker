@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:paddingHorizontal="16dp"
     android:paddingBottom="28dp"
-    tools:context=".ui.main.MainActivity">
+    tools:context=".main.ui.MainActivity">
 
     <TextView
         style="@style/TitleTextStyle"
