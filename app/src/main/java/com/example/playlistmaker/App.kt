@@ -18,7 +18,6 @@ class App : Application() {
     }
 
     fun switchTheme(darkThemeEnable: Boolean) {
-        themeSwitcher.putTheme(darkThemeEnable)
         applyTheme(darkThemeEnable)
     }
 
