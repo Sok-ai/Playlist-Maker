@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.library
+package com.example.playlistmaker.library.ui.activity
 
 import android.os.Bundle
 import android.widget.ImageButton
@@ -13,82 +13,64 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.domain.model.Song
+import com.example.playlistmaker.databinding.ActivityLibraryBinding
+import com.example.playlistmaker.search.domain.model.Song
 import com.example.playlistmaker.utils.PeriodicAction
 import com.google.gson.Gson
 
 const val TRACK_ID_KEY = "track_id_key"
 
 class LibraryActivity : AppCompatActivity() {
-
-    private lateinit var buttonBack: ImageButton
-    private lateinit var albumMusicImage: ImageView
-    private lateinit var nameMusicText: TextView
-    private lateinit var nameAuthorText: TextView
-    private lateinit var addPlayListButton: ImageButton
-    private lateinit var playMusicButton: ImageButton
-    private lateinit var likeMusicButton: ImageButton
-    private lateinit var timeToPlayText: TextView
-    private lateinit var durationMusicText: TextView
-    private lateinit var albumMusicText: TextView
-    private lateinit var yearMusicText: TextView
-    private lateinit var genreMusicText: TextView
-    private lateinit var countryMusicText: TextView
+    private lateinit var binding: ActivityLibraryBinding
     private val periodicUpdater = PeriodicAction(500L)
 
     private val musicPlayer = Creator.provideMusicPlayer()
-    private val songInteractor = Creator.provideSongsInteractor()
+    private val songInteractor = Creator.provideSearchInteractor()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_library)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        binding = ActivityLibraryBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
             val navBar = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-            v.updatePadding(top = statusBar.top, bottom = navBar.bottom)
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
+            val totalLeft = systemBars.left + cutout.left
+            val totalRight = systemBars.right + cutout.right
+
+            v.updatePadding(
+                left = v.paddingLeft + totalLeft,
+                top = statusBar.top,
+                right = v.paddingRight + totalRight,
+                bottom = navBar.bottom
+            )
             insets
         }
 
-        initView()
         gettingMusic()
 
-        playMusicButton.setOnClickListener {
+        binding.playMusicButton.setOnClickListener {
             when {
                 musicPlayer.isPlayer() -> {
                     musicPlayer.pausePlayer()
-                    playMusicButton.setImageResource(R.drawable.ic_button_start_song)
+                    binding.playMusicButton.setImageResource(R.drawable.ic_button_start_song)
                     stopUpdatingTime()
                 }
 
                 musicPlayer.isPreparedOrPause() -> {
                     musicPlayer.startPlayer()
-                    playMusicButton.setImageResource(R.drawable.ic_button_pause_song)
+                    binding.playMusicButton.setImageResource(R.drawable.ic_button_pause_song)
                     startUpdatingTime()
                 }
             }
         }
 
-        buttonBack.setOnClickListener {
+        binding.btnLibraryToMain.setOnClickListener {
             finish()
         }
-    }
-
-    private fun initView() {
-        albumMusicImage = findViewById(R.id.albumMusicImage)
-        buttonBack = findViewById(R.id.btn_library_to_main)
-        nameMusicText = findViewById(R.id.nameMusicText)
-        nameAuthorText = findViewById(R.id.nameAuthorText)
-        addPlayListButton = findViewById(R.id.addPlayListButton)
-        playMusicButton = findViewById(R.id.playMusicButton)
-        likeMusicButton = findViewById(R.id.likeMusicButton)
-        timeToPlayText = findViewById(R.id.timeToPlayText)
-        durationMusicText = findViewById(R.id.durationMusicText)
-        albumMusicText = findViewById(R.id.albumMusicText)
-        yearMusicText = findViewById(R.id.yearMusicText)
-        genreMusicText = findViewById(R.id.genreMusicText)
-        countryMusicText = findViewById(R.id.countryMusicText)
     }
 
     private fun gettingMusic() {
@@ -115,7 +97,7 @@ class LibraryActivity : AppCompatActivity() {
     }
 
     private fun loadLastTrack() {
-        val songData  = songInteractor.getLastTrack()
+        val songData = songInteractor.getLastTrack()
         if (songData != null) {
             settingValuesToView(songData)
         } else {
@@ -127,46 +109,46 @@ class LibraryActivity : AppCompatActivity() {
         Glide.with(applicationContext).load(songData.coverImagePlayer)
             .placeholder(R.drawable.ic_placeholder_312)
             .transform(RoundedCorners(16))
-            .into(albumMusicImage)
+            .into(binding.albumMusicImage)
 
-        nameMusicText.text = songData.trackName
-        nameAuthorText.text = songData.artistName
+        binding.nameMusicText.text = songData.trackName
+        binding.nameAuthorText.text = songData.artistName
 
-        albumMusicText.text = songData.collectionName
-        yearMusicText.text = songData.yearReleaseTrack
+       binding.albumMusicText.text = songData.collectionName
+       binding.yearMusicText.text = songData.yearReleaseTrack
 
-        durationMusicText.text = songData.trackTime
-        genreMusicText.text = songData.primaryGenreName
-        countryMusicText.text = songData.country
+        binding.durationMusicText.text = songData.trackTime
+        binding.genreMusicText.text = songData.primaryGenreName
+        binding.countryMusicText.text = songData.country
 
 
         musicPlayer.apply {
             preparePlayer(songData.previewUrl) {
-                playMusicButton.isEnabled = true
+                binding.playMusicButton.isEnabled = true
             }
             setOnCompletionListener {
-                playMusicButton.setImageResource(R.drawable.ic_button_start_song)
+                binding.playMusicButton.setImageResource(R.drawable.ic_button_start_song)
                 stopUpdatingTime()
-                timeToPlayText.text = Song.formatDuration(0)
+                binding.timeToPlayText.text = Song.formatDuration(0)
             }
         }
     }
 
     private fun defaultValueForView() {
-        nameMusicText.setText(R.string.default_text)
-        nameAuthorText.setText(R.string.default_text)
-        albumMusicText.text = ""
-        yearMusicText.text = ""
-        durationMusicText.text = Song.formatDuration(0)
-        genreMusicText.text = ""
-        countryMusicText.text = ""
+        binding.nameMusicText.setText(R.string.default_text)
+        binding.nameAuthorText.setText(R.string.default_text)
+        binding.albumMusicText.text = ""
+        binding.yearMusicText.text = ""
+        binding.durationMusicText.text = Song.formatDuration(0)
+        binding.genreMusicText.text = ""
+        binding.countryMusicText.text = ""
     }
 
 
     private fun startUpdatingTime() {
         periodicUpdater.start {
             if (musicPlayer.isPlayer()) {
-                timeToPlayText.text = Song.formatDuration(musicPlayer.currentPosition())
+                binding.timeToPlayText.text = Song.formatDuration(musicPlayer.currentPosition())
             }
         }
     }
@@ -179,7 +161,7 @@ class LibraryActivity : AppCompatActivity() {
         super.onPause()
         if (musicPlayer.isPlayer()) {
             musicPlayer.pausePlayer()
-            playMusicButton.setImageResource(R.drawable.ic_button_start_song)
+            binding.playMusicButton.setImageResource(R.drawable.ic_button_start_song)
             stopUpdatingTime()
         }
     }
