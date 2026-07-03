@@ -9,9 +9,9 @@ import com.example.playlistmaker.search.data.impl.SearchNetworkRepositoryImpl
 import com.example.playlistmaker.search.data.mapper.MapperNetwork
 import com.example.playlistmaker.search.data.network.RetrofitClient
 import com.example.playlistmaker.search.data.api.SongApi
-import com.example.playlistmaker.data.player.MediaPlayerImpl
+import com.example.playlistmaker.library.data.impl.MediaPlayerImpl
 import com.example.playlistmaker.settings.data.ThemeRepositoryImpl
-import com.example.playlistmaker.domain.api.MusicPlayer
+import com.example.playlistmaker.library.domain.api.MusicPlayer
 import com.example.playlistmaker.search.data.impl.SearchHistoryRepositoryImpl
 import com.example.playlistmaker.search.data.storage.PrefStorageClient
 import com.example.playlistmaker.search.domain.api.SearchHistoryRepository
