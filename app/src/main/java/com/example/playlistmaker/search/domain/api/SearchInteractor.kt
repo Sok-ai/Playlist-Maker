@@ -1,8 +1,9 @@
-package com.example.playlistmaker.domain.api
+package com.example.playlistmaker.search.domain.api
 
-import com.example.playlistmaker.domain.model.Song
+import com.example.playlistmaker.search.domain.model.SearchResult
+import com.example.playlistmaker.search.domain.model.Song
 
-interface SongsInteractor {
+interface SearchInteractor {
     fun searchSongs(expression: String, consumer: SearchConsumer)
     fun getHistory(): List<Song>
     fun getSongById(id: Long): Song?
