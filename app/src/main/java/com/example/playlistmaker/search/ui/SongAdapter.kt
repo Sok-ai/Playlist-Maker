@@ -2,11 +2,15 @@ package com.example.playlistmaker.search.ui
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.domain.model.Song
+import com.example.playlistmaker.search.domain.model.Song
 
 class SongAdapter(val onSongActionListener: OnSongActionListener? = null) :
     RecyclerView.Adapter<SongViewHolder>() {
-    var songs: MutableList<Song> = mutableListOf()
+    var songs: List<Song> = mutableListOf()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     override fun onCreateViewHolder(
         parent: ViewGroup, viewType: Int
