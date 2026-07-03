@@ -1,7 +1,7 @@
-package com.example.playlistmaker.data.mapper
+package com.example.playlistmaker.search.data.mapper
 
-import com.example.playlistmaker.data.dto.SongDto
-import com.example.playlistmaker.domain.model.Song
+import com.example.playlistmaker.search.domain.model.Song
+import com.example.playlistmaker.search.data.dto.SongDto
 
 class MapperNetwork {
     fun toSong(dto: SongDto) = Song(
