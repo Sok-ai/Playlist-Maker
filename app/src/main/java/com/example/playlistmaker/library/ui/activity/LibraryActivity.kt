@@ -1,32 +1,27 @@
 package com.example.playlistmaker.library.ui.activity
 
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivityLibraryBinding
+import com.example.playlistmaker.library.ui.view_model.LibraryViewModel
 import com.example.playlistmaker.search.domain.model.Song
-import com.example.playlistmaker.utils.PeriodicAction
-import com.google.gson.Gson
+import com.example.playlistmaker.search.domain.model.Song.Companion.formatDuration
 
 const val TRACK_ID_KEY = "track_id_key"
 
 class LibraryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLibraryBinding
-    private val periodicUpdater = PeriodicAction(500L)
-
-    private val musicPlayer = Creator.provideMusicPlayer()
-    private val songInteractor = Creator.provideSearchInteractor()
-
+    private lateinit var viewModel: LibraryViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,22 +45,38 @@ class LibraryActivity : AppCompatActivity() {
             insets
         }
 
-        gettingMusic()
+        val songId = intent.getLongExtra(TRACK_ID_KEY, 0)
+        viewModel =
+            ViewModelProvider(
+                this,
+                LibraryViewModel.getFactory(
+                    Creator.provideMusicPlayer(),
+                    Creator.provideSearchInteractor(),
+                    songId
+                )
+            )[LibraryViewModel::class.java]
+
+        viewModel.observeUiState().observe(this) { uiState ->
+            binding.timeToPlayText.text = formatDuration(uiState.currentPosition)
+            showUi(uiState.isLoading)
+            if (uiState.isReady) {
+                binding.playMusicButton.isEnabled = true
+                uiState.song?.let {
+                    settingValuesToView(it)
+                }
+
+                if (uiState.isPlaying) {
+                    binding.playMusicButton.setImageResource(R.drawable.ic_button_pause_song)
+                } else {
+                    binding.playMusicButton.setImageResource(R.drawable.ic_button_start_song)
+                }
+            } else {
+                defaultValueForView()
+            }
+        }
 
         binding.playMusicButton.setOnClickListener {
-            when {
-                musicPlayer.isPlayer() -> {
-                    musicPlayer.pausePlayer()
-                    binding.playMusicButton.setImageResource(R.drawable.ic_button_start_song)
-                    stopUpdatingTime()
-                }
-
-                musicPlayer.isPreparedOrPause() -> {
-                    musicPlayer.startPlayer()
-                    binding.playMusicButton.setImageResource(R.drawable.ic_button_pause_song)
-                    startUpdatingTime()
-                }
-            }
+            viewModel.onClickPlayer()
         }
 
         binding.btnLibraryToMain.setOnClickListener {
@@ -73,35 +84,17 @@ class LibraryActivity : AppCompatActivity() {
         }
     }
 
-    private fun gettingMusic() {
-        val songId: Long = intent.getLongExtra(TRACK_ID_KEY, 0)
-
-        val resSong = songInteractor.getSongById(songId)
-
-        if (resSong != null) {
-            saveIfNewTrack(resSong)
-            settingValuesToView(resSong)
+    private fun showUi(isLoading: Boolean) {
+        if (isLoading) {
+            with(binding) {
+                progressBarSong.visibility = View.VISIBLE
+                contentGroup.visibility = View.GONE
+            }
         } else {
-            loadLastTrack()
-        }
-    }
-
-    private fun saveIfNewTrack(song: Song) {
-        val lastTrack = songInteractor.getLastTrack()
-        val lastTrackJson = lastTrack?.let { Gson().toJson(it) } ?: ""
-        val newSongJson = Gson().toJson(song)
-
-        if (lastTrackJson != newSongJson) {
-            songInteractor.saveLastTrack(song)
-        }
-    }
-
-    private fun loadLastTrack() {
-        val songData = songInteractor.getLastTrack()
-        if (songData != null) {
-            settingValuesToView(songData)
-        } else {
-            defaultValueForView()
+            with(binding) {
+                progressBarSong.visibility = View.GONE
+                contentGroup.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -114,24 +107,12 @@ class LibraryActivity : AppCompatActivity() {
         binding.nameMusicText.text = songData.trackName
         binding.nameAuthorText.text = songData.artistName
 
-       binding.albumMusicText.text = songData.collectionName
-       binding.yearMusicText.text = songData.yearReleaseTrack
+        binding.albumMusicText.text = songData.collectionName
+        binding.yearMusicText.text = songData.yearReleaseTrack
 
         binding.durationMusicText.text = songData.trackTime
         binding.genreMusicText.text = songData.primaryGenreName
         binding.countryMusicText.text = songData.country
-
-
-        musicPlayer.apply {
-            preparePlayer(songData.previewUrl) {
-                binding.playMusicButton.isEnabled = true
-            }
-            setOnCompletionListener {
-                binding.playMusicButton.setImageResource(R.drawable.ic_button_start_song)
-                stopUpdatingTime()
-                binding.timeToPlayText.text = Song.formatDuration(0)
-            }
-        }
     }
 
     private fun defaultValueForView() {
@@ -139,35 +120,15 @@ class LibraryActivity : AppCompatActivity() {
         binding.nameAuthorText.setText(R.string.default_text)
         binding.albumMusicText.text = ""
         binding.yearMusicText.text = ""
-        binding.durationMusicText.text = Song.formatDuration(0)
+        binding.durationMusicText.text = formatDuration(0)
         binding.genreMusicText.text = ""
         binding.countryMusicText.text = ""
-    }
-
-
-    private fun startUpdatingTime() {
-        periodicUpdater.start {
-            if (musicPlayer.isPlayer()) {
-                binding.timeToPlayText.text = Song.formatDuration(musicPlayer.currentPosition())
-            }
-        }
-    }
-
-    private fun stopUpdatingTime() {
-        periodicUpdater.stop()
+        binding.playMusicButton.isEnabled = false
+        binding.playMusicButton.setImageResource(R.drawable.ic_button_start_song)
     }
 
     override fun onPause() {
         super.onPause()
-        if (musicPlayer.isPlayer()) {
-            musicPlayer.pausePlayer()
-            binding.playMusicButton.setImageResource(R.drawable.ic_button_start_song)
-            stopUpdatingTime()
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        musicPlayer.release()
+        viewModel.onPause()
     }
 }
