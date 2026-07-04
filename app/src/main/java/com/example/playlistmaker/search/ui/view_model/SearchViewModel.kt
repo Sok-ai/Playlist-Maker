@@ -12,6 +12,7 @@ import com.example.playlistmaker.search.domain.model.SearchResult.*
 import com.example.playlistmaker.search.domain.model.Song
 import com.example.playlistmaker.utils.Debounce
 import com.example.playlistmaker.utils.SingleLiveEvent
+import java.util.concurrent.Executors
 
 private typealias SearchDebounce = Debounce
 private typealias ClickDebounce = Debounce
@@ -19,6 +20,8 @@ private typealias ClickDebounce = Debounce
 class SearchViewModel(private val interactor: SearchInteractor) : ViewModel() {
     private val searchDebounce = SearchDebounce(2000)
     private val clickDebounce = ClickDebounce(500)
+
+    private val executer = Executors.newCachedThreadPool()
 
     private val _searchHistory = MutableLiveData(interactor.getHistory())
     fun observeHistory(): LiveData<List<Song>> = _searchHistory
@@ -97,24 +100,25 @@ class SearchViewModel(private val interactor: SearchInteractor) : ViewModel() {
     fun searchSongs(input: String) {
         if (input.isNotEmpty()) {
             stateSetup(Loading)
-
-            interactor.searchSongs(input) { result ->
-                when (result) {
-                    is Success -> {
-                        if (result.songs.isNotEmpty()) {
-                            _songsList.postValue(result.songs)
-                            stateSetup(Success(result.songs))
-                        } else {
-                            stateSetup(Empty)
+            executer.execute {
+                interactor.searchSongs(input) { result ->
+                    when (result) {
+                        is Success -> {
+                            if (result.songs.isNotEmpty()) {
+                                _songsList.postValue(result.songs)
+                                stateSetup(Success(result.songs))
+                            } else {
+                                stateSetup(Empty)
+                            }
                         }
-                    }
 
-                    is Empty -> stateSetup(Empty)
-                    is Error -> {
-                        stateSetup(Error)
-                    }
+                        is Empty -> stateSetup(Empty)
+                        is Error -> {
+                            stateSetup(Error)
+                        }
 
-                    Loading -> {}
+                        Loading -> {}
+                    }
                 }
             }
         }
