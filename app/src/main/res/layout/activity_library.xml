@@ -167,7 +167,7 @@
             android:layout_height="wrap_content"
             android:gravity="end"
             android:paddingTop="30dp"
-            android:text="00:00"
+            android:text="@string/default_full_duration"
             app:layout_constraintEnd_toStartOf="@+id/right_info_guideline"
             app:layout_constraintTop_toBottomOf="@+id/timeToPlayText"
             tools:text="5:35" />
