@@ -2,7 +2,7 @@ package com.example.playlistmaker.library.data.impl
 
 import android.media.MediaPlayer
 import com.example.playlistmaker.library.domain.api.MusicPlayer
-import com.example.playlistmaker.library.domain.model.PlayerState
+import com.example.playlistmaker.library.data.model.PlayerState
 
 class MediaPlayerImpl(private val mediaPlayer: MediaPlayer) : MusicPlayer {
     private var playerState = PlayerState.STATE_DEFAULT

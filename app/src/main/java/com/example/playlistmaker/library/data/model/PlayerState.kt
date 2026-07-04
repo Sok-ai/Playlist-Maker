@@ -1,4 +1,4 @@
-package com.example.playlistmaker.library.domain.model
+package com.example.playlistmaker.library.data.model
 
 enum class PlayerState {
     STATE_DEFAULT,
