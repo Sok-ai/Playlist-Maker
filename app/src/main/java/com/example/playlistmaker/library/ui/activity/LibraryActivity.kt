@@ -16,6 +16,7 @@ import com.example.playlistmaker.databinding.ActivityLibraryBinding
 import com.example.playlistmaker.library.ui.view_model.LibraryViewModel
 import com.example.playlistmaker.search.domain.model.Song
 import com.example.playlistmaker.search.domain.model.Song.Companion.formatDuration
+import com.example.playlistmaker.utils.dpToPx
 
 const val TRACK_ID_KEY = "track_id_key"
 
@@ -70,8 +71,6 @@ class LibraryActivity : AppCompatActivity() {
                 } else {
                     binding.playMusicButton.setImageResource(R.drawable.ic_button_start_song)
                 }
-            } else {
-                defaultValueForView()
             }
         }
 
@@ -99,9 +98,10 @@ class LibraryActivity : AppCompatActivity() {
     }
 
     private fun settingValuesToView(songData: Song) {
+        val radius = dpToPx(16f)
         Glide.with(applicationContext).load(songData.coverImagePlayer)
             .placeholder(R.drawable.ic_placeholder_312)
-            .transform(RoundedCorners(16))
+            .transform(RoundedCorners(radius))
             .into(binding.albumMusicImage)
 
         binding.nameMusicText.text = songData.trackName
@@ -113,18 +113,6 @@ class LibraryActivity : AppCompatActivity() {
         binding.durationMusicText.text = songData.trackTime
         binding.genreMusicText.text = songData.primaryGenreName
         binding.countryMusicText.text = songData.country
-    }
-
-    private fun defaultValueForView() {
-        binding.nameMusicText.setText(R.string.default_text)
-        binding.nameAuthorText.setText(R.string.default_text)
-        binding.albumMusicText.text = ""
-        binding.yearMusicText.text = ""
-        binding.durationMusicText.text = formatDuration(0)
-        binding.genreMusicText.text = ""
-        binding.countryMusicText.text = ""
-        binding.playMusicButton.isEnabled = false
-        binding.playMusicButton.setImageResource(R.drawable.ic_button_start_song)
     }
 
     override fun onPause() {
