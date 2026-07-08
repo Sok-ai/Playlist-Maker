@@ -4,21 +4,33 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.media.MediaPlayer
 import com.example.playlistmaker.PLAYLIST_MAKER_PREFERENCES
-import com.example.playlistmaker.data.NetworkClient
-import com.example.playlistmaker.data.repository.SongsRepositoryImpl
-import com.example.playlistmaker.data.history.SearchHistory
-import com.example.playlistmaker.data.mapper.MapperNetwork
-import com.example.playlistmaker.data.network.RetrofitClient
-import com.example.playlistmaker.data.network.api.SongApi
-import com.example.playlistmaker.data.player.MediaPlayerImpl
-import com.example.playlistmaker.data.repository.ThemeRepositoryImpl
-import com.example.playlistmaker.domain.api.MusicPlayer
-import com.example.playlistmaker.domain.api.SongsInteractor
-import com.example.playlistmaker.domain.api.SongsRepository
-import com.example.playlistmaker.domain.api.ThemeRepository
-import com.example.playlistmaker.domain.impl.SongsInteractorImpl
+import com.example.playlistmaker.search.data.NetworkClient
+import com.example.playlistmaker.search.data.impl.SearchNetworkRepositoryImpl
+import com.example.playlistmaker.search.data.mapper.MapperNetwork
+import com.example.playlistmaker.search.data.network.RetrofitClient
+import com.example.playlistmaker.search.data.api.SongApi
+import com.example.playlistmaker.library.data.impl.MediaPlayerImpl
+import com.example.playlistmaker.settings.data.ThemeRepositoryImpl
+import com.example.playlistmaker.library.domain.api.MusicPlayer
+import com.example.playlistmaker.search.data.impl.SearchHistoryRepositoryImpl
+import com.example.playlistmaker.search.data.storage.PrefStorageClient
+import com.example.playlistmaker.search.domain.api.SearchHistoryRepository
+import com.example.playlistmaker.search.domain.api.SearchInteractor
+import com.example.playlistmaker.search.domain.api.SearchRepository
+import com.example.playlistmaker.settings.domain.api.ThemeRepository
+import com.example.playlistmaker.search.domain.impl.SearchInteractorImpl
+import com.example.playlistmaker.search.domain.model.Song
+import com.example.playlistmaker.settings.domain.api.ThemeInteractor
+import com.example.playlistmaker.settings.domain.impl.ThemeInteractorImpl
+import com.example.playlistmaker.sharing.data.ExternalNavigator
+import com.example.playlistmaker.sharing.domain.api.Navigator
+import com.example.playlistmaker.sharing.domain.api.SharingInteractor
+import com.example.playlistmaker.sharing.domain.impl.SharingInteractorImpl
+import com.google.gson.reflect.TypeToken
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+
+private const val SONG_SEARCH_HISTORY_KEY = "song_history_key"
 
 object Creator {
     private lateinit var appContext: Context
@@ -34,12 +46,31 @@ object Creator {
         )
     }
 
+    private fun getNavigator(): Navigator {
+        return ExternalNavigator(appContext)
+    }
+
     fun provideThemeRepository(): ThemeRepository {
         return ThemeRepositoryImpl(getSharedPreferences())
     }
 
-    private fun getSearchHistory(): SearchHistory {
-        return SearchHistory(getSharedPreferences())
+    fun provideSharingInteractor(): SharingInteractor {
+        return SharingInteractorImpl(getNavigator())
+    }
+
+    fun provideThemeInteractor(): ThemeInteractor {
+        return ThemeInteractorImpl(provideThemeRepository())
+    }
+
+    private fun getSearchHistoryRepository(): SearchHistoryRepository {
+        return SearchHistoryRepositoryImpl(
+            PrefStorageClient(
+                appContext,
+                SONG_SEARCH_HISTORY_KEY,
+                object : TypeToken<List<Song>>() {}.type
+            ),
+            getSharedPreferences()
+        )
     }
 
     private fun provideRetrofitService(): SongApi {
@@ -51,19 +82,18 @@ object Creator {
     }
 
     private fun provideNetworkClient(): NetworkClient {
-        return RetrofitClient(provideRetrofitService())
+        return RetrofitClient(appContext, provideRetrofitService())
     }
 
-    private fun getSongsRepository(): SongsRepository {
-        return SongsRepositoryImpl(
+    private fun getSearchNetworkRepository(): SearchRepository {
+        return SearchNetworkRepositoryImpl(
             provideNetworkClient(),
-            getSearchHistory(),
             MapperNetwork()
         )
     }
 
-    fun provideSongsInteractor(): SongsInteractor {
-        return SongsInteractorImpl(getSongsRepository())
+    fun provideSearchInteractor(): SearchInteractor {
+        return SearchInteractorImpl(getSearchNetworkRepository(), getSearchHistoryRepository())
     }
 
     private fun provideMediaPlayer(): MediaPlayer {
@@ -73,4 +103,5 @@ object Creator {
     fun provideMusicPlayer(): MusicPlayer {
         return MediaPlayerImpl(provideMediaPlayer())
     }
+
 }
