@@ -3,9 +3,9 @@ package com.example.playlistmaker.search.domain.impl
 import com.example.playlistmaker.search.domain.api.SearchHistoryRepository
 import com.example.playlistmaker.search.domain.model.Song
 import com.example.playlistmaker.search.domain.api.SearchInteractor
-import com.example.playlistmaker.search.domain.api.SearchRepository
+import com.example.playlistmaker.search.domain.api.SearchNetworkRepository
 class SearchInteractorImpl(
-    private val searchRepository: SearchRepository,
+    private val searchRepository: SearchNetworkRepository,
     private val historyRepository: SearchHistoryRepository
 ) : SearchInteractor {
     override fun searchSongs(
