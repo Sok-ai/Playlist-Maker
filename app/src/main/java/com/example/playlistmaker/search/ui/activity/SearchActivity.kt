@@ -11,9 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.search.domain.model.SearchResult
 import com.example.playlistmaker.search.ui.SearchHistoryAdapter
@@ -21,12 +19,13 @@ import com.example.playlistmaker.search.ui.SongAdapter
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import com.example.playlistmaker.library.ui.activity.LibraryActivity
 import com.example.playlistmaker.library.ui.activity.TRACK_ID_KEY
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
 
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel: SearchViewModel by viewModel<SearchViewModel>()
 
     private lateinit var songAdapter: SongAdapter
     private lateinit var searchHistoryAdapter: SearchHistoryAdapter
@@ -54,12 +53,6 @@ class SearchActivity : AppCompatActivity() {
             )
             insets
         }
-
-        viewModel =
-            ViewModelProvider(
-                this,
-                SearchViewModel.getFactory(Creator.provideSearchInteractor())
-            )[SearchViewModel::class.java]
 
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
 
