@@ -3,9 +3,6 @@ package com.example.playlistmaker.library.ui.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.library.domain.api.MusicPlayer
 import com.example.playlistmaker.library.domain.model.PlayerUiState
 import com.example.playlistmaker.search.domain.api.SearchInteractor
@@ -124,18 +121,6 @@ class LibraryViewModel(
             _uiState.value = _uiState.value?.copy(isPlaying = false)
             musicPlayer.pausePlayer()
             stopUpdatingTime()
-        }
-    }
-
-    companion object {
-        fun getFactory(
-            musicPlayer: MusicPlayer,
-            searchInteractor: SearchInteractor,
-            songId: Long
-        ): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                LibraryViewModel(musicPlayer, searchInteractor, songId)
-            }
         }
     }
 }

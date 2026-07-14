@@ -2,7 +2,7 @@ package com.example.playlistmaker.search.domain.api
 
 import com.example.playlistmaker.search.domain.model.SearchResult
 
-interface SearchRepository {
+interface SearchNetworkRepository {
     fun searchSongs(expression: String): SearchResult
 
 }

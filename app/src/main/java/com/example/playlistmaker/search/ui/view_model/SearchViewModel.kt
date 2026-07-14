@@ -3,9 +3,6 @@ package com.example.playlistmaker.search.ui.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.search.domain.model.SearchResult
 import com.example.playlistmaker.search.domain.api.SearchInteractor
 import com.example.playlistmaker.search.domain.model.SearchResult.*
@@ -132,14 +129,5 @@ class SearchViewModel(private val interactor: SearchInteractor) : ViewModel() {
         super.onCleared()
         clickDebounce.cancel()
         searchDebounce.cancel()
-    }
-
-    companion object {
-        fun getFactory(searchInteractor: SearchInteractor): ViewModelProvider.Factory =
-            viewModelFactory {
-                initializer {
-                    SearchViewModel(searchInteractor)
-                }
-            }
     }
 }
