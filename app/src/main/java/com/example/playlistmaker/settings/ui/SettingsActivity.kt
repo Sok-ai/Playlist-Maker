@@ -6,19 +6,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.App
-import com.example.playlistmaker.R
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.example.playlistmaker.settings.ui.view_model.SettingsViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
-    private lateinit var viewModel: SettingsViewModel
-    private val themeInteractor = Creator.provideThemeInteractor()
-    private val sharingInteractor = Creator.provideSharingInteractor()
+    private val viewModel: SettingsViewModel by viewModel<SettingsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,14 +37,6 @@ class SettingsActivity : AppCompatActivity() {
             )
             insets
         }
-
-        viewModel = ViewModelProvider(
-            this,
-            SettingsViewModel.getFactory(
-                themeInteractor,
-                sharingInteractor
-            )
-        )[SettingsViewModel::class.java]
 
         viewModel.observeTheme().observe(this) { isDark ->
             binding.themeSwitcher.isChecked = isDark
