@@ -7,22 +7,25 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivityLibraryBinding
 import com.example.playlistmaker.library.ui.view_model.LibraryViewModel
 import com.example.playlistmaker.search.domain.model.Song
 import com.example.playlistmaker.search.domain.model.Song.Companion.formatDuration
 import com.example.playlistmaker.utils.dpToPx
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 const val TRACK_ID_KEY = "track_id_key"
 
 class LibraryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLibraryBinding
-    private lateinit var viewModel: LibraryViewModel
+    private val trackId by lazy(LazyThreadSafetyMode.NONE) {
+        intent.getLongExtra(TRACK_ID_KEY, 0)
+    }
+    private val viewModel: LibraryViewModel by viewModel<LibraryViewModel> { parametersOf(trackId) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,17 +48,6 @@ class LibraryActivity : AppCompatActivity() {
             )
             insets
         }
-
-        val songId = intent.getLongExtra(TRACK_ID_KEY, 0)
-        viewModel =
-            ViewModelProvider(
-                this,
-                LibraryViewModel.getFactory(
-                    Creator.provideMusicPlayer(),
-                    Creator.provideSearchInteractor(),
-                    songId
-                )
-            )[LibraryViewModel::class.java]
 
         viewModel.observeUiState().observe(this) { uiState ->
             binding.timeToPlayText.text = formatDuration(uiState.currentPosition)
