@@ -5,12 +5,12 @@ import com.example.playlistmaker.search.data.dto.SongSearchRequest
 import com.example.playlistmaker.search.data.dto.SongsSearchResponse
 import com.example.playlistmaker.search.data.mapper.MapperNetwork
 import com.example.playlistmaker.search.domain.model.SearchResult
-import com.example.playlistmaker.search.domain.api.SearchRepository
+import com.example.playlistmaker.search.domain.api.SearchNetworkRepository
 
 class SearchNetworkRepositoryImpl(
     private val networkClient: NetworkClient,
     private val mapper: MapperNetwork
-) : SearchRepository {
+) : SearchNetworkRepository {
     override fun searchSongs(expression: String): SearchResult {
         val response = networkClient.doRequest(SongSearchRequest(expression))
         return when (response.resultCode) {
