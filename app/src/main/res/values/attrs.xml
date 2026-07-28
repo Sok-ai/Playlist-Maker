@@ -3,4 +3,6 @@
     <attr name="textColorInfo" format="color" />
     <attr name="buttonInverseBackground" format="color" />
     <attr name="buttonInverseTextColor" format="color" />
+
+    <attr name="myTabIndicatorColor" format="color" />
 </resources>
