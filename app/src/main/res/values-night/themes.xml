@@ -12,5 +12,7 @@
         <item name="textColorInfo">@color/YP_White</item>
         <item name="buttonInverseBackground">@color/YP_White</item>
         <item name="buttonInverseTextColor">@color/YP_Black</item>
+
+        <item name="myTabIndicatorColor">@color/YP_White</item>
     </style>
 </resources>
