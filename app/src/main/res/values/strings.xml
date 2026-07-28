@@ -39,5 +39,13 @@
     <string name="default_duration">00:30</string>
     <string name="default_full_duration">00:00</string>
 
+    <!--  Media  -->
+    <string name="media_name_page">Медиатека</string>
+    <string name="media_name_tag_favorites">Избранные треки</string>
+    <string name="media_text_error_favorites">Ваша медиатека пуста</string>
+    <string name="media_name_tag_playlists">Плейлисты</string>
+    <string name="media_text_error_playlists">Вы не создали\n ни одного плейлиста</string>
+    <string name="media_btn_text_playlists">Новый плейлист</string>
+
 
 </resources>
