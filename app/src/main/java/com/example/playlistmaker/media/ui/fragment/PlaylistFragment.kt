@@ -30,9 +30,6 @@ class PlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
     companion object {
         fun newInstance() =
             PlaylistFragment().apply {
-//                arguments = Bundle().apply {
-//
-//                }
             }
     }
 }

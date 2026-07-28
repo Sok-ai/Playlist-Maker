@@ -25,8 +25,6 @@ class FavoriteFragment : BindingFragment<FragmentFavoriteBinding>() {
     companion object {
         fun newInstance() =
             FavoriteFragment().apply {
-//                arguments = Bundle().apply {
-//                }
             }
     }
 }
