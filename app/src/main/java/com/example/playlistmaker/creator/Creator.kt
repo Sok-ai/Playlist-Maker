@@ -3,6 +3,7 @@ package com.example.playlistmaker.creator
 import com.example.playlistmaker.core.appModule
 import com.example.playlistmaker.library.di.libraryModule
 import com.example.playlistmaker.library.di.libraryViewModelModule
+import com.example.playlistmaker.media.di.mediaViewModelModule
 import com.example.playlistmaker.search.di.searchDataModule
 import com.example.playlistmaker.search.di.searchDomainModule
 import com.example.playlistmaker.search.di.searchViewModelModule
@@ -26,7 +27,8 @@ object Creator {
             settingDomainModule,
             settingViewModelModule,
             sharingDomainModule,
-            sharingDataModule
+            sharingDataModule,
+            mediaViewModelModule
         )
     }
 }
