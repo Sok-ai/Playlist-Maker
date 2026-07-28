@@ -40,9 +40,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:layout_marginBottom="24dp"
-        app:tabIndicatorGravity="center"
+        app:tabBackground="?attr/myTabBackground"
         app:tabIndicatorColor="?attr/myTabIndicatorColor"
+        app:tabSelectedTextColor="?attr/colorOnPrimary"
         app:tabTextAppearance="@style/TabTextAppearance" />
 
     <androidx.viewpager2.widget.ViewPager2
