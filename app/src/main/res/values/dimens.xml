@@ -23,6 +23,9 @@
 
     <dimen name="text_tab_size">14sp</dimen>
 
+    <dimen name="text_bottom_nav_size">12sp</dimen>
+
+
     <!-- Радиусы -->
     <dimen name="radius_xlarge">54dp</dimen>
     <dimen name="radius_large">16dp</dimen>
