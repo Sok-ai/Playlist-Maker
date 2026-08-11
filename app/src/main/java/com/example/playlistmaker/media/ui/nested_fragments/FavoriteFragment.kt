@@ -1,11 +1,11 @@
-package com.example.playlistmaker.media.ui.fragment
+package com.example.playlistmaker.media.ui.nested_fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.playlistmaker.core.BindingFragment
 import com.example.playlistmaker.databinding.FragmentFavoriteBinding
-import com.example.playlistmaker.media.ui.BindingFragment
 import com.example.playlistmaker.media.ui.view_model.FavoriteViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
