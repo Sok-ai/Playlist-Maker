@@ -1,53 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorSecondary"
-    android:orientation="vertical"
-    android:paddingHorizontal="16dp"
-    android:paddingBottom="28dp"
     tools:context=".main.ui.MainActivity">
 
-    <TextView
-        style="@style/TitleTextStyle"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph="@navigation/nav_graph"
+        tools:name="com.example.playlistmaker.search.ui.SearchFragment" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/app_name"
-        android:textColor="?attr/colorOnSecondary" />
-
-    <Button
-        android:id="@+id/btn_search"
-        style="@style/SecondaryButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="24dp"
-        android:layout_weight="1"
-        android:text="@string/main_btn_search"
-        app:icon="@drawable/ic_search"
-        tools:ignore="TextViewEdits" />
-
-    <Button
-        android:id="@+id/btn_library"
-        style="@style/SecondaryButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:layout_weight="1"
-        android:text="@string/main_btn_library"
-        app:icon="@drawable/ic_library"
-        tools:ignore="TextViewEdits" />
-
-    <Button
-        android:id="@+id/btn_settings"
-        style="@style/SecondaryButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:layout_weight="1"
-        android:text="@string/main_btn_settings"
-        app:icon="@drawable/ic_settings"
-        tools:ignore="TextViewEdits" />
-</LinearLayout>
+        app:itemIconTint="@color/bottom_navigation_checked"
+        app:itemTextAppearanceActive="@style/myBottomNavStyle"
+        app:itemTextAppearanceInactive="@style/myBottomNavStyle"
+        app:itemTextColor="@color/bottom_navigation_checked"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_navigation_menu" />
+</androidx.constraintlayout.widget.ConstraintLayout>
