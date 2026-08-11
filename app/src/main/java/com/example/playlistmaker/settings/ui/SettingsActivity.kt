@@ -1,46 +1,30 @@
 package com.example.playlistmaker.settings.ui
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.example.playlistmaker.App
+import com.example.playlistmaker.core.BindingFragment
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.example.playlistmaker.settings.ui.view_model.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : BindingFragment<ActivitySettingsBinding>() {
 
-    private lateinit var binding: ActivitySettingsBinding
     private val viewModel: SettingsViewModel by viewModel<SettingsViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            val navBar = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
-            val totalLeft = systemBars.left + cutout.left
-            val totalRight = systemBars.right + cutout.right
+    override fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): ActivitySettingsBinding = ActivitySettingsBinding.inflate(inflater, container, false)
 
-            v.updatePadding(
-                left = v.paddingLeft + totalLeft,
-                top = statusBar.top,
-                right = v.paddingRight + totalRight,
-                bottom = navBar.bottom
-            )
-            insets
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        viewModel.observeTheme().observe(this) { isDark ->
+        viewModel.observeTheme().observe(viewLifecycleOwner) { isDark ->
             binding.themeSwitcher.isChecked = isDark
-            (applicationContext as App).switchTheme(isDark)
+            (requireContext() as App).switchTheme(isDark)
         }
 
         binding.settingShare.setOnClickListener {
@@ -53,10 +37,6 @@ class SettingsActivity : AppCompatActivity() {
 
         binding.settingUserAgreement.setOnClickListener {
             viewModel.openOffer()
-        }
-
-        binding.btnSettingsToMain.setOnClickListener {
-            finish()
         }
 
         binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
