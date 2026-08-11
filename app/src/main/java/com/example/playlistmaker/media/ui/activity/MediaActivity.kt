@@ -1,43 +1,28 @@
 package com.example.playlistmaker.media.ui.activity
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.example.playlistmaker.R
+import com.example.playlistmaker.core.BindingFragment
 import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.media.ui.MediaPageAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 
-class MediaActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMediaBinding
+class MediaActivity : BindingFragment<ActivityMediaBinding>() {
     private lateinit var tabLayoutMediator: TabLayoutMediator
     private lateinit var pageAdapter: MediaPageAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivityMediaBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            val navBar = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
-            val totalLeft = systemBars.left + cutout.left
-            val totalRight = systemBars.right + cutout.right
+    override fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): ActivityMediaBinding = ActivityMediaBinding.inflate(inflater, container, false)
 
-            v.updatePadding(
-                left = v.paddingLeft + totalLeft,
-                top = statusBar.top,
-                right = v.paddingRight + totalRight,
-                bottom = navBar.bottom
-            )
-            insets
-        }
-        pageAdapter = MediaPageAdapter(supportFragmentManager, lifecycle)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        pageAdapter = MediaPageAdapter(childFragmentManager, lifecycle)
         binding.pages.adapter = pageAdapter
 
         tabLayoutMediator = TabLayoutMediator(binding.tabLayout, binding.pages) { tab, position ->
@@ -48,10 +33,6 @@ class MediaActivity : AppCompatActivity() {
         }
 
         tabLayoutMediator.attach()
-
-        binding.btnMediaToMain.setOnClickListener {
-            finish()
-        }
     }
 
     override fun onDestroy() {
