@@ -7,8 +7,7 @@
     android:background="?attr/colorPrimary"
     android:orientation="vertical"
     android:paddingTop="14dp"
-    tools:context=".settings.ui.SettingsActivity">
-
+    tools:context=".settings.ui.SettingsFragment">
 
     <TextView
         style="@style/TitleTextStyle"

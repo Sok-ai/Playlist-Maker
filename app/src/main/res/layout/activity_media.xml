@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:paddingHorizontal="16dp"
     android:paddingTop="14dp"
-    tools:context=".media.ui.activity.MediaActivity">
+    tools:context=".media.ui.MediaFragment">
 
     <TextView
         style="@style/TitleTextStyle"
