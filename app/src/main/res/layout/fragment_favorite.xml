@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="?attr/colorPrimary"
     android:orientation="vertical"
-    tools:context=".media.ui.fragment.FavoriteFragment">
+    tools:context=".media.ui.nested_fragments.FavoriteFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_favorites"
