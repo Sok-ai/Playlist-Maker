@@ -1,4 +1,4 @@
-package com.example.playlistmaker.media.ui.activity
+package com.example.playlistmaker.media.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,10 +7,9 @@ import android.view.ViewGroup
 import com.example.playlistmaker.R
 import com.example.playlistmaker.core.BindingFragment
 import com.example.playlistmaker.databinding.ActivityMediaBinding
-import com.example.playlistmaker.media.ui.MediaPageAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 
-class MediaActivity : BindingFragment<ActivityMediaBinding>() {
+class MediaFragment : BindingFragment<ActivityMediaBinding>() {
     private lateinit var tabLayoutMediator: TabLayoutMediator
     private lateinit var pageAdapter: MediaPageAdapter
 
