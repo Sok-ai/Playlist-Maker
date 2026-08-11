@@ -10,7 +10,7 @@ import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.example.playlistmaker.settings.ui.view_model.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : BindingFragment<ActivitySettingsBinding>() {
+class SettingsFragment : BindingFragment<ActivitySettingsBinding>() {
 
     private val viewModel: SettingsViewModel by viewModel<SettingsViewModel>()
 
@@ -24,7 +24,7 @@ class SettingsActivity : BindingFragment<ActivitySettingsBinding>() {
 
         viewModel.observeTheme().observe(viewLifecycleOwner) { isDark ->
             binding.themeSwitcher.isChecked = isDark
-            (requireContext() as App).switchTheme(isDark)
+            (requireContext().applicationContext as App).switchTheme(isDark)
         }
 
         binding.settingShare.setOnClickListener {
