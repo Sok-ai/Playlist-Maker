@@ -1,30 +1,23 @@
-package com.example.playlistmaker.search.ui.activity
+package com.example.playlistmaker.search.ui
 
-import android.content.Intent
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import androidx.core.widget.doOnTextChanged
+import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
+import com.example.playlistmaker.core.BindingFragment
 import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.library.ui.activity.LibraryFragment
 import com.example.playlistmaker.search.domain.model.SearchResult
-import com.example.playlistmaker.search.ui.SearchHistoryAdapter
-import com.example.playlistmaker.search.ui.SongAdapter
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
-import com.example.playlistmaker.library.ui.activity.LibraryActivity
-import com.example.playlistmaker.library.ui.activity.TRACK_ID_KEY
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivitySearchBinding
-
+class SearchFragment : BindingFragment<ActivitySearchBinding>() {
     private val viewModel: SearchViewModel by viewModel<SearchViewModel>()
 
     private lateinit var songAdapter: SongAdapter
@@ -32,37 +25,24 @@ class SearchActivity : AppCompatActivity() {
     private var saveInputText = ""
     private var inputText = INPUT_TEXT_DEF
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            val navBar = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
-            val totalLeft = systemBars.left + cutout.left
-            val totalRight = systemBars.right + cutout.right
+    override fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): ActivitySearchBinding = ActivitySearchBinding.inflate(inflater, container, false)
 
-            v.updatePadding(
-                left = v.paddingLeft + totalLeft,
-                top = statusBar.top,
-                right = v.paddingRight + totalRight,
-                bottom = navBar.bottom
-            )
-            insets
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+        val inputMethodManager =
+            requireContext().getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
 
         binding.inputEditText.setText(inputText)
 
-        viewModel.observeStateNetwork().observe(this) {
+        viewModel.observeStateNetwork().observe(viewLifecycleOwner) {
             render(it)
         }
 
-        viewModel.observeNavigationToPlayer().observe(this) {
+        viewModel.observeNavigationToPlayer().observe(viewLifecycleOwner) {
             openInformationAboutMusic(it)
         }
 
@@ -70,7 +50,7 @@ class SearchActivity : AppCompatActivity() {
             viewModel.onSongClicked(song)
         }
 
-        viewModel.observeSongsList().observe(this) {
+        viewModel.observeSongsList().observe(viewLifecycleOwner) {
             songAdapter.songs = it
         }
 
@@ -80,15 +60,11 @@ class SearchActivity : AppCompatActivity() {
             viewModel.onSongHistoryClicked(song)
         }
 
-        viewModel.observeHistory().observe(this) {
+        viewModel.observeHistory().observe(viewLifecycleOwner) {
             searchHistoryAdapter.searchHistoryList = it
         }
 
         binding.recyclerSearchHistory.adapter = searchHistoryAdapter
-
-        binding.btnSettingsToMain.setOnClickListener {
-            finish()
-        }
 
         binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
             showSearchHistory(hasFocus)
@@ -175,7 +151,7 @@ class SearchActivity : AppCompatActivity() {
             btnRefreshNetwork.visibility = View.GONE
             searchHistoryLayout.visibility = View.GONE
             errorMessage.setText(R.string.search_empty)
-            placeholderError.setImageDrawable(getDrawable(R.drawable.ic_empty_song))
+            placeholderError.setImageDrawable(requireContext().getDrawable(R.drawable.ic_empty_song))
             errorLayout.visibility = View.VISIBLE
         }
     }
@@ -187,7 +163,7 @@ class SearchActivity : AppCompatActivity() {
             btnRefreshNetwork.visibility = View.VISIBLE
             searchHistoryLayout.visibility = View.GONE
             errorMessage.setText(R.string.network_error)
-            placeholderError.setImageDrawable(getDrawable(R.drawable.ic_network_error))
+            placeholderError.setImageDrawable(requireContext().getDrawable(R.drawable.ic_network_error))
             errorLayout.visibility = View.VISIBLE
         }
     }
@@ -212,10 +188,10 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun openInformationAboutMusic(songId: Long) {
-        val intent = Intent(this, LibraryActivity::class.java).apply {
-            putExtra(TRACK_ID_KEY, songId)
-        }
-        startActivity(intent)
+        findNavController().navigate(
+            R.id.action_searchFragment_to_libraryFragment,
+            LibraryFragment.createArgs(songId)
+        )
     }
 
     override fun onSaveInstanceState(
@@ -225,9 +201,11 @@ class SearchActivity : AppCompatActivity() {
         outState.putString(INPUT_TEXT_KEY, inputText)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        inputText = savedInstanceState.getString(INPUT_TEXT_KEY, INPUT_TEXT_DEF)
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if (savedInstanceState != null) {
+            inputText = savedInstanceState.getString(INPUT_TEXT_KEY, INPUT_TEXT_DEF)
+        }
     }
 
     companion object {
