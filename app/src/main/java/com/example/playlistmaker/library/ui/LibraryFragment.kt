@@ -1,15 +1,14 @@
 package com.example.playlistmaker.library.ui.activity
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
+import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.core.BindingFragment
 import com.example.playlistmaker.databinding.ActivityLibraryBinding
 import com.example.playlistmaker.library.ui.view_model.LibraryViewModel
 import com.example.playlistmaker.search.domain.model.Song
@@ -17,39 +16,24 @@ import com.example.playlistmaker.search.domain.model.Song.Companion.formatDurati
 import com.example.playlistmaker.utils.dpToPx
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import kotlin.getValue
 
-const val TRACK_ID_KEY = "track_id_key"
+class LibraryFragment : BindingFragment<ActivityLibraryBinding>() {
+    override fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): ActivityLibraryBinding = ActivityLibraryBinding.inflate(inflater, container, false)
 
-class LibraryActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityLibraryBinding
     private val trackId by lazy(LazyThreadSafetyMode.NONE) {
-        intent.getLongExtra(TRACK_ID_KEY, 0)
+        requireArguments().getLong(TRACK_ID_KEY)
     }
     private val viewModel: LibraryViewModel by viewModel<LibraryViewModel> { parametersOf(trackId) }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivityLibraryBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            val navBar = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
-            val totalLeft = systemBars.left + cutout.left
-            val totalRight = systemBars.right + cutout.right
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-            v.updatePadding(
-                left = v.paddingLeft + totalLeft,
-                top = statusBar.top,
-                right = v.paddingRight + totalRight,
-                bottom = navBar.bottom
-            )
-            insets
-        }
-
-        viewModel.observeUiState().observe(this) { uiState ->
+        viewModel.observeUiState().observe(viewLifecycleOwner)
+        { uiState ->
             binding.timeToPlayText.text = formatDuration(uiState.currentPosition)
             showUi(uiState.isLoading)
             if (uiState.isReady) {
@@ -71,7 +55,7 @@ class LibraryActivity : AppCompatActivity() {
         }
 
         binding.btnLibraryToMain.setOnClickListener {
-            finish()
+            findNavController().navigateUp()
         }
     }
 
@@ -90,8 +74,8 @@ class LibraryActivity : AppCompatActivity() {
     }
 
     private fun settingValuesToView(songData: Song) {
-        val radius = dpToPx(16f)
-        Glide.with(applicationContext).load(songData.coverImagePlayer)
+        val radius = requireContext().dpToPx(16f)
+        Glide.with(this).load(songData.coverImagePlayer)
             .placeholder(R.drawable.ic_placeholder_312)
             .transform(RoundedCorners(radius))
             .into(binding.albumMusicImage)
@@ -110,5 +94,12 @@ class LibraryActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         viewModel.onPause()
+    }
+
+    companion object {
+        const val TRACK_ID_KEY = "track_id_key"
+        fun createArgs(idSong: Long) = Bundle().apply {
+            putLong(TRACK_ID_KEY, idSong)
+        }
     }
 }
