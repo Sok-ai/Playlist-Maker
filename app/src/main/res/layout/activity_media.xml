@@ -9,37 +9,19 @@
     android:orientation="vertical"
     android:paddingHorizontal="16dp"
     android:paddingTop="14dp"
-    tools:context=".media.ui.activity.MediaActivity">
+    tools:context=".media.ui.MediaFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        style="@style/TitleTextStyle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/btn_media_to_main"
-            style="@style/ImageButtonStyle"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center"
-            android:importantForAccessibility="no"
-            android:src="@drawable/ic_settings_back_arrow" />
-
-        <TextView
-            style="@style/TitleTextStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="28dp"
-            android:layout_marginEnd="0dp"
-            android:text="@string/media_name_page" />
-    </LinearLayout>
+        android:text="@string/media_name_page" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="16dp"
         app:tabBackground="?attr/myTabBackground"
         app:tabIndicatorColor="?attr/myTabIndicatorColor"
         app:tabSelectedTextColor="?attr/colorOnPrimary"

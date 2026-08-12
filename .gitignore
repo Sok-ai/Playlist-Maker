@@ -17,6 +17,10 @@ out/
 # Gradle files
 .gradle/
 build/
+gradlew
+gradle-wrapper.property
+gradle-wrapper.jar
+
 
 # Local configuration file (sdk path, etc.)
 local.properties
@@ -82,3 +86,10 @@ $RECYCLE.BIN/
 **/output.json
 **/secrets.properties
 /.kotlin/
+!/gradlew
+.kotlin
+.idea/compiler.xml
+.idea/deploymentTargetSelector.xml
+.idea/gradle.xml
+.idea/misc.xml
+gradle/wrapper/gradle-wrapper.jar

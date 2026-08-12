@@ -8,31 +8,14 @@
     android:orientation="vertical"
     android:paddingHorizontal="16dp"
     android:paddingTop="14dp"
-    tools:context=".search.ui.activity.SearchActivity">
+    tools:context=".search.ui.SearchFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        style="@style/TitleTextStyle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="15dp">
-
-        <ImageButton
-            android:id="@+id/btn_settings_to_main"
-            style="@style/ImageButtonStyle"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center"
-            android:importantForAccessibility="no"
-            android:src="@drawable/ic_settings_back_arrow" />
-
-        <TextView
-            style="@style/TitleTextStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="28dp"
-            android:layout_marginEnd="0dp"
-            android:text="@string/search_name_page" />
-    </LinearLayout>
+        android:layout_marginEnd="0dp"
+        android:text="@string/search_name_page" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -69,7 +52,7 @@
         android:layout_marginTop="16dp"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:visibility="gone" />
+        tools:listitem="@layout/song_view" />
 
     <ProgressBar
         android:id="@+id/progressBarSongs"
@@ -85,8 +68,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/textSearchHistory"
@@ -103,7 +85,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/song_view" />
 
         <Button
             android:id="@+id/clearSearchHistory"

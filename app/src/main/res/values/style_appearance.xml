@@ -14,4 +14,10 @@
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="fontWeight">500</item>
     </style>
+
+    <style name="myBottomNavStyle" parent="Widget.Material3.BottomNavigationView">
+        <item name="fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">@dimen/text_bottom_nav_size</item>
+        <item name="fontWeight">400</item>
+    </style>
 </resources>

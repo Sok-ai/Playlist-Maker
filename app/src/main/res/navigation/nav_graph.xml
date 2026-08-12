@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mediaFragment">
+
+    <fragment
+        android:id="@+id/playlistFragment"
+        android:name="com.example.playlistmaker.media.ui.nested_fragments.PlaylistFragment"
+        android:label="fragment_playlist"
+        tools:layout="@layout/fragment_playlist" />
+    <fragment
+        android:id="@+id/favoriteFragment"
+        android:name="com.example.playlistmaker.media.ui.nested_fragments.FavoriteFragment"
+        android:label="fragment_favorite"
+        tools:layout="@layout/fragment_favorite" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.playlistmaker.settings.ui.SettingsFragment"
+        android:label="activity_settings"
+        tools:layout="@layout/activity_settings" />
+    <fragment
+        android:id="@+id/libraryFragment"
+        android:name="com.example.playlistmaker.library.ui.activity.LibraryFragment"
+        android:label="activity_library"
+        tools:layout="@layout/activity_library" />
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.playlistmaker.search.ui.SearchFragment"
+        android:label="activity_search"
+        tools:layout="@layout/activity_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_libraryFragment"
+            app:destination="@id/libraryFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/mediaFragment"
+        android:name="com.example.playlistmaker.media.ui.MediaFragment"
+        android:label="activity_media"
+        tools:layout="@layout/activity_media" />
+</navigation>
