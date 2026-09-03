@@ -52,6 +52,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
     implementation("com.squareup.retrofit2:retrofit:3.0.0")
     implementation("com.github.bumptech.glide:glide:5.0.5")
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.fragment)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.core.ktx)
