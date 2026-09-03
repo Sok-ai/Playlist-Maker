@@ -3,20 +3,21 @@ package com.example.playlistmaker.search.ui.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.search.domain.model.SearchResult
 import com.example.playlistmaker.search.domain.api.SearchInteractor
 import com.example.playlistmaker.search.domain.model.SearchResult.*
 import com.example.playlistmaker.search.domain.model.Song
-import com.example.playlistmaker.utils.Debounce
 import com.example.playlistmaker.utils.SingleLiveEvent
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
-private typealias SearchDebounce = Debounce
-private typealias ClickDebounce = Debounce
 
 class SearchViewModel(private val interactor: SearchInteractor) : ViewModel() {
-    private val searchDebounce = SearchDebounce(2000)
-    private val clickDebounce = ClickDebounce(500)
+    private var searchDebounceJob: Job? = null
+    private var clickDebounceJob: Job? = null
 
     private val executer = Executors.newCachedThreadPool()
 
@@ -55,9 +56,7 @@ class SearchViewModel(private val interactor: SearchInteractor) : ViewModel() {
         if (_isClickAllowed.value ?: false) {
             _isClickAllowed.postValue(false)
             _navigationToPlayer.value = song.trackId
-            clickDebounce.run {
-                _isClickAllowed.postValue(true)
-            }
+            allowNextRequest()
         }
     }
 
@@ -66,9 +65,14 @@ class SearchViewModel(private val interactor: SearchInteractor) : ViewModel() {
             addToHistory(song)
             _isClickAllowed.postValue(false)
             _navigationToPlayer.value = song.trackId
-            clickDebounce.run {
-                _isClickAllowed.postValue(true)
-            }
+            allowNextRequest()
+        }
+    }
+
+    private fun allowNextRequest() {
+        clickDebounceJob = viewModelScope.launch {
+            delay(CLICK_DEBOUNCE)
+            _isClickAllowed.postValue(true)
         }
     }
 
@@ -77,16 +81,17 @@ class SearchViewModel(private val interactor: SearchInteractor) : ViewModel() {
     }
 
     fun requestToNetwork(inputText: String) {
-        if (lastRequest == inputText) {
-            return
-        }
+        if (lastRequest != inputText && inputText.isNotEmpty()) {
+            this.lastRequest = inputText
 
-        this.lastRequest = inputText
+            searchDebounceJob?.cancel()
 
-        searchDebounce.cancel()
-
-        searchDebounce.run {
-            searchSongs(inputText)
+            searchDebounceJob = viewModelScope.launch {
+                delay(SEARCH_DELAY_DEBOUNCE)
+                searchSongs(inputText)
+            }
+        } else {
+            searchDebounceJob?.cancel()
         }
     }
 
@@ -121,13 +126,8 @@ class SearchViewModel(private val interactor: SearchInteractor) : ViewModel() {
         }
     }
 
-    fun cancelRequest() {
-        searchDebounce.cancel()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        clickDebounce.cancel()
-        searchDebounce.cancel()
+    companion object {
+        const val SEARCH_DELAY_DEBOUNCE = 2000L
+        const val CLICK_DEBOUNCE = 500L
     }
 }
