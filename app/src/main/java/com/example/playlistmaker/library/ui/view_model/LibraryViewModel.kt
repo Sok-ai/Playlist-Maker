@@ -3,18 +3,22 @@ package com.example.playlistmaker.library.ui.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.library.domain.api.MusicPlayer
 import com.example.playlistmaker.library.domain.model.PlayerUiState
 import com.example.playlistmaker.search.domain.api.SearchInteractor
 import com.example.playlistmaker.search.domain.model.Song
-import com.example.playlistmaker.utils.PeriodicAction
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.launch
 
 class LibraryViewModel(
     private val musicPlayer: MusicPlayer,
     private val searchInteractor: SearchInteractor,
     private val songId: Long
 ) : ViewModel() {
-    private val periodicUpdater = PeriodicAction(500L)
+    private var timerJob: Job? = null
 
     private val _uiState = MutableLiveData(PlayerUiState())
     fun observeUiState(): LiveData<PlayerUiState> = _uiState
@@ -76,6 +80,7 @@ class LibraryViewModel(
                     isPlaying = false,
                     currentPosition = 0,
                 )
+            musicPlayer.resetToStart()
             stopUpdatingTime()
         }
     }
@@ -99,8 +104,10 @@ class LibraryViewModel(
     }
 
     private fun startUpdatingTime() {
-        periodicUpdater.start {
-            if (_uiState.value?.isPlaying == true) {
+        timerJob = viewModelScope.launch {
+            while (musicPlayer.isPlayer()) {
+                ensureActive()
+                delay(DELAY_UPDATE_TIMER)
                 _uiState.value =
                     _uiState.value?.copy(currentPosition = musicPlayer.currentPosition())
             }
@@ -108,19 +115,31 @@ class LibraryViewModel(
     }
 
     private fun stopUpdatingTime() {
-        periodicUpdater.stop()
+        timerJob?.cancel()
+        timerJob = null
+        _uiState.value = _uiState.value?.copy(
+            currentPosition = musicPlayer.currentPosition()
+        )
+    }
+
+    private fun releasePlayer() {
+        musicPlayer.release()
     }
 
     override fun onCleared() {
         super.onCleared()
-        musicPlayer.release()
+        releasePlayer()
     }
 
     fun onPause() {
         if (musicPlayer.isPlayer()) {
-            _uiState.value = _uiState.value?.copy(isPlaying = false)
-            musicPlayer.pausePlayer()
             stopUpdatingTime()
+            musicPlayer.pausePlayer()
+            _uiState.value = _uiState.value?.copy(isPlaying = false)
         }
+    }
+
+    companion object {
+        const val DELAY_UPDATE_TIMER = 500L
     }
 }
