@@ -1,19 +1,24 @@
 package com.example.playlistmaker.utils
 
-import android.os.Handler
-import android.os.Looper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-class Debounce(private val delayMillis: Long) {
-    private var job: Runnable? = null
-    private var handler = Handler(Looper.getMainLooper())
-
-    fun run(action: () -> Unit) {
-        job?.let { handler.removeCallbacks(it) }
-        job = Runnable { action() }
-        handler.postDelayed(job!!, delayMillis)
-    }
-
-    fun cancel() {
-        job?.let { handler.removeCallbacks(it) }
+fun <T> debounce(
+    delayMillis: Long,
+    scope: CoroutineScope,
+    useLastParam: Boolean,
+    action: (T) -> Unit
+): (T) -> Unit {
+    var debounceJob: Job? = null
+    return { param ->
+        if (useLastParam) debounceJob?.cancel()
+        if (debounceJob?.isCompleted != false || useLastParam) {
+            debounceJob = scope.launch {
+                delay(delayMillis)
+                action(param)
+            }
+        }
     }
 }
