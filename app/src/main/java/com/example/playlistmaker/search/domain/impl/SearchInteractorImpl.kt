@@ -4,17 +4,16 @@ import com.example.playlistmaker.search.domain.api.SearchHistoryRepository
 import com.example.playlistmaker.search.domain.model.Song
 import com.example.playlistmaker.search.domain.api.SearchInteractor
 import com.example.playlistmaker.search.domain.api.SearchNetworkRepository
+import com.example.playlistmaker.search.domain.model.SearchResult
+import kotlinx.coroutines.flow.Flow
+
 class SearchInteractorImpl(
     private val searchRepository: SearchNetworkRepository,
     private val historyRepository: SearchHistoryRepository
 ) : SearchInteractor {
-    override fun searchSongs(
-        expression: String,
-        consumer: SearchInteractor.SearchConsumer
-    ) {
-        val result = searchRepository.searchSongs(expression)
-        consumer.consume(result)
-    }
+    override fun searchSongs(expression: String): Flow<SearchResult> =
+        searchRepository.searchSongs(expression)
+
 
     override fun getHistory(): List<Song> {
         return historyRepository.getHistory()
