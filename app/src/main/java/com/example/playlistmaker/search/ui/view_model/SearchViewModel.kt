@@ -12,15 +12,10 @@ import com.example.playlistmaker.utils.SingleLiveEvent
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.concurrent.Executors
-
 
 class SearchViewModel(private val interactor: SearchInteractor) : ViewModel() {
     private var searchDebounceJob: Job? = null
     private var clickDebounceJob: Job? = null
-
-    private val executer = Executors.newCachedThreadPool()
-
     private val _searchHistory = MutableLiveData(interactor.getHistory())
     fun observeHistory(): LiveData<List<Song>> = _searchHistory
 
@@ -102,27 +97,33 @@ class SearchViewModel(private val interactor: SearchInteractor) : ViewModel() {
     fun searchSongs(input: String) {
         if (input.isNotEmpty()) {
             stateSetup(Loading)
-            executer.execute {
-                interactor.searchSongs(input) { result ->
-                    when (result) {
-                        is Success -> {
-                            if (result.songs.isNotEmpty()) {
-                                _songsList.postValue(result.songs)
-                                stateSetup(Success(result.songs))
-                            } else {
-                                stateSetup(Empty)
-                            }
-                        }
-
-                        is Empty -> stateSetup(Empty)
-                        is Error -> {
-                            stateSetup(Error)
-                        }
-
-                        Loading -> {}
+            viewModelScope.launch {
+                interactor
+                    .searchSongs(input)
+                    .collect { result ->
+                        processResult(result)
                     }
+            }
+        }
+    }
+
+    private fun processResult(state: SearchResult) {
+        when (state) {
+            is Success -> {
+                if (state.songs.isNotEmpty()) {
+                    _songsList.postValue(state.songs)
+                    stateSetup(Success(state.songs))
+                } else {
+                    stateSetup(Empty)
                 }
             }
+
+            is Empty -> stateSetup(Empty)
+            is Error -> {
+                stateSetup(Error)
+            }
+
+            Loading -> {}
         }
     }
 
