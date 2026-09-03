@@ -7,26 +7,33 @@ import com.example.playlistmaker.search.data.NetworkClient
 import com.example.playlistmaker.search.data.api.SongApi
 import com.example.playlistmaker.search.data.dto.Response
 import com.example.playlistmaker.search.data.dto.SongSearchRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class RetrofitClient(private val context: Context, private val networkService: SongApi) :
     NetworkClient {
 
-    override fun doRequest(dto: Any): Response {
+    override suspend fun doRequest(dto: Any): Response {
         if (!isConnected()) {
             return Response().apply {
                 resultCode = -1
             }
         }
-        when (dto) {
-            is SongSearchRequest -> {
-                val resp = networkService.searchSongs(dto.expression).execute()
-                val body = resp.body() ?: Response()
 
-                return body.apply { resultCode = resp.code() }
+        return when (dto) {
+            is SongSearchRequest -> {
+                withContext(Dispatchers.IO) {
+                    try {
+                        val response = networkService.searchSongs(dto.expression)
+                        response.apply { resultCode = 200 }
+                    } catch (e: Throwable) {
+                        Response().apply { resultCode = 500 }
+                    }
+                }
             }
 
             else -> {
-                return Response().apply { resultCode = 400 }
+                Response().apply { resultCode = 400 }
             }
         }
     }

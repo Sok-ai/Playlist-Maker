@@ -39,10 +39,17 @@ class MediaPlayerImpl(private val mediaPlayer: MediaPlayer) : MusicPlayer {
     override fun currentPosition(): Int = mediaPlayer.currentPosition
 
     override fun release() {
+        mediaPlayer.pause()
         mediaPlayer.release()
+        playerState = PlayerState.STATE_DEFAULT
     }
 
     override fun setOnCompletionListener(listener: () -> Unit) {
         onCompletionCallback = listener
+    }
+
+    override fun resetToStart() {
+        mediaPlayer.seekTo(0)
+        playerState = PlayerState.STATE_PREPARED
     }
 }

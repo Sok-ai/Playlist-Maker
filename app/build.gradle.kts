@@ -30,11 +30,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 
     buildFeatures {
@@ -52,6 +52,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
     implementation("com.squareup.retrofit2:retrofit:3.0.0")
     implementation("com.github.bumptech.glide:glide:5.0.5")
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.fragment)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.core.ktx)
