@@ -6,27 +6,29 @@ import com.example.playlistmaker.search.data.dto.SongsSearchResponse
 import com.example.playlistmaker.search.data.mapper.MapperNetwork
 import com.example.playlistmaker.search.domain.model.SearchResult
 import com.example.playlistmaker.search.domain.api.SearchNetworkRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class SearchNetworkRepositoryImpl(
     private val networkClient: NetworkClient,
     private val mapper: MapperNetwork
 ) : SearchNetworkRepository {
-    override fun searchSongs(expression: String): SearchResult {
+    override fun searchSongs(expression: String): Flow<SearchResult> = flow {
         val response = networkClient.doRequest(SongSearchRequest(expression))
-        return when (response.resultCode) {
+        when (response.resultCode) {
             200 -> {
                 val songs = (response as SongsSearchResponse).results.map {
                     mapper.toSong(it)
                 }
                 if (songs.isEmpty()) {
-                    SearchResult.Empty
+                    emit(SearchResult.Empty)
                 } else {
-                    SearchResult.Success(songs)
+                    emit(SearchResult.Success(songs))
                 }
             }
 
             else -> {
-                SearchResult.Error
+                emit(SearchResult.Error)
             }
         }
     }
