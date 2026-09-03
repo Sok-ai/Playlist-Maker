@@ -104,6 +104,7 @@ class LibraryViewModel(
     }
 
     private fun startUpdatingTime() {
+        timerJob?.cancel()
         timerJob = viewModelScope.launch {
             while (musicPlayer.isPlayer()) {
                 ensureActive()
@@ -127,7 +128,7 @@ class LibraryViewModel(
     }
 
     override fun onCleared() {
-        super.onCleared()
+        timerJob?.cancel()
         releasePlayer()
     }
 
@@ -140,6 +141,6 @@ class LibraryViewModel(
     }
 
     companion object {
-        const val DELAY_UPDATE_TIMER = 500L
+        const val DELAY_UPDATE_TIMER = 300L
     }
 }
