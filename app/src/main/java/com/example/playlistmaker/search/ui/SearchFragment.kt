@@ -75,7 +75,6 @@ class SearchFragment : BindingFragment<ActivitySearchBinding>() {
             inputMethodManager?.hideSoftInputFromWindow(binding.inputEditText.windowToken, 0)
             binding.inputEditText.clearFocus()
             viewModel.clearSongsList()
-            viewModel.cancelRequest()
         }
 
         binding.clearSearchHistory.setOnClickListener {
