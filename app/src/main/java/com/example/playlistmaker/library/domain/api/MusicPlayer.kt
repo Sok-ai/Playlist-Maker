@@ -9,4 +9,5 @@ interface MusicPlayer {
     fun currentPosition(): Int
     fun release()
     fun setOnCompletionListener(listener: () -> Unit)
+    fun resetToStart()
 }
