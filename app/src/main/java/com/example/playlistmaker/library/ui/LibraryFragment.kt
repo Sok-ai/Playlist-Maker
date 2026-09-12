@@ -1,4 +1,4 @@
-package com.example.playlistmaker.library.ui.activity
+package com.example.playlistmaker.library.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -35,6 +35,7 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
         viewModel.observeUiState().observe(viewLifecycleOwner)
         { uiState ->
             binding.timeToPlayText.text = formatDuration(uiState.currentPosition)
+            showFavorites(uiState.isFavorite)
             showUi(uiState.isLoading)
             if (uiState.isReady) {
                 binding.playMusicButton.isEnabled = true
@@ -50,6 +51,10 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
             }
         }
 
+        binding.likeMusicButton.setOnClickListener {
+            viewModel.onClickFavorite()
+        }
+
         binding.playMusicButton.setOnClickListener {
             viewModel.onClickPlayer()
         }
@@ -57,6 +62,12 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
         binding.btnLibraryToMain.setOnClickListener {
             findNavController().navigateUp()
         }
+    }
+
+    private fun showFavorites(isFavorite: Boolean) = if (isFavorite) {
+        binding.likeMusicButton.setImageResource(R.drawable.ic_button_like_full)
+    } else {
+        binding.likeMusicButton.setImageResource(R.drawable.ic_button_like_empty)
     }
 
     private fun showUi(isLoading: Boolean) {
