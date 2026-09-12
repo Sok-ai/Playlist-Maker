@@ -8,4 +8,5 @@ data class PlayerUiState(
     val isReady: Boolean = false,
     val isPlaying: Boolean = false,
     val currentPosition: Int = 0,
+    val isFavorite: Boolean = false
 )
