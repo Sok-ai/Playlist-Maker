@@ -6,17 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.playlistmaker.R
 import com.example.playlistmaker.core.BindingFragment
-import com.example.playlistmaker.databinding.ActivityMediaBinding
+import com.example.playlistmaker.databinding.FragmentMediaBinding
 import com.google.android.material.tabs.TabLayoutMediator
 
-class MediaFragment : BindingFragment<ActivityMediaBinding>() {
+class MediaFragment : BindingFragment<FragmentMediaBinding>() {
     private lateinit var tabLayoutMediator: TabLayoutMediator
     private lateinit var pageAdapter: MediaPageAdapter
 
     override fun createBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
-    ): ActivityMediaBinding = ActivityMediaBinding.inflate(inflater, container, false)
+    ): FragmentMediaBinding = FragmentMediaBinding.inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

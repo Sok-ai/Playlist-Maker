@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.core.BindingFragment
-import com.example.playlistmaker.databinding.ActivityLibraryBinding
+import com.example.playlistmaker.databinding.FragmentLibraryBinding
 import com.example.playlistmaker.library.ui.view_model.LibraryViewModel
 import com.example.playlistmaker.search.domain.model.Song
 import com.example.playlistmaker.search.domain.model.Song.Companion.formatDuration
@@ -18,11 +18,11 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.getValue
 
-class LibraryFragment : BindingFragment<ActivityLibraryBinding>() {
+class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
     override fun createBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
-    ): ActivityLibraryBinding = ActivityLibraryBinding.inflate(inflater, container, false)
+    ): FragmentLibraryBinding = FragmentLibraryBinding.inflate(inflater, container, false)
 
     private val trackId by lazy(LazyThreadSafetyMode.NONE) {
         requireArguments().getLong(TRACK_ID_KEY)

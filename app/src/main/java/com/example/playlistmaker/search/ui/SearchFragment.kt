@@ -11,13 +11,13 @@ import androidx.core.widget.doOnTextChanged
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.core.BindingFragment
-import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.library.ui.activity.LibraryFragment
+import com.example.playlistmaker.databinding.FragmentSearchBinding
+import com.example.playlistmaker.library.ui.LibraryFragment
 import com.example.playlistmaker.search.domain.model.SearchResult
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchFragment : BindingFragment<ActivitySearchBinding>() {
+class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     private val viewModel: SearchViewModel by viewModel<SearchViewModel>()
 
     private lateinit var songAdapter: SongAdapter
@@ -28,7 +28,7 @@ class SearchFragment : BindingFragment<ActivitySearchBinding>() {
     override fun createBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
-    ): ActivitySearchBinding = ActivitySearchBinding.inflate(inflater, container, false)
+    ): FragmentSearchBinding = FragmentSearchBinding.inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
