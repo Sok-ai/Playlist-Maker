@@ -85,6 +85,11 @@ class LibraryViewModel(
         }
     }
 
+    fun onClickFavorite() {
+        val current = _uiState.value ?: return
+        _uiState.value = current.copy(isFavorite = !current.isFavorite)
+    }
+
     fun onClickPlayer() {
         if (_uiState.value?.isReady == true) {
             when {
