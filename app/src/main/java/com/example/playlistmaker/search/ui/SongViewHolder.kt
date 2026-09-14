@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.search.domain.model.Song
+import com.example.playlistmaker.utils.TimeFormatter
 
 class SongViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     LayoutInflater.from(parent.context).inflate(R.layout.song_view, parent, false)
@@ -28,6 +29,6 @@ class SongViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             .into(trackImage)
         trackName.text = model.trackName
         artistName.text = model.artistName
-        trackTime.text = model.trackTime
+        trackTime.text = TimeFormatter.format(model.trackTimeMillis)
     }
 }
