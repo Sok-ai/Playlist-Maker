@@ -11,7 +11,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.core.BindingFragment
 import com.example.playlistmaker.databinding.FragmentLibraryBinding
 import com.example.playlistmaker.library.ui.view_model.LibraryViewModel
-import com.example.playlistmaker.search.domain.model.Song
+import com.example.playlistmaker.core.domain.model.Song
 import com.example.playlistmaker.utils.TimeFormatter
 import com.example.playlistmaker.utils.dpToPx
 import org.koin.androidx.viewmodel.ext.android.viewModel

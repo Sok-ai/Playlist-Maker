@@ -1,7 +1,7 @@
 package com.example.playlistmaker.search.domain.impl
 
 import com.example.playlistmaker.search.domain.api.SearchHistoryRepository
-import com.example.playlistmaker.search.domain.model.Song
+import com.example.playlistmaker.core.domain.model.Song
 import com.example.playlistmaker.search.domain.api.SearchInteractor
 import com.example.playlistmaker.search.domain.api.SearchNetworkRepository
 import com.example.playlistmaker.search.domain.model.SearchResult

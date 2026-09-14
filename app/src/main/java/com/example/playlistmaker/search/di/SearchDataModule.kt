@@ -10,7 +10,7 @@ import com.example.playlistmaker.search.data.network.RetrofitClient
 import com.example.playlistmaker.search.data.storage.PrefStorageClient
 import com.example.playlistmaker.search.domain.api.SearchHistoryRepository
 import com.example.playlistmaker.search.domain.api.SearchNetworkRepository
-import com.example.playlistmaker.search.domain.model.Song
+import com.example.playlistmaker.core.domain.model.Song
 import com.google.gson.reflect.TypeToken
 import org.koin.dsl.module
 import retrofit2.Retrofit

@@ -1,4 +1,4 @@
-package com.example.playlistmaker.search.domain.model
+package com.example.playlistmaker.core.domain.model
 
 data class Song(
     val trackId: Long,

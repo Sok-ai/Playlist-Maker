@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.library.domain.api.MusicPlayer
 import com.example.playlistmaker.library.domain.model.PlayerUiState
 import com.example.playlistmaker.search.domain.api.SearchInteractor
-import com.example.playlistmaker.search.domain.model.Song
+import com.example.playlistmaker.core.domain.model.Song
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive

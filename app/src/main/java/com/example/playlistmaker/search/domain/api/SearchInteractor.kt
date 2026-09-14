@@ -1,7 +1,7 @@
 package com.example.playlistmaker.search.domain.api
 
 import com.example.playlistmaker.search.domain.model.SearchResult
-import com.example.playlistmaker.search.domain.model.Song
+import com.example.playlistmaker.core.domain.model.Song
 import kotlinx.coroutines.flow.Flow
 
 interface SearchInteractor {
