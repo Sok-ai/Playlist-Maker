@@ -20,8 +20,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     private val viewModel: SearchViewModel by viewModel<SearchViewModel>()
 
-    private lateinit var songAdapter: SongAdapter
-    private lateinit var searchHistoryAdapter: SearchHistoryAdapter
+    private var songAdapter: SongAdapter? = null
+    private var searchHistoryAdapter: SearchHistoryAdapter? = null
     private var saveInputText = ""
     private var inputText = INPUT_TEXT_DEF
 
@@ -51,7 +51,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         }
 
         viewModel.observeSongsList().observe(viewLifecycleOwner) {
-            songAdapter.songs = it
+            songAdapter?.songs = it
         }
 
         binding.recyclerViewTrack.adapter = songAdapter
@@ -61,7 +61,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         }
 
         viewModel.observeHistory().observe(viewLifecycleOwner) {
-            searchHistoryAdapter.searchHistoryList = it
+            searchHistoryAdapter?.searchHistoryList = it
         }
 
         binding.recyclerSearchHistory.adapter = searchHistoryAdapter
@@ -179,7 +179,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     private fun showSearchHistory(hasFocus: Boolean) {
         val showHistory = hasFocus && binding.inputEditText.text.isEmpty()
         binding.searchHistoryLayout.visibility =
-            if (showHistory && searchHistoryAdapter.searchHistoryList.isNotEmpty()) View.VISIBLE else View.GONE
+            if (showHistory && searchHistoryAdapter?.searchHistoryList?.isNotEmpty() == true) View.VISIBLE else View.GONE
         if (showHistory) {
             binding.recyclerViewTrack.visibility = View.GONE
             binding.errorLayout.visibility = View.GONE
@@ -205,6 +205,18 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         if (savedInstanceState != null) {
             inputText = savedInstanceState.getString(INPUT_TEXT_KEY, INPUT_TEXT_DEF)
         }
+    }
+
+    override fun onDestroyView() {
+        binding.recyclerViewTrack.adapter = null
+        binding.recyclerSearchHistory.adapter = null
+        super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        songAdapter = null
+        searchHistoryAdapter = null
     }
 
     companion object {
