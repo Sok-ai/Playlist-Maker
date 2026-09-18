@@ -9,7 +9,8 @@ val libraryViewModelModule = module {
         LibraryViewModel(
             musicPlayer = get(),
             searchInteractor = get(),
-            songId = params.get<Long>()
+            songId = params.get<Long>(),
+            favoriteRepository = get()
         )
     }
 }
