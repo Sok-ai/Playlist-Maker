@@ -8,6 +8,7 @@ import com.example.playlistmaker.library.domain.api.MusicPlayer
 import com.example.playlistmaker.library.domain.model.PlayerUiState
 import com.example.playlistmaker.search.domain.api.SearchInteractor
 import com.example.playlistmaker.core.domain.model.Song
+import com.example.playlistmaker.core.domain.repository.FavoriteRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 class LibraryViewModel(
     private val musicPlayer: MusicPlayer,
     private val searchInteractor: SearchInteractor,
+    private val favoriteRepository: FavoriteRepository,
     private val songId: Long
 ) : ViewModel() {
     private var timerJob: Job? = null
@@ -24,6 +26,7 @@ class LibraryViewModel(
     fun observeUiState(): LiveData<PlayerUiState> = _uiState
 
     init {
+        checkIsFavorite(songId)
         gettingMusic()
     }
 
@@ -85,9 +88,23 @@ class LibraryViewModel(
         }
     }
 
+    private fun checkIsFavorite(idSong: Long) {
+        viewModelScope.launch {
+            favoriteRepository.isFavorite(idSong).collect {
+                _uiState.value = _uiState.value?.copy(isFavorite = it)
+            }
+        }
+    }
+
     fun onClickFavorite() {
-        val current = _uiState.value ?: return
-        _uiState.value = current.copy(isFavorite = !current.isFavorite)
+        val song = _uiState.value?.song ?: return
+        viewModelScope.launch {
+            if (_uiState.value?.isFavorite == true) {
+                favoriteRepository.deleteFavorites(song.trackId)
+            } else {
+                favoriteRepository.insertFavorite(song)
+            }
+        }
     }
 
     fun onClickPlayer() {
