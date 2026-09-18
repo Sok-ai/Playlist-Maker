@@ -1,4 +1,4 @@
-package com.example.playlistmaker.search.ui
+package com.example.playlistmaker.core.ui
 
 import com.example.playlistmaker.core.domain.model.Song
 

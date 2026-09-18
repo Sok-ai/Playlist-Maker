@@ -3,6 +3,7 @@ package com.example.playlistmaker.search.ui
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.core.domain.model.Song
+import com.example.playlistmaker.core.ui.OnSongActionListener
 
 class SongAdapter(val onSongActionListener: OnSongActionListener? = null) :
     RecyclerView.Adapter<SongViewHolder>() {
