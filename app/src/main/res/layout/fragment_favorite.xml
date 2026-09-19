@@ -12,8 +12,10 @@
         android:id="@+id/recycler_favorites"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        android:layout_marginTop="20dp"
+        android:visibility="visible"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/song_view" />
 
     <FrameLayout
         android:id="@+id/emptyLayout"
@@ -21,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|center"
         android:layout_marginTop="70dp"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/placeholderEmpty"

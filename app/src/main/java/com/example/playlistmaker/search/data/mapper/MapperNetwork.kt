@@ -1,6 +1,6 @@
 package com.example.playlistmaker.search.data.mapper
 
-import com.example.playlistmaker.search.domain.model.Song
+import com.example.playlistmaker.core.domain.model.Song
 import com.example.playlistmaker.search.data.dto.SongDto
 
 class MapperNetwork {

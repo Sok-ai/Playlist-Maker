@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.search.domain.model.SearchResult
 import com.example.playlistmaker.search.domain.api.SearchInteractor
 import com.example.playlistmaker.search.domain.model.SearchResult.*
-import com.example.playlistmaker.search.domain.model.Song
+import com.example.playlistmaker.core.domain.model.Song
 import com.example.playlistmaker.utils.SingleLiveEvent
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

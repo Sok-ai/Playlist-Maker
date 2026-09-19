@@ -1,4 +1,4 @@
-package com.example.playlistmaker.library.ui.activity
+package com.example.playlistmaker.library.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,20 +9,20 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.core.BindingFragment
-import com.example.playlistmaker.databinding.ActivityLibraryBinding
+import com.example.playlistmaker.databinding.FragmentLibraryBinding
 import com.example.playlistmaker.library.ui.view_model.LibraryViewModel
-import com.example.playlistmaker.search.domain.model.Song
-import com.example.playlistmaker.search.domain.model.Song.Companion.formatDuration
+import com.example.playlistmaker.core.domain.model.Song
+import com.example.playlistmaker.utils.TimeFormatter
 import com.example.playlistmaker.utils.dpToPx
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.getValue
 
-class LibraryFragment : BindingFragment<ActivityLibraryBinding>() {
+class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
     override fun createBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
-    ): ActivityLibraryBinding = ActivityLibraryBinding.inflate(inflater, container, false)
+    ): FragmentLibraryBinding = FragmentLibraryBinding.inflate(inflater, container, false)
 
     private val trackId by lazy(LazyThreadSafetyMode.NONE) {
         requireArguments().getLong(TRACK_ID_KEY)
@@ -34,7 +34,8 @@ class LibraryFragment : BindingFragment<ActivityLibraryBinding>() {
 
         viewModel.observeUiState().observe(viewLifecycleOwner)
         { uiState ->
-            binding.timeToPlayText.text = formatDuration(uiState.currentPosition)
+            binding.timeToPlayText.text = TimeFormatter.format(uiState.currentPosition.toLong())
+            showFavorites(uiState.isFavorite)
             showUi(uiState.isLoading)
             if (uiState.isReady) {
                 binding.playMusicButton.isEnabled = true
@@ -50,6 +51,10 @@ class LibraryFragment : BindingFragment<ActivityLibraryBinding>() {
             }
         }
 
+        binding.likeMusicButton.setOnClickListener {
+            viewModel.onClickFavorite()
+        }
+
         binding.playMusicButton.setOnClickListener {
             viewModel.onClickPlayer()
         }
@@ -57,6 +62,12 @@ class LibraryFragment : BindingFragment<ActivityLibraryBinding>() {
         binding.btnLibraryToMain.setOnClickListener {
             findNavController().navigateUp()
         }
+    }
+
+    private fun showFavorites(isFavorite: Boolean) = if (isFavorite) {
+        binding.likeMusicButton.setImageResource(R.drawable.ic_button_like_full)
+    } else {
+        binding.likeMusicButton.setImageResource(R.drawable.ic_button_like_empty)
     }
 
     private fun showUi(isLoading: Boolean) {
@@ -75,7 +86,8 @@ class LibraryFragment : BindingFragment<ActivityLibraryBinding>() {
 
     private fun settingValuesToView(songData: Song) {
         val radius = requireContext().dpToPx(16f)
-        Glide.with(this).load(songData.coverImagePlayer)
+        val converterImageForPlayer = converterImagePlayer(songData)
+        Glide.with(this).load(converterImageForPlayer)
             .placeholder(R.drawable.ic_placeholder_312)
             .transform(RoundedCorners(radius))
             .into(binding.albumMusicImage)
@@ -84,11 +96,18 @@ class LibraryFragment : BindingFragment<ActivityLibraryBinding>() {
         binding.nameAuthorText.text = songData.artistName
 
         binding.albumMusicText.text = songData.collectionName
-        binding.yearMusicText.text = songData.yearReleaseTrack
+        binding.yearMusicText.text = songData.releaseDate.toYearOrEmpty()
 
-        binding.durationMusicText.text = songData.trackTime
+        binding.durationMusicText.text = TimeFormatter.format(songData.trackTimeMillis)
         binding.genreMusicText.text = songData.primaryGenreName
         binding.countryMusicText.text = songData.country
+    }
+
+    fun String.toYearOrEmpty(): String =
+        if (length >= 4) substring(0, 4) else ""
+
+    private fun converterImagePlayer(song: Song): String {
+        return song.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
     }
 
     override fun onPause() {

@@ -3,7 +3,7 @@ package com.example.playlistmaker.search.data.impl
 import android.content.SharedPreferences
 import com.example.playlistmaker.search.data.StorageClient
 import com.example.playlistmaker.search.domain.api.SearchHistoryRepository
-import com.example.playlistmaker.search.domain.model.Song
+import com.example.playlistmaker.core.domain.model.Song
 import com.google.gson.Gson
 
 const val SONG_LAST_TRACK_KEY = "song_last_track_key"

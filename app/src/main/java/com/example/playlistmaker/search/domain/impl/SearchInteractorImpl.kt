@@ -1,7 +1,7 @@
 package com.example.playlistmaker.search.domain.impl
 
 import com.example.playlistmaker.search.domain.api.SearchHistoryRepository
-import com.example.playlistmaker.search.domain.model.Song
+import com.example.playlistmaker.core.domain.model.Song
 import com.example.playlistmaker.search.domain.api.SearchInteractor
 import com.example.playlistmaker.search.domain.api.SearchNetworkRepository
 import com.example.playlistmaker.search.domain.model.SearchResult
@@ -19,7 +19,7 @@ class SearchInteractorImpl(
         return historyRepository.getHistory()
     }
 
-    override fun getSongById(id: Long): Song? {
+    override fun getSongByIdFromHistory(id: Long): Song? {
         return historyRepository.getSongById(id)
     }
 
@@ -35,7 +35,7 @@ class SearchInteractorImpl(
         historyRepository.saveLastTrack(song)
     }
 
-    override fun getLastTrack(): Song? {
+    override fun getLastTrackFromHistory(): Song? {
         return historyRepository.getLastTrack()
     }
 }
