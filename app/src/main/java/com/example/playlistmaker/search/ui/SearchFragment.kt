@@ -11,17 +11,20 @@ import androidx.core.widget.doOnTextChanged
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.core.BindingFragment
+import com.example.playlistmaker.core.ui.SongAdapter
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.library.ui.LibraryFragment
 import com.example.playlistmaker.search.domain.model.SearchResult
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+private typealias SongHistoryAdapter = SongAdapter
+
 class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     private val viewModel: SearchViewModel by viewModel<SearchViewModel>()
 
     private var songAdapter: SongAdapter? = null
-    private var searchHistoryAdapter: SearchHistoryAdapter? = null
+    private var songHistoryAdapter: SongHistoryAdapter? = null
     private var saveInputText = ""
     private var inputText = INPUT_TEXT_DEF
 
@@ -56,15 +59,15 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
         binding.recyclerViewTrack.adapter = songAdapter
 
-        searchHistoryAdapter = SearchHistoryAdapter { song ->
+        songHistoryAdapter = SongHistoryAdapter { song ->
             viewModel.onSongHistoryClicked(song)
         }
 
         viewModel.observeHistory().observe(viewLifecycleOwner) {
-            searchHistoryAdapter?.searchHistoryList = it
+            songHistoryAdapter?.songs = it
         }
 
-        binding.recyclerSearchHistory.adapter = searchHistoryAdapter
+        binding.recyclerSearchHistory.adapter = songHistoryAdapter
 
         binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
             showSearchHistory(hasFocus)
@@ -179,7 +182,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     private fun showSearchHistory(hasFocus: Boolean) {
         val showHistory = hasFocus && binding.inputEditText.text.isEmpty()
         binding.searchHistoryLayout.visibility =
-            if (showHistory && searchHistoryAdapter?.searchHistoryList?.isNotEmpty() == true) View.VISIBLE else View.GONE
+            if (showHistory && songHistoryAdapter?.songs?.isNotEmpty() == true) View.VISIBLE else View.GONE
         if (showHistory) {
             binding.recyclerViewTrack.visibility = View.GONE
             binding.errorLayout.visibility = View.GONE
@@ -216,7 +219,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     override fun onDestroy() {
         super.onDestroy()
         songAdapter = null
-        searchHistoryAdapter = null
+        songHistoryAdapter = null
     }
 
     companion object {
