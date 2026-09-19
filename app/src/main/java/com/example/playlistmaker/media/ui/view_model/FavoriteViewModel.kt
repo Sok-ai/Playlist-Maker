@@ -4,14 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.core.domain.interactor.FavoriteInteractor
 import com.example.playlistmaker.core.domain.model.Song
-import com.example.playlistmaker.core.domain.repository.FavoriteRepository
 import com.example.playlistmaker.utils.SingleLiveEvent
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class FavoriteViewModel(private val favoriteRepository: FavoriteRepository) : ViewModel() {
+class FavoriteViewModel(private val favoriteInteractor: FavoriteInteractor) : ViewModel() {
     private var clickDebounceJob: Job? = null
 
     private val _favoriteList = MutableLiveData<List<Song>>()
@@ -26,7 +26,7 @@ class FavoriteViewModel(private val favoriteRepository: FavoriteRepository) : Vi
 
     init {
         viewModelScope.launch {
-            favoriteRepository.getFavorites().collect {
+            favoriteInteractor.getFavorites().collect {
                 _favoriteList.postValue(it)
             }
         }
