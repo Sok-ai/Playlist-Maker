@@ -6,10 +6,7 @@ import com.example.playlistmaker.core.domain.repository.FavoriteRepository
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    factory<FavoriteRepository> {
-        FavoriteRepositoryImpl(appDatabase = get(), favoriteConverter = get())
-    }
-    factory<FavoriteConverter> {
-        FavoriteConverter()
+    single<FavoriteRepository> {
+        FavoriteRepositoryImpl(favoriteSongDao = get(), favoriteConverter = FavoriteConverter())
     }
 }
