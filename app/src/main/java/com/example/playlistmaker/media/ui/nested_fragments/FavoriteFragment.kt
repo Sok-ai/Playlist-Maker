@@ -8,6 +8,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.core.BindingFragment
+import com.example.playlistmaker.core.ui.SongAdapter
 import com.example.playlistmaker.databinding.FragmentFavoriteBinding
 import com.example.playlistmaker.library.ui.LibraryFragment
 import com.example.playlistmaker.media.ui.view_model.FavoriteViewModel
@@ -15,7 +16,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoriteFragment : BindingFragment<FragmentFavoriteBinding>() {
     private val vm: FavoriteViewModel by viewModel<FavoriteViewModel>()
-    private var favoriteAdapter: FavoriteAdapter? = null
+    private var songAdapter: SongAdapter? = null
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -28,12 +29,12 @@ class FavoriteFragment : BindingFragment<FragmentFavoriteBinding>() {
             openMusic(it)
         }
 
-        favoriteAdapter = FavoriteAdapter { song ->
+        songAdapter = SongAdapter { song ->
             vm.onSongClickListener(song)
         }.apply {
             vm.observeFavoriteList().observe(viewLifecycleOwner) { listSong ->
                 if (listSong.isNotEmpty()) {
-                    favoriteList = listSong
+                    songs = listSong
                     showContent()
                 } else {
                     showEmptyScreen()
@@ -41,7 +42,7 @@ class FavoriteFragment : BindingFragment<FragmentFavoriteBinding>() {
             }
         }
 
-        binding.recyclerFavorites.adapter = favoriteAdapter
+        binding.recyclerFavorites.adapter = songAdapter
     }
 
     private fun showEmptyScreen() {
@@ -65,7 +66,7 @@ class FavoriteFragment : BindingFragment<FragmentFavoriteBinding>() {
 
     override fun onDestroy() {
         super.onDestroy()
-        favoriteAdapter = null
+        songAdapter = null
     }
 
     private fun openMusic(songId: Long) {
