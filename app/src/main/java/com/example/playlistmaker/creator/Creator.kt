@@ -3,6 +3,7 @@ package com.example.playlistmaker.creator
 import com.example.playlistmaker.core.appModule
 import com.example.playlistmaker.core.data.di.databaseModule
 import com.example.playlistmaker.core.data.di.repositoryModule
+import com.example.playlistmaker.core.di.interactorModule
 import com.example.playlistmaker.library.di.libraryModule
 import com.example.playlistmaker.library.di.libraryViewModelModule
 import com.example.playlistmaker.media.di.mediaViewModelModule
@@ -32,7 +33,8 @@ object Creator {
             sharingDataModule,
             mediaViewModelModule,
             databaseModule,
-            repositoryModule
+            repositoryModule,
+            interactorModule
         )
     }
 }
