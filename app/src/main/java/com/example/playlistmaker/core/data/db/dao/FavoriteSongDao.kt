@@ -15,6 +15,9 @@ interface FavoriteSongDao {
     @Query("SELECT EXISTS (SELECT 1 FROM favorite_songs_table WHERE song_id = :idSong)")
     fun isFavoriteById(idSong: Long): Flow<Boolean>
 
+    @Query("SELECT * FROM favorite_songs_table WHERE song_id = :idSong")
+    suspend fun getFavoriteById(idSong: Long): SongEntity?
+
     @Query("DELETE FROM favorite_songs_table WHERE song_id = :id")
     suspend fun deleteFavoriteById(id: Long)
 
