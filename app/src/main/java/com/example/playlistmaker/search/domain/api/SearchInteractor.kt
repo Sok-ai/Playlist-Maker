@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.Flow
 interface SearchInteractor {
     fun searchSongs(expression: String): Flow<SearchResult>
     fun getHistory(): List<Song>
-    fun getSongById(id: Long): Song?
+    fun getSongByIdFromHistory(id: Long): Song?
     fun addToHistory(song: Song)
     fun clearHistory()
     fun saveLastTrack(song: Song)
-    fun getLastTrack(): Song?
+    fun getLastTrackFromHistory(): Song?
 }

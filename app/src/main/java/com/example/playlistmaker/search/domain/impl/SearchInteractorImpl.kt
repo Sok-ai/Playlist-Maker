@@ -19,7 +19,7 @@ class SearchInteractorImpl(
         return historyRepository.getHistory()
     }
 
-    override fun getSongById(id: Long): Song? {
+    override fun getSongByIdFromHistory(id: Long): Song? {
         return historyRepository.getSongById(id)
     }
 
@@ -35,7 +35,7 @@ class SearchInteractorImpl(
         historyRepository.saveLastTrack(song)
     }
 
-    override fun getLastTrack(): Song? {
+    override fun getLastTrackFromHistory(): Song? {
         return historyRepository.getLastTrack()
     }
 }
