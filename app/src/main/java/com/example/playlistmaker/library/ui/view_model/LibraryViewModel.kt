@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.core.domain.interactor.FavoriteInteractor
 import com.example.playlistmaker.library.domain.api.MusicPlayer
 import com.example.playlistmaker.library.domain.model.PlayerUiState
 import com.example.playlistmaker.search.domain.api.SearchInteractor
 import com.example.playlistmaker.core.domain.model.Song
-import com.example.playlistmaker.core.domain.repository.FavoriteRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 class LibraryViewModel(
     private val musicPlayer: MusicPlayer,
     private val searchInteractor: SearchInteractor,
-    private val favoriteRepository: FavoriteRepository,
+    private val favoriteInteractor: FavoriteInteractor,
     private val songId: Long
 ) : ViewModel() {
     private var timerJob: Job? = null
@@ -31,17 +31,27 @@ class LibraryViewModel(
     }
 
     private fun gettingMusic() {
-        val resSong = searchInteractor.getSongById(songId)
+        viewModelScope.launch {
+            val songFromDB = favoriteInteractor.getFavoriteById(songId)
 
-        if (resSong != null) {
-            isLastSong(resSong)
-        } else {
+            if (songFromDB != null) {
+                setupInitPlayer(songFromDB)
+                return@launch
+            }
+
+            val resSong = searchInteractor.getSongByIdFromHistory(songId)
+
+            if (resSong != null) {
+                isLastSong(resSong)
+                return@launch
+            }
+
             loadLastTrack()
         }
     }
 
     private fun loadLastTrack() {
-        val songData = searchInteractor.getLastTrack()
+        val songData = searchInteractor.getLastTrackFromHistory()
         if (songData != null) {
             setupInitPlayer(songData)
         } else {
@@ -54,7 +64,7 @@ class LibraryViewModel(
     }
 
     private fun isLastSong(newSong: Song) {
-        val lastTrack = searchInteractor.getLastTrack()
+        val lastTrack = searchInteractor.getLastTrackFromHistory()
 
         if (lastTrack?.trackId != newSong.trackId) {
             searchInteractor.saveLastTrack(newSong)
@@ -90,7 +100,7 @@ class LibraryViewModel(
 
     private fun checkIsFavorite(idSong: Long) {
         viewModelScope.launch {
-            favoriteRepository.isFavorite(idSong).collect {
+            favoriteInteractor.isFavorite(idSong).collect {
                 _uiState.value = _uiState.value?.copy(isFavorite = it)
             }
         }
@@ -100,9 +110,9 @@ class LibraryViewModel(
         val song = _uiState.value?.song ?: return
         viewModelScope.launch {
             if (_uiState.value?.isFavorite == true) {
-                favoriteRepository.deleteFavorites(song.trackId)
+                favoriteInteractor.deleteFavorites(song.trackId)
             } else {
-                favoriteRepository.insertFavorite(song)
+                favoriteInteractor.insertFavorite(song)
             }
         }
     }
