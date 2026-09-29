@@ -47,4 +47,9 @@
             android:id="@+id/action_mediaFragment_to_libraryFragment"
             app:destination="@id/libraryFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/createPlaylistFragment3"
+        android:name="com.example.playlistmaker.media.ui.CreatePlaylistFragment"
+        android:label="fragment_create_playlist"
+        tools:layout="@layout/fragment_create_playlist" />
 </navigation>
