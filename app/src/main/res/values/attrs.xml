@@ -6,4 +6,6 @@
 
     <attr name="myTabIndicatorColor" format="color" />
     <attr name="myTabBackground" format="color" />
+
+    <attr name="createPlaylistInputBackground" format="color" />
 </resources>
