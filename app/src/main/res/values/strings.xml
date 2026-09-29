@@ -51,5 +51,11 @@
     <string name="media_text_error_playlists">Вы не создали\n ни одного плейлиста</string>
     <string name="media_btn_text_playlists">Новый плейлист</string>
 
+    <!--  Create playlist  -->
+    <string name="new_playlist_page">Новый плейлист</string>
+    <string name="hint_name_input">Название*</string>
+    <string name="hint_description_input">Описание</string>
+    <string name="create_playlist_button_text">Создать</string>
+    <string name="content_description_image">Картинка для плейлиста</string>
 
 </resources>
