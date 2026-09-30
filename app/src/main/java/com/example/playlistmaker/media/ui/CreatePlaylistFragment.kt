@@ -9,6 +9,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.doAfterTextChanged
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.core.BindingFragment
@@ -34,7 +35,6 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
             }
         }
     private val vm: CreatePlaylistViewModel by viewModel()
-    private var textWatcher: TextWatcher? = null
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -54,37 +54,14 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
             )
             insets
         }
-
-        textWatcher = object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(
-                s: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int
-            ) {
-            }
-
-            override fun onTextChanged(
-                s: CharSequence?,
-                start: Int,
-                before: Int,
-                count: Int
-            ) {
-                vm.onNameChange(s.toString())
-            }
-
-        }
-
         vm.observeIsCreateEnabled().observe(viewLifecycleOwner) { enabled ->
             binding.createPlaylistButton.isEnabled = enabled
         }
-
-        binding.nameTextInputLayout.editText?.addTextChangedListener(textWatcher)
         binding.playlistImage.setOnClickListener {
             photoResultLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
+        binding.nameTextInputLayout.editText?.doAfterTextChanged { text ->
+            vm.onNameChange(text.toString())
         }
     }
 
