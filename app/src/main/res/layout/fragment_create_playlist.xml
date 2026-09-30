@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="20dp"
-    android:layout_marginBottom="32dp"
     android:background="?attr/colorPrimary"
     tools:context=".media.ui.CreatePlaylistFragment">
 
@@ -13,6 +11,7 @@
         android:id="@+id/back_button"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_marginTop="20dp"
         android:backgroundTint="@android:color/transparent"
         android:importantForAccessibility="no"
         android:src="@drawable/ic_settings_back_arrow"
@@ -26,11 +25,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginEnd="0dp"
         android:text="@string/new_playlist_page"
         app:layout_constraintBottom_toBottomOf="@+id/back_button"
         app:layout_constraintStart_toEndOf="@+id/back_button"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/back_button" />
 
     <ImageView
         android:id="@+id/playlist_image"
@@ -85,6 +83,7 @@
         android:id="@+id/create_playlist_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
         android:background="@drawable/btn_create_playlist_background"
         android:text="@string/create_playlist_button_text"
         android:textColor="@color/YP_White"
