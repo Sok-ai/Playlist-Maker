@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="15dp"
+    android:layout_marginTop="20dp"
     android:layout_marginBottom="32dp"
+    android:background="?attr/colorPrimary"
     tools:context=".media.ui.CreatePlaylistFragment">
 
     <ImageButton
@@ -85,7 +86,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/btn_create_playlist_background"
-        android:enabled="false"
         android:text="@string/create_playlist_button_text"
         android:textColor="@color/YP_White"
         app:layout_constraintBottom_toBottomOf="parent"
