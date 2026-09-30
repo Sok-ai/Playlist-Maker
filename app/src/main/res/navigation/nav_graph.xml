@@ -9,7 +9,8 @@
         android:id="@+id/playlistFragment"
         android:name="com.example.playlistmaker.media.ui.nested_fragments.PlaylistFragment"
         android:label="fragment_playlist"
-        tools:layout="@layout/fragment_playlist" />
+        tools:layout="@layout/fragment_playlist" >
+    </fragment>
     <fragment
         android:id="@+id/favoriteFragment"
         android:name="com.example.playlistmaker.media.ui.nested_fragments.FavoriteFragment"
@@ -46,9 +47,12 @@
         <action
             android:id="@+id/action_mediaFragment_to_libraryFragment"
             app:destination="@id/libraryFragment" />
+        <action
+            android:id="@+id/action_mediaFragment_to_createPlaylistFragment"
+            app:destination="@id/createPlaylistFragment" />
     </fragment>
     <fragment
-        android:id="@+id/createPlaylistFragment3"
+        android:id="@+id/createPlaylistFragment"
         android:name="com.example.playlistmaker.media.ui.CreatePlaylistFragment"
         android:label="fragment_create_playlist"
         tools:layout="@layout/fragment_create_playlist" />
