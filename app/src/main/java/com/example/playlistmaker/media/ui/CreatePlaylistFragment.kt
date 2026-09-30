@@ -1,19 +1,38 @@
 package com.example.playlistmaker.media.ui
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.core.BindingFragment
 import com.example.playlistmaker.databinding.FragmentCreatePlaylistBinding
 import com.example.playlistmaker.media.ui.view_model.CreatePlaylistViewModel
+import com.example.playlistmaker.utils.dpToPx
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() {
+
+    private val photoResultLauncher =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            uri?.let {
+                Glide.with(this)
+                    .load(it)
+                    .transform(
+                        RoundedCorners(
+                            requireContext().dpToPx(8f)
+                        )
+                    )
+                    .into(binding.playlistImage)
+                binding.playlistImage.scaleType = ImageView.ScaleType.CENTER_CROP
+            }
+        }
     private val vm: CreatePlaylistViewModel by viewModel()
     private var textWatcher: TextWatcher? = null
 
@@ -64,12 +83,9 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
         }
 
         binding.nameTextInputLayout.editText?.addTextChangedListener(textWatcher)
-    }
-
-    override fun onDestroyView() {
-        binding.nameTextInputLayout.editText?.removeTextChangedListener(textWatcher)
-        textWatcher = null
-        super.onDestroyView()
+        binding.playlistImage.setOnClickListener {
+            photoResultLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
     }
 
     companion object {
