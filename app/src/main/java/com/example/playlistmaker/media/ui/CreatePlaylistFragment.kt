@@ -15,16 +15,18 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.core.BindingFragment
+import com.example.playlistmaker.core.ui.dialog.ConfirmationDialog
 import com.example.playlistmaker.databinding.FragmentCreatePlaylistBinding
 import com.example.playlistmaker.media.ui.view_model.CreatePlaylistViewModel
 import com.example.playlistmaker.utils.dpToPx
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() {
-
+    private val vm: CreatePlaylistViewModel by viewModel()
     private val photoResultLauncher =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             uri?.let {
+                binding.playlistImage.scaleType = ImageView.ScaleType.CENTER_CROP
                 Glide.with(this)
                     .load(it)
                     .transform(
@@ -33,7 +35,7 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
                         )
                     )
                     .into(binding.playlistImage)
-                binding.playlistImage.scaleType = ImageView.ScaleType.CENTER_CROP
+                vm.onImageChange(it)
             }
         }
     private val vm: CreatePlaylistViewModel by viewModel()
@@ -60,19 +62,46 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
         vm.observeIsCreateEnabled().observe(viewLifecycleOwner) { enabled ->
             binding.createPlaylistButton.isEnabled = enabled
         }
-        binding.playlistImage.setOnClickListener {
-            photoResultLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-        }
-        binding.nameTextInputLayout.editText?.doAfterTextChanged { text ->
-            vm.onNameChange(text.toString())
-        }
         with(binding) {
             backButton.setOnClickListener {
                 hasUnsavedData()
             }
+            playlistImage.setOnClickListener {
+                photoResultLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            }
+            nameTextInputLayout.editText?.doAfterTextChanged { text ->
+                vm.onNameChange(text.toString())
+            }
+            descriptionTextInputLayout.editText?.doAfterTextChanged { text ->
+                vm.onDescriptionChange(text.toString())
+            }
+        }
+    }
 
 
 
+    private fun createDialog() {
+        ConfirmationDialog.show(
+            context = requireContext(),
+            title = "Завершить создание плейлиста?",
+            message = "Все несохраненные данные будут потеряны",
+            positiveText = "Завершить",
+            negativeText = "Отмена",
+            onPositive = {
+                findNavController().navigateUp()
+            },
+            onNegative = {
+            }
+        )
+    }
+
+    private fun hasUnsavedData() {
+        if (vm.hasUnsavedData()) {
+            createDialog()
+        } else {
+            findNavController().navigateUp()
+        }
+    }
 
 
     private fun onBackPressedHandler() {
