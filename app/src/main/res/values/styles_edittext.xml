@@ -9,7 +9,7 @@
 
     <style name="CreatePlaylistEditTextStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="android:textColorHint">?attr/colorOnPrimary</item>
-        <item name="hintTextColor">?attr/colorOnPrimary</item>
+        <item name="hintTextColor">@color/text_input_color</item>
         <item name="boxBackgroundColor">@android:color/transparent</item>
         <item name="boxStrokeColor">@color/text_input_stroke</item>
         <item name="boxStrokeWidth">1dp</item>
