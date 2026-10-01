@@ -9,9 +9,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.core.BindingFragment
 import com.example.playlistmaker.databinding.FragmentPlaylistBinding
+import com.example.playlistmaker.media.ui.CreatePlaylistFragment
 import com.example.playlistmaker.media.ui.view_model.PlaylistViewModel
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import kotlin.getValue
 
 class PlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
     private val vm: PlaylistViewModel by viewModel<PlaylistViewModel>()
@@ -32,6 +33,30 @@ class PlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
                         R.id.action_mediaFragment_to_createPlaylistFragment
                     )
             }
+
+            findNavController()
+                .currentBackStackEntry
+                ?.savedStateHandle
+                ?.getLiveData<String>(CreatePlaylistFragment.KEY_PLAYLIST_CREATED)
+                ?.observe(viewLifecycleOwner) { playlistName ->
+                    showPlaylistCreatedMessage(playlistName)
+
+                    findNavController()
+                        .currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.remove<String>(CreatePlaylistFragment.KEY_PLAYLIST_CREATED)
+                }
+        }
+    }
+
+    private fun showPlaylistCreatedMessage(playlistName: String) {
+        binding.root.post {
+            Snackbar.make(
+                binding.root,
+                "Плейлист $playlistName создан",
+                Snackbar.LENGTH_SHORT
+            )
+                .show()
         }
     }
 
