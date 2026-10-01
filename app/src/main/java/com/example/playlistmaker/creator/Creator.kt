@@ -6,6 +6,9 @@ import com.example.playlistmaker.core.data.di.repositoryModule
 import com.example.playlistmaker.core.di.interactorModule
 import com.example.playlistmaker.library.di.libraryModule
 import com.example.playlistmaker.library.di.libraryViewModelModule
+import com.example.playlistmaker.media.di.mediaDatabaseModule
+import com.example.playlistmaker.media.di.mediaInteractorModule
+import com.example.playlistmaker.media.di.mediaDataModule
 import com.example.playlistmaker.media.di.mediaViewModelModule
 import com.example.playlistmaker.search.di.searchDataModule
 import com.example.playlistmaker.search.di.searchDomainModule
@@ -34,7 +37,10 @@ object Creator {
             mediaViewModelModule,
             databaseModule,
             repositoryModule,
-            interactorModule
+            interactorModule,
+            mediaDatabaseModule,
+            mediaInteractorModule,
+            mediaDataModule
         )
     }
 }
