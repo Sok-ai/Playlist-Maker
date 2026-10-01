@@ -38,7 +38,6 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
                 vm.onImageChange(it)
             }
         }
-    private val vm: CreatePlaylistViewModel by viewModel()
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -59,8 +58,8 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
             )
             insets
         }
-        vm.observeIsCreateEnabled().observe(viewLifecycleOwner) { enabled ->
-            binding.createPlaylistButton.isEnabled = enabled
+        vm.observePlaylistState().observe(viewLifecycleOwner) { state ->
+            binding.createPlaylistButton.isEnabled = state.isCreateEnabled
         }
         with(binding) {
             backButton.setOnClickListener {
@@ -75,10 +74,20 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
             descriptionTextInputLayout.editText?.doAfterTextChanged { text ->
                 vm.onDescriptionChange(text.toString())
             }
+            createPlaylistButton.setOnClickListener {
+                onPlaylistCreated(vm.getPlaylistName())
+            }
         }
     }
 
+    private fun onPlaylistCreated(playlistName: String) {
+        findNavController()
+            .previousBackStackEntry
+            ?.savedStateHandle
+            ?.set(KEY_PLAYLIST_CREATED, playlistName)
 
+        findNavController().navigateUp()
+    }
 
     private fun createDialog() {
         ConfirmationDialog.show(
@@ -116,8 +125,6 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
     }
 
     companion object {
-        fun createArgs() =
-            Bundle().apply {
-            }
+        const val KEY_PLAYLIST_CREATED = "playlist_created"
     }
 }
