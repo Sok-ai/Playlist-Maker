@@ -25,7 +25,10 @@
 
     <dimen name="text_bottom_nav_size">12sp</dimen>
 
-    <dimen name="text_input_create_playlist_size">16dp</dimen>
+    <dimen name="text_input_create_playlist_size">16sp</dimen>
+
+    <!-- Playlist view   -->
+    <dimen name="playlist_info_text_size">12sp</dimen>
 
     <!-- Радиусы -->
     <dimen name="radius_xlarge">54dp</dimen>
