@@ -11,6 +11,6 @@ val mediaInteractorModule = module {
         FileInteractorImpl(fileRepository = get())
     }
     factory<PlaylistInteractor> {
-        PlaylistInteractorImpl()
+        PlaylistInteractorImpl(playlistRepository = get())
     }
 }
