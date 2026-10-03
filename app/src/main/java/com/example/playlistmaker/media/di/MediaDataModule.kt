@@ -1,7 +1,8 @@
 package com.example.playlistmaker.media.di
 
-import com.example.playlistmaker.media.data.FileRepositoryImpl
-import com.example.playlistmaker.media.data.PlaylistRepositoryImpl
+import com.example.playlistmaker.media.data.db.converter.PlaylistConverter
+import com.example.playlistmaker.media.data.file.FileRepositoryImpl
+import com.example.playlistmaker.media.data.playlist.PlaylistRepositoryImpl
 import com.example.playlistmaker.media.data.file.FileClient
 import com.example.playlistmaker.media.domain.api.FileRepository
 import com.example.playlistmaker.media.domain.api.PlaylistRepository
@@ -13,7 +14,7 @@ val mediaDataModule = module {
         FileRepositoryImpl(fileClient = get())
     }
     single<PlaylistRepository> {
-        PlaylistRepositoryImpl(playlistDao = get())
+        PlaylistRepositoryImpl(playlistDao = get(), PlaylistConverter())
     }
     single<FileClient> {
         FileClient(androidContext())
