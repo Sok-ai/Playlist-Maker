@@ -58,6 +58,13 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
             )
             insets
         }
+        vm.observeResponseSavePlaylist().observe(viewLifecycleOwner) { name ->
+            findNavController()
+                .previousBackStackEntry
+                ?.savedStateHandle
+                ?.set(KEY_PLAYLIST_CREATED, name)
+            findNavController().navigateUp()
+        }
         vm.observePlaylistState().observe(viewLifecycleOwner) { state ->
             binding.createPlaylistButton.isEnabled = state.isCreateEnabled
         }
@@ -75,18 +82,13 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
                 vm.onDescriptionChange(text.toString())
             }
             createPlaylistButton.setOnClickListener {
-                onPlaylistCreated(vm.getPlaylistName())
+                onPlaylistCreated()
             }
         }
     }
 
-    private fun onPlaylistCreated(playlistName: String) {
-        findNavController()
-            .previousBackStackEntry
-            ?.savedStateHandle
-            ?.set(KEY_PLAYLIST_CREATED, playlistName)
-
-        findNavController().navigateUp()
+    private fun onPlaylistCreated() {
+        vm.createPlaylist()
     }
 
     private fun createDialog() {
