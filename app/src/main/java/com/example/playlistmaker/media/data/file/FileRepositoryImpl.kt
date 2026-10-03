@@ -1,7 +1,6 @@
-package com.example.playlistmaker.media.data
+package com.example.playlistmaker.media.data.file
 
 import androidx.core.net.toUri
-import com.example.playlistmaker.media.data.file.FileClient
 import com.example.playlistmaker.media.domain.api.FileRepository
 
 class FileRepositoryImpl(private val fileClient: FileClient) : FileRepository {
