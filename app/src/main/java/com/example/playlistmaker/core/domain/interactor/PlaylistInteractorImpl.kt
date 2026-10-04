@@ -1,8 +1,7 @@
-package com.example.playlistmaker.media.domain
+package com.example.playlistmaker.core.domain.interactor
 
-import com.example.playlistmaker.media.domain.api.PlaylistInteractor
-import com.example.playlistmaker.media.domain.api.PlaylistRepository
-import com.example.playlistmaker.media.domain.model.Playlist
+import com.example.playlistmaker.core.domain.model.Playlist
+import com.example.playlistmaker.core.domain.repository.PlaylistRepository
 import kotlinx.coroutines.flow.Flow
 
 class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository) :

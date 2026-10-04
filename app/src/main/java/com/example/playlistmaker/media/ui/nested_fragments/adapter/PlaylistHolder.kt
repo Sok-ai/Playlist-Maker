@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.PlaylistViewBinding
-import com.example.playlistmaker.media.domain.model.Playlist
+import com.example.playlistmaker.core.domain.model.Playlist
 import java.io.File
 
 class PlaylistHolder(private val binding: PlaylistViewBinding) :

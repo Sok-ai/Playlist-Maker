@@ -1,7 +1,7 @@
-package com.example.playlistmaker.media.data.db.converter
+package com.example.playlistmaker.core.data.converter
 
-import com.example.playlistmaker.media.data.db.entity.PlaylistEntity
-import com.example.playlistmaker.media.domain.model.Playlist
+import com.example.playlistmaker.core.data.db.entity.PlaylistEntity
+import com.example.playlistmaker.core.domain.model.Playlist
 
 class PlaylistConverter {
     fun toPlaylistEntity(playlist: Playlist): PlaylistEntity =

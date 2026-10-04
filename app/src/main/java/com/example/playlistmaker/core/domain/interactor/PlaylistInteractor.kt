@@ -1,6 +1,6 @@
-package com.example.playlistmaker.media.domain.api
+package com.example.playlistmaker.core.domain.interactor
 
-import com.example.playlistmaker.media.domain.model.Playlist
+import com.example.playlistmaker.core.domain.model.Playlist
 import kotlinx.coroutines.flow.Flow
 
 interface PlaylistInteractor {

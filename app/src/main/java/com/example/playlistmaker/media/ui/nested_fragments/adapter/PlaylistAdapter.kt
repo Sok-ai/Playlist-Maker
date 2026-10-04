@@ -3,7 +3,7 @@ package com.example.playlistmaker.media.ui.nested_fragments.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.example.playlistmaker.media.domain.model.Playlist
+import com.example.playlistmaker.core.domain.model.Playlist
 
 class PlaylistAdapter : ListAdapter<Playlist, PlaylistHolder>(DiffCallback) {
     override fun onCreateViewHolder(

@@ -1,10 +1,10 @@
-package com.example.playlistmaker.media.data.playlist
+package com.example.playlistmaker.core.data
 
-import com.example.playlistmaker.media.data.db.converter.PlaylistConverter
-import com.example.playlistmaker.media.data.db.dao.PlaylistDao
-import com.example.playlistmaker.media.data.db.entity.PlaylistEntity
-import com.example.playlistmaker.media.domain.api.PlaylistRepository
-import com.example.playlistmaker.media.domain.model.Playlist
+import com.example.playlistmaker.core.data.converter.PlaylistConverter
+import com.example.playlistmaker.core.data.db.dao.PlaylistDao
+import com.example.playlistmaker.core.data.db.entity.PlaylistEntity
+import com.example.playlistmaker.core.domain.model.Playlist
+import com.example.playlistmaker.core.domain.repository.PlaylistRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
