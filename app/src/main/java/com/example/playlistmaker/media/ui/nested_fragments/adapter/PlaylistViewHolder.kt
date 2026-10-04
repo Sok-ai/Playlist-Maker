@@ -9,7 +9,7 @@ import com.example.playlistmaker.databinding.PlaylistViewBinding
 import com.example.playlistmaker.core.domain.model.Playlist
 import java.io.File
 
-class PlaylistHolder(private val binding: PlaylistViewBinding) :
+class PlaylistViewHolder(private val binding: PlaylistViewBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(model: Playlist) {
@@ -29,10 +29,10 @@ class PlaylistHolder(private val binding: PlaylistViewBinding) :
     }
 
     companion object {
-        fun instance(parent: ViewGroup): PlaylistHolder {
+        fun createInstance(parent: ViewGroup): PlaylistViewHolder {
             val inflater = LayoutInflater.from(parent.context)
             val binding = PlaylistViewBinding.inflate(inflater, parent, false)
-            return PlaylistHolder(binding)
+            return PlaylistViewHolder(binding)
         }
     }
 }
