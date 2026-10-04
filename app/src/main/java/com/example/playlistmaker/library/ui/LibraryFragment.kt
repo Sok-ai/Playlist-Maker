@@ -17,19 +17,26 @@ import com.example.playlistmaker.utils.dpToPx
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+
 class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
+    private val trackId by lazy(LazyThreadSafetyMode.NONE) {
+        requireArguments().getLong(TRACK_ID_KEY)
+    }
+    private val viewModel: LibraryViewModel by viewModel<LibraryViewModel> { parametersOf(trackId) }
+    private var playlistSheetAdapter: PlaylistSheetAdapter? = null
+
     override fun createBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
     ): FragmentLibraryBinding = FragmentLibraryBinding.inflate(inflater, container, false)
 
-    private val trackId by lazy(LazyThreadSafetyMode.NONE) {
-        requireArguments().getLong(TRACK_ID_KEY)
-    }
-    private val viewModel: LibraryViewModel by viewModel<LibraryViewModel> { parametersOf(trackId) }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        playlistSheetAdapter = PlaylistSheetAdapter()
+
+        viewModel.observePlaylists().observe(viewLifecycleOwner) { newList ->
+            playlistSheetAdapter?.submitList(newList) ?: return@observe
+        }
 
         viewModel.observeUiState().observe(viewLifecycleOwner)
         { uiState ->
@@ -97,6 +104,8 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
         binding.addPlayListButton.setOnClickListener {
             bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
         }
+
+        binding.bottomSheetRecycler.adapter = playlistSheetAdapter
     }
 
     private fun showFavorites(isFavorite: Boolean) = if (isFavorite) {
@@ -148,6 +157,12 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
     override fun onPause() {
         super.onPause()
         viewModel.onPause()
+    }
+
+    override fun onDestroyView() {
+        binding.bottomSheetRecycler.adapter = null
+        playlistSheetAdapter = null
+        super.onDestroyView()
     }
 
     companion object {
