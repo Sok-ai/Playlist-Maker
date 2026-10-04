@@ -309,12 +309,11 @@
         android:id="@+id/overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.5"
         android:background="@color/YP_Black"
         android:visibility="gone" />
 
     <LinearLayout
-        android:id="@+id/playlists_bottom_sheet"
+        android:id="@+id/bottom_sheet_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/sheet_background_rounded"
