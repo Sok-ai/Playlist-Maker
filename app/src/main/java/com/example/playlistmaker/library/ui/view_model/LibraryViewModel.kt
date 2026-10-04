@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.core.domain.interactor.FavoriteInteractor
+import com.example.playlistmaker.core.domain.interactor.PlaylistInteractor
+import com.example.playlistmaker.core.domain.model.Playlist
 import com.example.playlistmaker.library.domain.api.MusicPlayer
 import com.example.playlistmaker.library.domain.model.PlayerUiState
 import com.example.playlistmaker.search.domain.api.SearchInteractor
@@ -18,6 +20,7 @@ class LibraryViewModel(
     private val musicPlayer: MusicPlayer,
     private val searchInteractor: SearchInteractor,
     private val favoriteInteractor: FavoriteInteractor,
+    private val playlistInteractor: PlaylistInteractor,
     private val songId: Long
 ) : ViewModel() {
     private var timerJob: Job? = null
@@ -25,9 +28,21 @@ class LibraryViewModel(
     private val _uiState = MutableLiveData(PlayerUiState())
     fun observeUiState(): LiveData<PlayerUiState> = _uiState
 
+    private val _playlists = MutableLiveData<List<Playlist>>()
+    fun observePlaylists(): LiveData<List<Playlist>> = _playlists
+
     init {
         checkIsFavorite(songId)
         gettingMusic()
+        getPlaylists()
+    }
+
+    private fun getPlaylists() {
+        viewModelScope.launch {
+            playlistInteractor.getPlaylists().collect { list ->
+                _playlists.value = list
+            }
+        }
     }
 
     private fun gettingMusic() {
