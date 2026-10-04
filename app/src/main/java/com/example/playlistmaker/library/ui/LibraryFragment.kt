@@ -14,10 +14,9 @@ import com.example.playlistmaker.library.ui.view_model.LibraryViewModel
 import com.example.playlistmaker.core.domain.model.Song
 import com.example.playlistmaker.utils.TimeFormatter
 import com.example.playlistmaker.utils.dpToPx
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import kotlin.getValue
-
 class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
     override fun createBinding(
         inflater: LayoutInflater,
@@ -51,6 +50,8 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
             }
         }
 
+        settingBottomSheetView()
+
         binding.likeMusicButton.setOnClickListener {
             viewModel.onClickFavorite()
         }
@@ -61,6 +62,40 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
 
         binding.btnLibraryToMain.setOnClickListener {
             findNavController().navigateUp()
+        }
+    }
+
+    private fun settingBottomSheetView() {
+        val bottomSheet = BottomSheetBehavior
+            .from(binding.bottomSheetLayout)
+            .apply {
+                state = BottomSheetBehavior.STATE_HIDDEN
+            }
+
+        bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.visibility = View.GONE
+                    }
+
+                    else -> {
+                        binding.overlay.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                binding.overlay.alpha = (slideOffset + 1) / 2
+            }
+        })
+
+        binding.bottomSheetCreatePlaylist.setOnClickListener {
+            findNavController().navigate(R.id.action_libraryFragment_to_createPlaylistFragment)
+        }
+
+        binding.addPlayListButton.setOnClickListener {
+            bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
         }
     }
 
