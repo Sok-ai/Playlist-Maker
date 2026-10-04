@@ -27,6 +27,16 @@ class PlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         playlistAdapter = PlaylistAdapter()
+
+        vm.observePlaylists().observe(viewLifecycleOwner) { playlists ->
+            if (playlists.isNotEmpty()) {
+                playlistAdapter?.submitList(playlists) ?: return@observe
+                showContentLayout()
+            } else {
+                showEmptyLayout()
+            }
+        }
+
         findNavController()
             .currentBackStackEntry
             ?.savedStateHandle
@@ -48,14 +58,6 @@ class PlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
                     )
             }
             recyclerPlaylists.adapter = playlistAdapter
-        }
-        vm.observePlaylists().observe(viewLifecycleOwner) { playlists ->
-            if (playlists.isNotEmpty()) {
-                playlistAdapter?.submitList(playlists) ?: return@observe
-                showContentLayout()
-            } else {
-                showEmptyLayout()
-            }
         }
     }
 
