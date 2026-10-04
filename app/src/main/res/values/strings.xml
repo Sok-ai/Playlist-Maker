@@ -31,6 +31,7 @@
     <string name="library_genre_music_text">Жанр</string>
     <string name="library_year_music_text">Год</string>
     <string name="library_album_music_text">Альбом</string>
+    <string name="library_bottom_sheet_text">Добавить в плейлист</string>
 
     <!--  Search  -->
     <string name="search_name_page">Поиск</string>
