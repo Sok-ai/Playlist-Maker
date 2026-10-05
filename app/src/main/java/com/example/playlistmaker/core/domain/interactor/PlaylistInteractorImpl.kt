@@ -1,6 +1,7 @@
 package com.example.playlistmaker.core.domain.interactor
 
 import com.example.playlistmaker.core.domain.model.Playlist
+import com.example.playlistmaker.core.domain.model.Song
 import com.example.playlistmaker.core.domain.repository.PlaylistRepository
 import kotlinx.coroutines.flow.Flow
 
@@ -15,5 +16,12 @@ class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository)
 
     override suspend fun updatePlaylist(playlist: Playlist) {
         playlistRepository.updatePlaylist(playlist)
+    }
+
+    override suspend fun addTrackToPlaylist(
+        playlist: Playlist,
+        song: Song
+    ) {
+        playlistRepository.addTrackToPlaylist(playlist, song)
     }
 }
