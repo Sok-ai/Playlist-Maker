@@ -10,12 +10,21 @@ import com.example.playlistmaker.media.domain.api.FileInteractor
 import com.example.playlistmaker.core.domain.interactor.PlaylistInteractor
 import com.example.playlistmaker.core.domain.model.Playlist
 import com.example.playlistmaker.utils.SingleLiveEvent
+import com.example.playlistmaker.utils.debounce
 import kotlinx.coroutines.launch
 
 class CreatePlaylistViewModel(
     private val playlistInteractor: PlaylistInteractor,
     private val fileInteractor: FileInteractor
 ) : ViewModel() {
+
+    private val debouncedCreatePlaylist = debounce<Unit>(
+        300L,
+        viewModelScope,
+        false,
+        action = {
+            createPlaylistInternal()
+        })
     private val _playlistState = MutableLiveData(CreatePlaylistState())
     fun observePlaylistState(): LiveData<CreatePlaylistState> = _playlistState
 
@@ -23,6 +32,10 @@ class CreatePlaylistViewModel(
     fun observeResponseSavePlaylist(): LiveData<String> = _responseSavePlaylist
 
     fun createPlaylist() {
+        debouncedCreatePlaylist(Unit)
+    }
+
+    private fun createPlaylistInternal() {
         val state = _playlistState.value ?: return
         viewModelScope.launch {
             try {
@@ -37,7 +50,7 @@ class CreatePlaylistViewModel(
                 playlistInteractor.insertPlaylist(playlist)
                 _responseSavePlaylist.value = state.name
             } catch (e: Exception) {
-                Log.e("Playlist_maker", e.message ?: "Unknown error", e)
+                Log.e("PlaylistMaker", "create failed", e)
             }
         }
     }
