@@ -4,6 +4,7 @@ import androidx.room.Room
 import com.example.playlistmaker.core.data.db.AppDatabase
 import com.example.playlistmaker.core.data.db.dao.FavoriteSongDao
 import com.example.playlistmaker.core.data.db.dao.PlaylistDao
+import com.example.playlistmaker.core.data.db.dao.SongInPlaylistDao
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -18,5 +19,8 @@ val databaseModule = module {
     }
     single<PlaylistDao> {
         get<AppDatabase>().playlistDao()
+    }
+    single<SongInPlaylistDao> {
+        get<AppDatabase>().songInPlaylistDao()
     }
 }
