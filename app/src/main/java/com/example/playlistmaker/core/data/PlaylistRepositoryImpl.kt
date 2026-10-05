@@ -25,6 +25,11 @@ class PlaylistRepositoryImpl(
             }
             .distinctUntilChanged()
 
+    override suspend fun updatePlaylist(playlist: Playlist) {
+        val playlistEntity = playlistConverter.toPlaylistEntity(playlist)
+        playlistDao.updatePlaylist(playlistEntity)
+    }
+
     private fun convertEntitiesToPlaylist(playlistList: List<PlaylistEntity>): List<Playlist> =
         playlistList.map {
             playlistConverter.toPlaylist(it)
