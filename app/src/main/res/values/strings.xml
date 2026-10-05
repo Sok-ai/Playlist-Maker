@@ -32,6 +32,8 @@
     <string name="library_year_music_text">Год</string>
     <string name="library_album_music_text">Альбом</string>
     <string name="library_bottom_sheet_text">Добавить в плейлист</string>
+    <string name="library_added_playlist_text">Добавлено в плейлист %s</string>
+    <string name="library_not_added_playlist_text">Трек уже добавлен в плейлист %s</string>
 
     <!--  Search  -->
     <string name="search_name_page">Поиск</string>
