@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -12,6 +15,7 @@ import com.example.playlistmaker.core.BindingFragment
 import com.example.playlistmaker.databinding.FragmentLibraryBinding
 import com.example.playlistmaker.library.ui.view_model.LibraryViewModel
 import com.example.playlistmaker.core.domain.model.Song
+import com.example.playlistmaker.library.ui.view_model.AddStatus
 import com.example.playlistmaker.utils.TimeFormatter
 import com.example.playlistmaker.utils.dpToPx
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -22,6 +26,7 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
     private val trackId by lazy(LazyThreadSafetyMode.NONE) {
         requireArguments().getLong(TRACK_ID_KEY)
     }
+    private lateinit var bottomSheet: BottomSheetBehavior<LinearLayout>
     private val viewModel: LibraryViewModel by viewModel<LibraryViewModel> { parametersOf(trackId) }
     private var playlistSheetAdapter: PlaylistSheetAdapter? = null
 
@@ -32,7 +37,28 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        playlistSheetAdapter = PlaylistSheetAdapter()
+        playlistSheetAdapter = PlaylistSheetAdapter {
+            viewModel.addSongToPlaylist(it)
+        }
+
+        viewModel.observeAddStatus().observe(viewLifecycleOwner) { status ->
+            when (status) {
+                is AddStatus.Success -> {
+                    showMessageToast(
+                        R.string.library_added_playlist_text,
+                        status.playlistName
+                    )
+                    bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
+                }
+
+
+                is AddStatus.AlreadyAdded -> showMessageToast(
+                    R.string.library_not_added_playlist_text,
+                    status.playlistName
+                )
+            }
+        }
+
 
         viewModel.observePlaylists().observe(viewLifecycleOwner) { newList ->
             playlistSheetAdapter?.submitList(newList) ?: return@observe
@@ -72,8 +98,16 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
         }
     }
 
+    private fun showMessageToast(@StringRes res: Int, playlistName: String) {
+        Toast.makeText(
+            requireContext(),
+            getString(res, playlistName),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
     private fun settingBottomSheetView() {
-        val bottomSheet = BottomSheetBehavior
+        bottomSheet = BottomSheetBehavior
             .from(binding.bottomSheetLayout)
             .apply {
                 state = BottomSheetBehavior.STATE_HIDDEN
