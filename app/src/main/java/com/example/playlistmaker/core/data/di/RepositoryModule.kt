@@ -13,6 +13,6 @@ val repositoryModule = module {
         FavoriteRepositoryImpl(favoriteSongDao = get(), favoriteConverter = FavoriteConverter())
     }
     single<PlaylistRepository> {
-        PlaylistRepositoryImpl(playlistDao = get(), PlaylistConverter())
+        PlaylistRepositoryImpl(playlistDao = get(), playlistConverter = PlaylistConverter())
     }
 }
