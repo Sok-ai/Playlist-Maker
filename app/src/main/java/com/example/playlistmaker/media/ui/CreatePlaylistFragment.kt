@@ -14,6 +14,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.R
 import com.example.playlistmaker.core.BindingFragment
 import com.example.playlistmaker.core.ui.dialog.ConfirmationDialog
 import com.example.playlistmaker.databinding.FragmentCreatePlaylistBinding
@@ -82,22 +83,18 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
                 vm.onDescriptionChange(text.toString())
             }
             createPlaylistButton.setOnClickListener {
-                onPlaylistCreated()
+                vm.createPlaylist()
             }
         }
-    }
-
-    private fun onPlaylistCreated() {
-        vm.createPlaylist()
     }
 
     private fun createDialog() {
         ConfirmationDialog.show(
             context = requireContext(),
-            title = "Завершить создание плейлиста?",
-            message = "Все несохраненные данные будут потеряны",
-            positiveText = "Завершить",
-            negativeText = "Отмена",
+            title = getString(R.string.dialog_exit_playlist_title),
+            message = getString(R.string.dialog_exit_playlist_message),
+            positiveText = getString(R.string.dialog_exit_positive),
+            negativeText = getString(R.string.dialog_exit_negative),
             onPositive = {
                 findNavController().navigateUp()
             },
