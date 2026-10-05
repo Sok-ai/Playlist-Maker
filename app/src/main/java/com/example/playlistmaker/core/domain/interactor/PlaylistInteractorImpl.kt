@@ -12,4 +12,8 @@ class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository)
 
     override fun getPlaylists(): Flow<List<Playlist>> =
         playlistRepository.getPlaylists()
+
+    override suspend fun updatePlaylist(playlist: Playlist) {
+        playlistRepository.updatePlaylist(playlist)
+    }
 }
