@@ -11,6 +11,7 @@ import com.example.playlistmaker.library.domain.api.MusicPlayer
 import com.example.playlistmaker.library.domain.model.PlayerUiState
 import com.example.playlistmaker.search.domain.api.SearchInteractor
 import com.example.playlistmaker.core.domain.model.Song
+import com.example.playlistmaker.utils.SingleLiveEvent
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
@@ -30,6 +31,9 @@ class LibraryViewModel(
 
     private val _playlists = MutableLiveData<List<Playlist>>()
     fun observePlaylists(): LiveData<List<Playlist>> = _playlists
+
+    private val _addStatus = SingleLiveEvent<AddStatus>()
+    fun observeAddStatus(): LiveData<AddStatus> = _addStatus
 
     init {
         checkIsFavorite(songId)
@@ -118,6 +122,23 @@ class LibraryViewModel(
             favoriteInteractor.isFavorite(idSong).collect {
                 _uiState.value = _uiState.value?.copy(isFavorite = it)
             }
+        }
+    }
+
+    fun addSongToPlaylist(playlist: Playlist) {
+        if (playlist.songs.contains(songId)) {
+            _addStatus.value = AddStatus.AlreadyAdded(playlist.name)
+            return
+        }
+
+        viewModelScope.launch {
+            val updatedSongs = (playlist.songs + songId).distinct()
+            val updated = playlist.copy(
+                songs = updatedSongs,
+                songCount = updatedSongs.size
+            )
+            playlistInteractor.updatePlaylist(playlist = updated)
+            _addStatus.value = AddStatus.Success(playlist.name)
         }
     }
 
