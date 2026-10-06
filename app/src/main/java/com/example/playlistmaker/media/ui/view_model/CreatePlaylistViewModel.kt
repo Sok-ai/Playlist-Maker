@@ -60,15 +60,21 @@ class CreatePlaylistViewModel(
     }
 
     fun onNameChange(text: String) {
-        _playlistState.value = _playlistState.value?.copy(name = text)
+        val current = _playlistState.value ?: return
+        if (current.name == text) return
+        _playlistState.value = current.copy(name = text)
     }
 
     fun onDescriptionChange(text: String) {
-        _playlistState.value = _playlistState.value?.copy(description = text)
+        val current = _playlistState.value ?: return
+        if (current.description == text) return
+        _playlistState.value = current.copy(description = text)
     }
 
     fun onImageChange(coverUri: Uri) {
-        _playlistState.value = _playlistState.value?.copy(coverUri = coverUri)
+        val current = _playlistState.value ?: return
+        if (current.coverUri == coverUri) return
+        _playlistState.value = current.copy(coverUri = coverUri)
     }
 
     fun hasUnsavedData(): Boolean {
