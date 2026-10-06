@@ -11,7 +11,7 @@ import com.example.playlistmaker.core.data.db.entity.SongInPlaylistEntity
 
 @Database(
     entities = [SongEntity::class, PlaylistEntity::class, SongInPlaylistEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
