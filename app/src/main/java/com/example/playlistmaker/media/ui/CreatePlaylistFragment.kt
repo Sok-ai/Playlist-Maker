@@ -1,5 +1,6 @@
 package com.example.playlistmaker.media.ui
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +25,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() {
     private val vm: CreatePlaylistViewModel by viewModel()
+    private var lastLoadedCoverUri: Uri? = null
     private val photoResultLauncher =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             uri?.let {
@@ -36,6 +38,7 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
                         )
                     )
                     .into(binding.playlistImage)
+                lastLoadedCoverUri = it
                 vm.onImageChange(it)
             }
         }
@@ -68,6 +71,37 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
         }
         vm.observePlaylistState().observe(viewLifecycleOwner) { state ->
             binding.createPlaylistButton.isEnabled = state.isCreateEnabled
+
+            val currentName = binding.nameTextInputLayout.editText?.text?.toString().orEmpty()
+            if (currentName != state.name) {
+                with(binding.nameTextInputLayout) {
+                    editText?.setText(state.name)
+                    editText?.setSelection(state.name.length)
+                }
+            }
+            val currentDescription =
+                binding.descriptionTextInputLayout.editText?.text?.toString().orEmpty()
+            if (currentDescription != state.description) {
+                with(binding.descriptionTextInputLayout) {
+                    editText?.setText(state.description)
+                    editText?.setSelection(state.description.length)
+                }
+            }
+
+            state.coverUri?.let { uri ->
+                if (uri != lastLoadedCoverUri) {
+                    binding.playlistImage.scaleType = ImageView.ScaleType.CENTER_CROP
+                    Glide.with(this)
+                        .load(uri)
+                        .transform(
+                            RoundedCorners(
+                                requireContext().dpToPx(8f)
+                            )
+                        )
+                        .into(binding.playlistImage)
+                    lastLoadedCoverUri = uri
+                }
+            }
         }
         with(binding) {
             backButton.setOnClickListener {
@@ -121,6 +155,11 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
                         hasUnsavedData()
                     }
                 })
+    }
+
+    override fun onDestroyView() {
+        lastLoadedCoverUri = null
+        super.onDestroyView()
     }
 
     companion object {
