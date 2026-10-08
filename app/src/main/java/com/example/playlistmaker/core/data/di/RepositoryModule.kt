@@ -15,8 +15,10 @@ val repositoryModule = module {
     }
     single<PlaylistRepository> {
         PlaylistRepositoryImpl(
+            database = get(),
             playlistDao = get(),
             songInPlaylistDao = get(),
+            playlistTrackRefDao = get(),
             playlistConverter = PlaylistConverter(),
             songInPlaylistConverter = SongInPlaylistConverter()
         )
