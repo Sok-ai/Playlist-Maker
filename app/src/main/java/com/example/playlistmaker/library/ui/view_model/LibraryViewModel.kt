@@ -128,13 +128,12 @@ class LibraryViewModel(
     fun addSongToPlaylist(playlist: Playlist) {
         val song = _uiState.value?.song ?: return
 
-        if (playlist.songs.contains(songId)) {
-            _addStatus.value = AddStatus.AlreadyAdded(playlist.name)
-            return
-        }
-
         viewModelScope.launch {
-            playlistInteractor.addTrackToPlaylist(playlist = playlist, song)
+            if (playlistInteractor.isSongInPlaylist(playlist.id, song.trackId)) {
+                _addStatus.value = AddStatus.AlreadyAdded(playlist.name)
+                return@launch
+            }
+            playlistInteractor.addTrackToPlaylist(playlist = playlist, song = song)
             _addStatus.value = AddStatus.Success(playlist.name)
         }
     }
