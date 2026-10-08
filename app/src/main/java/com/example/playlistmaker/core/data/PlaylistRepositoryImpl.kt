@@ -1,10 +1,14 @@
 package com.example.playlistmaker.core.data
 
+import androidx.room.withTransaction
 import com.example.playlistmaker.core.data.converter.PlaylistConverter
 import com.example.playlistmaker.core.data.converter.SongInPlaylistConverter
+import com.example.playlistmaker.core.data.db.AppDatabase
 import com.example.playlistmaker.core.data.db.dao.PlaylistDao
+import com.example.playlistmaker.core.data.db.dao.PlaylistTrackRefDao
 import com.example.playlistmaker.core.data.db.dao.SongInPlaylistDao
 import com.example.playlistmaker.core.data.db.entity.PlaylistEntity
+import com.example.playlistmaker.core.data.db.entity.PlaylistTrackRefEntity
 import com.example.playlistmaker.core.domain.model.Playlist
 import com.example.playlistmaker.core.domain.model.Song
 import com.example.playlistmaker.core.domain.repository.PlaylistRepository
@@ -13,8 +17,10 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 class PlaylistRepositoryImpl(
+    private val database: AppDatabase,
     private val playlistDao: PlaylistDao,
     private val songInPlaylistDao: SongInPlaylistDao,
+    private val playlistTrackRefDao: PlaylistTrackRefDao,
     private val playlistConverter: PlaylistConverter,
     private val songInPlaylistConverter: SongInPlaylistConverter
 ) : PlaylistRepository {
@@ -39,17 +45,21 @@ class PlaylistRepositoryImpl(
         playlist: Playlist,
         song: Song
     ) {
-        val updatedSongs = (playlist.songs + song.trackId).distinct()
-        val updated = playlist.copy(
-            songs = updatedSongs,
-            songCount = updatedSongs.size
+        val ref = PlaylistTrackRefEntity(
+            playlistId = playlist.id,
+            songId = song.trackId
         )
-        val playlistEntity = playlistConverter.toPlaylistEntity(updated)
-        playlistDao.updatePlaylist(playlistEntity)
-
         val songInPlaylistEntity = songInPlaylistConverter.toEntity(song)
-        songInPlaylistDao.insertSong(songInPlaylistEntity)
+        database.withTransaction {
+            songInPlaylistDao.insertSong(songInPlaylistEntity)
+            playlistTrackRefDao.insertRef(ref)
+            playlistDao.incrementSongCount(playlist.id)
+        }
     }
+
+    override suspend fun isSongInPlaylist(playlistId: Long, songId: Long): Boolean =
+        playlistTrackRefDao.isSongInPlaylist(playlistId, songId)
+
 
     private fun convertEntitiesToPlaylist(playlistList: List<PlaylistEntity>): List<Playlist> =
         playlistList.map {
