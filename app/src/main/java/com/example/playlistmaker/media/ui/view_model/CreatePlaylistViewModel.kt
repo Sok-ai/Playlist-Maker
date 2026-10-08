@@ -44,7 +44,6 @@ class CreatePlaylistViewModel(
                     name = state.name,
                     description = state.description,
                     pathImage = coverPath,
-                    songs = emptyList(),
                     songCount = 0
                 )
                 playlistInteractor.insertPlaylist(playlist)
