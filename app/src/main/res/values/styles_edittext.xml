@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="MyEditTextStyle" parent="EditTextStyle.Base">
         <item name="android:textColorHint">@color/YP_Text_Gray</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:drawableStart">@drawable/ic_search_edittext</item>
+    </style>
+
+    <style name="CreatePlaylistEditTextStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textColorHint">?attr/colorOnPrimary</item>
+        <item name="hintTextColor">@color/text_input_color</item>
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+        <item name="boxStrokeColor">@color/text_input_stroke</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">1dp</item>
     </style>
 </resources>

@@ -15,5 +15,10 @@
 
         <item name="myTabIndicatorColor">@color/YP_White</item>
         <item name="myTabBackground">@color/YP_Black</item>
+
+        <item name="createPlaylistInputBackground">@color/YP_White</item>
+        <item name="sheetRecyclerItemColor">@color/YP_White</item>
+
+        <item name="materialAlertDialogTheme">@style/MyAlertDialogTheme</item>
     </style>
 </resources>

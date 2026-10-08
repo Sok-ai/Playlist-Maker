@@ -5,10 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.core.domain.interactor.FavoriteInteractor
+import com.example.playlistmaker.core.domain.interactor.PlaylistInteractor
+import com.example.playlistmaker.core.domain.model.Playlist
 import com.example.playlistmaker.library.domain.api.MusicPlayer
 import com.example.playlistmaker.library.domain.model.PlayerUiState
 import com.example.playlistmaker.search.domain.api.SearchInteractor
 import com.example.playlistmaker.core.domain.model.Song
+import com.example.playlistmaker.utils.SingleLiveEvent
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
@@ -18,6 +21,7 @@ class LibraryViewModel(
     private val musicPlayer: MusicPlayer,
     private val searchInteractor: SearchInteractor,
     private val favoriteInteractor: FavoriteInteractor,
+    private val playlistInteractor: PlaylistInteractor,
     private val songId: Long
 ) : ViewModel() {
     private var timerJob: Job? = null
@@ -25,9 +29,24 @@ class LibraryViewModel(
     private val _uiState = MutableLiveData(PlayerUiState())
     fun observeUiState(): LiveData<PlayerUiState> = _uiState
 
+    private val _playlists = MutableLiveData<List<Playlist>>()
+    fun observePlaylists(): LiveData<List<Playlist>> = _playlists
+
+    private val _addStatus = SingleLiveEvent<AddStatus>()
+    fun observeAddStatus(): LiveData<AddStatus> = _addStatus
+
     init {
         checkIsFavorite(songId)
         gettingMusic()
+        getPlaylists()
+    }
+
+    private fun getPlaylists() {
+        viewModelScope.launch {
+            playlistInteractor.getPlaylists().collect { list ->
+                _playlists.value = list
+            }
+        }
     }
 
     private fun gettingMusic() {
@@ -103,6 +122,20 @@ class LibraryViewModel(
             favoriteInteractor.isFavorite(idSong).collect {
                 _uiState.value = _uiState.value?.copy(isFavorite = it)
             }
+        }
+    }
+
+    fun addSongToPlaylist(playlist: Playlist) {
+        val song = _uiState.value?.song ?: return
+
+        if (playlist.songs.contains(songId)) {
+            _addStatus.value = AddStatus.AlreadyAdded(playlist.name)
+            return
+        }
+
+        viewModelScope.launch {
+            playlistInteractor.addTrackToPlaylist(playlist = playlist, song)
+            _addStatus.value = AddStatus.Success(playlist.name)
         }
     }
 

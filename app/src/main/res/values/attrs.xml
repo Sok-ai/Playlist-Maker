@@ -6,4 +6,7 @@
 
     <attr name="myTabIndicatorColor" format="color" />
     <attr name="myTabBackground" format="color" />
+
+    <attr name="createPlaylistInputBackground" format="color" />
+    <attr name="sheetRecyclerItemColor" format="color" />
 </resources>

@@ -31,6 +31,9 @@
     <string name="library_genre_music_text">Жанр</string>
     <string name="library_year_music_text">Год</string>
     <string name="library_album_music_text">Альбом</string>
+    <string name="library_bottom_sheet_text">Добавить в плейлист</string>
+    <string name="library_added_playlist_text">Добавлено в плейлист %s</string>
+    <string name="library_not_added_playlist_text">Трек уже добавлен в плейлист %s</string>
 
     <!--  Search  -->
     <string name="search_name_page">Поиск</string>
@@ -50,6 +53,23 @@
     <string name="media_name_tag_playlists">Плейлисты</string>
     <string name="media_text_error_playlists">Вы не создали\n ни одного плейлиста</string>
     <string name="media_btn_text_playlists">Новый плейлист</string>
+    <plurals name="media_playlist_amount_songs">
+        <item quantity="one">%d трек</item>
+        <item quantity="few">%d трека</item>
+        <item quantity="many">%d треков</item>
+        <item quantity="other">%d треков</item>
+    </plurals>
+    <string name="dialog_exit_playlist_title">Завершить создание плейлиста?</string>
+    <string name="dialog_exit_playlist_message">Все несохраненные данные будут потеряны</string>
+    <string name="dialog_exit_positive">Завершить</string>
+    <string name="dialog_exit_negative">Отмена</string>
 
+    <!--  Create playlist  -->
+    <string name="new_playlist_page">Новый плейлист</string>
+    <string name="hint_name_input">Название*</string>
+    <string name="hint_description_input">Описание</string>
+    <string name="create_playlist_button_text">Создать</string>
+    <string name="content_description_image">Картинка для плейлиста</string>
+    <string name="playlist_created_message">Плейлист %1$s создан</string>
 
 </resources>

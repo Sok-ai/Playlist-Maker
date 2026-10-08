@@ -10,6 +10,7 @@ val libraryViewModelModule = module {
             musicPlayer = get(),
             searchInteractor = get(),
             songId = params.get<Long>(),
+            playlistInteractor = get(),
             favoriteInteractor = get()
         )
     }

@@ -5,6 +5,7 @@
     <dimen name="text_subtitle_size">16sp</dimen>
     <dimen name="text_body_size">22sp</dimen>
 
+    <dimen name="text_library_sheet_size">19sp</dimen>
     <dimen name="text_error_size">19sp</dimen>
     <dimen name="text_error_button_size">14sp</dimen>
     <dimen name="text_name_group_size">14sp</dimen>
@@ -20,14 +21,21 @@
     <dimen name="text_search_history_size">19sp</dimen>
 
     <dimen name="text_info_size">11sp</dimen>
+    <dimen name="text_item_amount_song_size">11sp</dimen>
 
     <dimen name="text_tab_size">14sp</dimen>
 
     <dimen name="text_bottom_nav_size">12sp</dimen>
 
+    <dimen name="text_input_create_playlist_size">16sp</dimen>
+
+    <!-- Playlist view   -->
+    <dimen name="playlist_info_text_size">12sp</dimen>
 
     <!-- Радиусы -->
+    <dimen name="radius_sheet_view">44dp</dimen>
     <dimen name="radius_xlarge">54dp</dimen>
     <dimen name="radius_large">16dp</dimen>
     <dimen name="radius_medium">8dp</dimen>
+    <dimen name="radius_small">2dp</dimen>
 </resources>

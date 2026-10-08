@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="BaseButtonStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:gravity">center</item>
         <item name="android:inputType">textCapWords</item>
@@ -16,5 +17,14 @@
         <item name="android:maxLength">30</item>
         <item name="android:maxLines">1</item>
         <item name="android:textColor">@color/YP_Black</item>
+    </style>
+
+    <style name="MyAlertDialogTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="buttonBarPositiveButtonStyle">@style/MyDialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/MyDialogButton</item>
+    </style>
+
+    <style name="MyDialogButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/YP_Blue</item>
     </style>
 </resources>

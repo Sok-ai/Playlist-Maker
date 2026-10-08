@@ -15,6 +15,11 @@
 
         <item name="myTabIndicatorColor">@color/YP_Black</item>
         <item name="myTabBackground">@color/YP_White</item>
+
+        <item name="createPlaylistInputBackground">@color/YP_Text_Gray</item>
+        <item name="sheetRecyclerItemColor">@color/YP_Text_Gray</item>
+
+        <item name="materialAlertDialogTheme">@style/MyAlertDialogTheme</item>
     </style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
