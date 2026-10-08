@@ -24,4 +24,9 @@ class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository)
     ) {
         playlistRepository.addTrackToPlaylist(playlist, song)
     }
+
+    override suspend fun isSongInPlaylist(
+        playlistId: Long,
+        songId: Long
+    ): Boolean = playlistRepository.isSongInPlaylist(playlistId, songId)
 }
