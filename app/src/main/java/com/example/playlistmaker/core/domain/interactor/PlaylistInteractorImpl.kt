@@ -17,6 +17,9 @@ class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository)
     override suspend fun getPlaylistById(id: Long): Playlist? =
         playlistRepository.getPlaylistById(id)
 
+    override suspend fun deleteSong(playlistId: Long, songId: Long) {
+        playlistRepository.deleteSong(playlistId, songId)
+    }
 
     override fun getTracksForPlaylist(id: Long): Flow<List<Song>> =
         playlistRepository.getTracksForPlaylist(id)
