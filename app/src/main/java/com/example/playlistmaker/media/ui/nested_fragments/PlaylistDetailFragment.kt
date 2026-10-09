@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.core.BindingFragment
 import com.example.playlistmaker.core.ui.adapter.SongAdapter
+import com.example.playlistmaker.core.ui.dialog.ConfirmationDialog
 import com.example.playlistmaker.databinding.FragmentPlaylistDetailBinding
 import com.example.playlistmaker.library.ui.LibraryFragment
 import com.example.playlistmaker.media.ui.view_model.PlaylistDetailViewModel
@@ -43,7 +44,11 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
                     R.id.action_playlistDetailFragment_to_libraryFragment,
                     LibraryFragment.createArgs(idSong = song.trackId)
                 )
+            },
+            onSongActionLongListener = { song ->
+                showDialogDeleteSong(song.trackId)
             })
+
         vm.observeCloseEvent().observe(viewLifecycleOwner) {
             findNavController().navigateUp()
         }
@@ -56,6 +61,11 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
                     resTime,
                     resTime
                 )
+            binding.playlistCountTrack.text = resources.getQuantityString(
+                R.plurals.media_playlist_amount_songs,
+                songs.size,
+                songs.size
+            )
         }
         vm.observePlaylist().observe(viewLifecycleOwner) { playlist ->
             playlist ?: return@observe
@@ -68,11 +78,6 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
                     .into(imagePlaylist)
                 playlistName.text = playlist.name
                 playlistDescription.text = playlist.description
-                playlistCountTrack.text = resources.getQuantityString(
-                    R.plurals.media_playlist_amount_songs,
-                    playlist.songCount,
-                    playlist.songCount
-                )
             }
         }
         val bottomSheetSongs = BottomSheetBehavior.from(binding.bottomSheetSongsLayout).apply {
@@ -86,6 +91,19 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
         binding.buttonBack.setOnClickListener {
             findNavController().navigateUp()
         }
+    }
+
+    private fun showDialogDeleteSong(id: Long) {
+        ConfirmationDialog.show(
+            context = requireContext(),
+            title = "",
+            message = getString(R.string.detail_message_delete_song),
+            onPositive = {
+                vm.deleteSong(id)
+            },
+            onNegative = {
+            }
+        )
     }
 
     override fun onDestroyView() {
