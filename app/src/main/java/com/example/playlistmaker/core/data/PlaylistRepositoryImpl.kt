@@ -70,6 +70,16 @@ class PlaylistRepositoryImpl(
         }
     }
 
+    override suspend fun deleteSong(playlistId: Long, songId: Long) {
+        database.withTransaction {
+            playlistTrackRefDao.deleteRef(playlistId, songId)
+            val count = playlistTrackRefDao.countPlaylistsWithTrack(songId)
+            if (count == 0) songInPlaylistDao.deleteSong(songId)
+            playlistDao.decrementSongCount(playlistId)
+        }
+    }
+
+
     override suspend fun isSongInPlaylist(playlistId: Long, songId: Long): Boolean =
         playlistTrackRefDao.isSongInPlaylist(playlistId, songId)
 
