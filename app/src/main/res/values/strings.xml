@@ -64,6 +64,10 @@
     <string name="dialog_exit_positive">Завершить</string>
     <string name="dialog_exit_negative">Отмена</string>
 
+    <string name="detail_info_playlist_share">Поделиться</string>
+    <string name="detail_info_playlist_edit">Редактировать информацию</string>
+    <string name="detail_info_playlist_delete">Удалить плейлист</string>
+
     <!--  Create playlist  -->
     <string name="new_playlist_page">Новый плейлист</string>
     <string name="hint_name_input">Название*</string>
