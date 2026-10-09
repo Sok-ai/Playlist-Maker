@@ -9,7 +9,16 @@
         android:id="@+id/playlistFragment"
         android:name="com.example.playlistmaker.media.ui.nested_fragments.PlaylistFragment"
         android:label="fragment_playlist"
-        tools:layout="@layout/fragment_playlist" />
+        tools:layout="@layout/fragment_playlist" >
+        <action
+            android:id="@+id/action_playlistFragment_to_playlistDetailFragment"
+            app:destination="@id/playlistDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:launchSingleTop="true" />
+    </fragment>
     <fragment
         android:id="@+id/favoriteFragment"
         android:name="com.example.playlistmaker.media.ui.nested_fragments.FavoriteFragment"
@@ -73,4 +82,9 @@
         android:name="com.example.playlistmaker.media.ui.CreatePlaylistFragment"
         android:label="fragment_create_playlist"
         tools:layout="@layout/fragment_create_playlist" />
+    <fragment
+        android:id="@+id/playlistDetailFragment"
+        android:name="com.example.playlistmaker.media.ui.nested_fragments.PlaylistDetailFragment"
+        android:label="fragment_playlist_detail"
+        tools:layout="@layout/fragment_playlist_detail" />
 </navigation>
