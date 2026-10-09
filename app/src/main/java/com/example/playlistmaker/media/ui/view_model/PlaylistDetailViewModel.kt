@@ -38,4 +38,10 @@ class PlaylistDetailViewModel(
             }
         }
     }
+
+    fun deleteSong(songId: Long) {
+        viewModelScope.launch {
+            playlistInteractor.deleteSong(playlistId, songId)
+        }
+    }
 }
