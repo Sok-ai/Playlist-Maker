@@ -26,7 +26,12 @@ class PlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        playlistAdapter = PlaylistAdapter()
+        playlistAdapter = PlaylistAdapter { playlist ->
+            findNavController().navigate(
+                resId = R.id.action_playlistFragment_to_playlistDetailFragment,
+                args = PlaylistDetailFragment.createArgs(playlist.id)
+            )
+        }
 
         vm.observePlaylists().observe(viewLifecycleOwner) { playlists ->
             if (playlists.isNotEmpty()) {
