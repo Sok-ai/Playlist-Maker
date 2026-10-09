@@ -67,6 +67,12 @@
     <string name="detail_info_playlist_share">Поделиться</string>
     <string name="detail_info_playlist_edit">Редактировать информацию</string>
     <string name="detail_info_playlist_delete">Удалить плейлист</string>
+    <plurals name="detail_duration_songs">
+        <item quantity="one">%d минута</item>
+        <item quantity="few">%d минуты</item>
+        <item quantity="many">%d минут</item>
+        <item quantity="other">%d минут</item>
+    </plurals>
 
     <!--  Create playlist  -->
     <string name="new_playlist_page">Новый плейлист</string>
