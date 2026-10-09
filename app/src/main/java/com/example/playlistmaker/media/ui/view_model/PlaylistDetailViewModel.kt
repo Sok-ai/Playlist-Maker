@@ -1,7 +1,41 @@
 package com.example.playlistmaker.media.ui.view_model
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.core.domain.interactor.PlaylistInteractor
+import com.example.playlistmaker.core.domain.model.Playlist
+import com.example.playlistmaker.core.domain.model.Song
+import com.example.playlistmaker.utils.SingleLiveEvent
+import kotlinx.coroutines.launch
 
-class PlaylistDetailViewModel(private val playlistId: Long) : ViewModel() {
-    // TODO: Implement the ViewModel
+class PlaylistDetailViewModel(
+    private val playlistId: Long,
+    private val playlistInteractor: PlaylistInteractor
+) : ViewModel() {
+
+    private val _closeEvent = SingleLiveEvent<Unit>()
+    fun observeCloseEvent(): LiveData<Unit> = _closeEvent
+    private val _playlist = MutableLiveData<Playlist?>()
+    fun observePlaylist(): LiveData<Playlist?> = _playlist
+
+    private val _songsToPlaylist = MutableLiveData<List<Song>>()
+    fun observeSongsToPlaylist(): LiveData<List<Song>> = _songsToPlaylist
+
+    init {
+        viewModelScope.launch {
+            val playlist = playlistInteractor.getPlaylistById(playlistId)
+            if (playlist == null) {
+                _closeEvent.value = Unit
+                return@launch
+            }
+            _playlist.value = playlist
+        }
+        viewModelScope.launch {
+            playlistInteractor.getTracksForPlaylist(playlistId).collect { songs ->
+                _songsToPlaylist.value = songs
+            }
+        }
+    }
 }
