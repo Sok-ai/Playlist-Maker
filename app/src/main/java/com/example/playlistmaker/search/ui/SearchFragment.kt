@@ -11,7 +11,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.core.BindingFragment
-import com.example.playlistmaker.core.ui.SongAdapter
+import com.example.playlistmaker.core.ui.adapter.SongAdapter
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.library.ui.LibraryFragment
 import com.example.playlistmaker.search.domain.model.SearchResult
@@ -49,9 +49,9 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
             openInformationAboutMusic(it)
         }
 
-        songAdapter = SongAdapter { song ->
+        songAdapter = SongAdapter(onSongActionListener = { song ->
             viewModel.onSongClicked(song)
-        }
+        })
 
         viewModel.observeSongsList().observe(viewLifecycleOwner) {
             songAdapter?.songs = it
