@@ -9,6 +9,7 @@ import com.example.playlistmaker.core.data.db.dao.PlaylistTrackRefDao
 import com.example.playlistmaker.core.data.db.dao.SongInPlaylistDao
 import com.example.playlistmaker.core.data.db.entity.PlaylistEntity
 import com.example.playlistmaker.core.data.db.entity.PlaylistTrackRefEntity
+import com.example.playlistmaker.core.data.db.entity.SongInPlaylistEntity
 import com.example.playlistmaker.core.domain.model.Playlist
 import com.example.playlistmaker.core.domain.model.Song
 import com.example.playlistmaker.core.domain.repository.PlaylistRepository
@@ -36,6 +37,17 @@ class PlaylistRepositoryImpl(
             }
             .distinctUntilChanged()
 
+    override suspend fun getPlaylistById(id: Long): Playlist? {
+        val entity = playlistDao.getPlaylistById(id) ?: return null
+        return playlistConverter.toPlaylist(entity)
+    }
+
+    override fun getTracksForPlaylist(id: Long): Flow<List<Song>> {
+        return playlistTrackRefDao.getSongFromPlaylist(id)
+            .distinctUntilChanged()
+            .map { convertEntitiesToSong(it) }
+    }
+
     override suspend fun updatePlaylist(playlist: Playlist) {
         val playlistEntity = playlistConverter.toPlaylistEntity(playlist)
         playlistDao.updatePlaylist(playlistEntity)
@@ -47,7 +59,8 @@ class PlaylistRepositoryImpl(
     ) {
         val ref = PlaylistTrackRefEntity(
             playlistId = playlist.id,
-            songId = song.trackId
+            songId = song.trackId,
+            addedAt = System.currentTimeMillis()
         )
         val songInPlaylistEntity = songInPlaylistConverter.toEntity(song)
         database.withTransaction {
@@ -64,5 +77,10 @@ class PlaylistRepositoryImpl(
     private fun convertEntitiesToPlaylist(playlistList: List<PlaylistEntity>): List<Playlist> =
         playlistList.map {
             playlistConverter.toPlaylist(it)
+        }
+
+    private fun convertEntitiesToSong(songList: List<SongInPlaylistEntity>): List<Song> =
+        songList.map {
+            songInPlaylistConverter.toSong(it)
         }
 }
