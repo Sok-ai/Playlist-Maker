@@ -19,6 +19,9 @@ interface PlaylistDao {
     @Query("SELECT * from playlist_table")
     fun getPlaylists(): Flow<List<PlaylistEntity>>
 
+    @Query("SELECT * FROM playlist_table WHERE id = :id")
+    suspend fun getPlaylistById(id: Long): PlaylistEntity
+
     @Query("UPDATE playlist_table SET amount_songs = amount_songs + 1 WHERE id = :playlistId")
     suspend fun incrementSongCount(playlistId: Long)
 }
