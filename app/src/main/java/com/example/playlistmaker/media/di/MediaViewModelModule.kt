@@ -13,6 +13,6 @@ val mediaViewModelModule = module {
     viewModelOf(::PlaylistViewModel)
     viewModelOf(::CreatePlaylistViewModel)
     viewModel<PlaylistDetailViewModel> { param ->
-        PlaylistDetailViewModel(playlistId = param.get<Long>())
+        PlaylistDetailViewModel(playlistId = param.get<Long>(), playlistInteractor = get())
     }
 }
