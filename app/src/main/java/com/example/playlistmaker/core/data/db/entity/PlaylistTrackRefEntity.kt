@@ -29,4 +29,6 @@ data class PlaylistTrackRefEntity(
     val playlistId: Long,
     @ColumnInfo(name = "ref_song_id")
     val songId: Long,
+    @ColumnInfo(name = "added_at")
+    val addedAt: Long
 )
