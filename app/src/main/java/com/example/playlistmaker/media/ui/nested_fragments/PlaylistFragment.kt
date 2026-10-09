@@ -28,7 +28,7 @@ class PlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
         super.onViewCreated(view, savedInstanceState)
         playlistAdapter = PlaylistAdapter { playlist ->
             findNavController().navigate(
-                resId = R.id.action_playlistFragment_to_playlistDetailFragment,
+                resId = R.id.action_mediaFragment_to_playlistDetailFragment,
                 args = PlaylistDetailFragment.createArgs(playlist.id)
             )
         }
