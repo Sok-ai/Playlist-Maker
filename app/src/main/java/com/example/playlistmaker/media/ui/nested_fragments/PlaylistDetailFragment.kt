@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
@@ -29,6 +31,8 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
         parametersOf(playlistId)
     }
 
+    private lateinit var bottomSheetSongs: BottomSheetBehavior<LinearLayout>
+    private lateinit var bottomSheetAdvancedSetting: BottomSheetBehavior<LinearLayout>
     private var songAdapter: SongAdapter? = null
 
     override fun createBinding(
@@ -79,11 +83,23 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
                 playlistName.text = playlist.name
                 playlistDescription.text = playlist.description
             }
+        settingBottomSheetSongs()
+        settingsBottomSheetAdvancedInfo()
+        binding.moreOption.setOnClickListener {
+            bottomSheetAdvancedSetting.state = BottomSheetBehavior.STATE_COLLAPSED
+            bottomSheetSongs.state = BottomSheetBehavior.STATE_HIDDEN
         }
-        val bottomSheetSongs = BottomSheetBehavior.from(binding.bottomSheetSongsLayout).apply {
+    }
+
+    private fun settingBottomSheetSongs() {
+        bottomSheetSongs = BottomSheetBehavior.from(binding.bottomSheetSongsLayout).apply {
             state = BottomSheetBehavior.STATE_COLLAPSED
         }
         val bottomSheetAdvancedSetting =
+    }
+
+    private fun settingsBottomSheetAdvancedInfo() {
+        bottomSheetAdvancedSetting =
             BottomSheetBehavior.from(binding.bottomSheetAdvancedSettingsLayout).apply {
                 state = BottomSheetBehavior.STATE_HIDDEN
             }
@@ -91,6 +107,29 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
         binding.buttonBack.setOnClickListener {
             findNavController().navigateUp()
         }
+        bottomSheetAdvancedSetting.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(p0: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.visibility = View.GONE
+                    }
+
+                    else -> {
+                        binding.overlay.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                binding.overlay.alpha = (slideOffset + 1) / 2
+            }
+        })
+        binding.overlay.setOnClickListener {
+            bottomSheetAdvancedSetting.state = BottomSheetBehavior.STATE_HIDDEN
+        }
+    }
+
     }
 
     private fun showDialogDeleteSong(id: Long) {
