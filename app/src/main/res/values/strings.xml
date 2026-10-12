@@ -84,6 +84,8 @@
     <string name="media_title_edit_playlist">Редактировать</string>
     <string name="media_btn_edit_playlist">Сохранить</string>
 
+    <string name="playlist_detail_empty_title">В этом плейлисте нет треков</string>
+
     <!--  Create playlist  -->
     <string name="new_playlist_page">Новый плейлист</string>
     <string name="hint_name_input">Название*</string>
