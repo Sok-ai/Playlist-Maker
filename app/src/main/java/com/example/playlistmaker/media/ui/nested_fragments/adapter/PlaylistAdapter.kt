@@ -6,7 +6,8 @@ import com.example.playlistmaker.core.domain.model.Playlist
 import com.example.playlistmaker.core.ui.OnPlaylistActionListener
 import com.example.playlistmaker.core.ui.adapter.diff.PlaylistDiffCallback
 
-class PlaylistAdapter(private val onPlaylistActionListener: OnPlaylistActionListener? = null) : ListAdapter<Playlist, PlaylistViewHolder>(PlaylistDiffCallback) {
+class PlaylistAdapter(private val onPlaylistActionListener: OnPlaylistActionListener? = null) :
+    ListAdapter<Playlist, PlaylistViewHolder>(PlaylistDiffCallback) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -16,9 +17,10 @@ class PlaylistAdapter(private val onPlaylistActionListener: OnPlaylistActionList
         holder: PlaylistViewHolder,
         position: Int
     ) {
-        holder.bind(getItem(position))
+        val playlist = getItem(position)
+        holder.bind(playlist)
         holder.itemView.setOnClickListener {
-            onPlaylistActionListener?.onPlaylistClick(getItem(position))
+            onPlaylistActionListener?.onPlaylistClick(playlist)
         }
     }
 }
