@@ -167,8 +167,10 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
     private fun showDialogDeletePlaylist() {
         ConfirmationDialog.show(
             context = requireContext(),
-            title = "",
-            message = getString(R.string.detail_message_delete_playlist),
+            title = getString(R.string.detail_dialog_title_message_delete_playlist),
+            message = getString(R.string.detail_dialog_message_delete_playlist),
+            positiveText = getString(R.string.detail_dialog_delete_playlist_positive_btn),
+            negativeText = getString(R.string.detail_dialog_delete_playlist_negative_btn),
             onPositive = {
                 vm.deletePlaylist()
             },
@@ -181,7 +183,7 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
         ConfirmationDialog.show(
             context = requireContext(),
             title = "",
-            message = getString(R.string.detail_message_delete_song),
+            message = getString(R.string.detail_dialog_title_message_delete_song),
             onPositive = {
                 vm.deleteSong(id)
             },
