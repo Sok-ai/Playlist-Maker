@@ -59,6 +59,6 @@
         <item name="fontWeight">400</item>
         <item name="android:gravity">start</item>
         <item name="cornerRadius">0dp</item>
-        <item name="android:inputType">text</item>
+        <item name="android:inputType">textAutoCorrect</item>
     </style>
 </resources>
