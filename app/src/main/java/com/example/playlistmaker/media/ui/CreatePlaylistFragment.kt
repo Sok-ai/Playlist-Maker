@@ -22,10 +22,12 @@ import com.example.playlistmaker.databinding.FragmentCreatePlaylistBinding
 import com.example.playlistmaker.media.ui.view_model.CreatePlaylistViewModel
 import com.example.playlistmaker.utils.dpToPx
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
 
-class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() {
-    private val vm: CreatePlaylistViewModel by viewModel()
+open class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() {
+    protected open val vm: CreatePlaylistViewModel by viewModel()
     private var lastLoadedCoverUri: Uri? = null
+    private var lastLoadedExistingPath: String? = null
     private val photoResultLauncher =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             uri?.let {
@@ -63,11 +65,7 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
             insets
         }
         vm.observeResponseSavePlaylist().observe(viewLifecycleOwner) { name ->
-            findNavController()
-                .previousBackStackEntry
-                ?.savedStateHandle
-                ?.set(KEY_PLAYLIST_CREATED, name)
-            findNavController().navigateUp()
+            onSaveSuccess(name)
         }
         vm.observePlaylistState().observe(viewLifecycleOwner) { state ->
             binding.createPlaylistButton.isEnabled = state.isCreateEnabled
@@ -87,25 +85,42 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
                     editText?.setSelection(state.description.length)
                 }
             }
+            val newCoverUri = state.coverUri
+            val existingPath = state.existingCoverPath
 
-            state.coverUri?.let { uri ->
-                if (uri != lastLoadedCoverUri) {
+            if (newCoverUri != null) {
+                if (newCoverUri != lastLoadedCoverUri) {
                     binding.playlistImage.scaleType = ImageView.ScaleType.CENTER_CROP
                     Glide.with(this)
-                        .load(uri)
+                        .load(newCoverUri)
                         .transform(
                             RoundedCorners(
                                 requireContext().dpToPx(8f)
                             )
                         )
                         .into(binding.playlistImage)
-                    lastLoadedCoverUri = uri
+                    lastLoadedCoverUri = newCoverUri
+                    lastLoadedExistingPath = null
+                }
+            } else if (existingPath != null) {
+                if (existingPath != lastLoadedExistingPath) {
+                    binding.playlistImage.scaleType = ImageView.ScaleType.CENTER_CROP
+                    Glide.with(this)
+                        .load(File(existingPath))
+                        .transform(
+                            RoundedCorners(
+                                requireContext().dpToPx(8f)
+                            )
+                        )
+                        .into(binding.playlistImage)
+                    lastLoadedExistingPath = existingPath
+                    lastLoadedCoverUri = null
                 }
             }
         }
         with(binding) {
             backButton.setOnClickListener {
-                hasUnsavedData()
+                handleBack()
             }
             playlistImage.setOnClickListener {
                 photoResultLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
@@ -120,6 +135,14 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
                 vm.createPlaylist()
             }
         }
+    }
+
+    protected open fun onSaveSuccess(name: String) {
+        findNavController()
+            .previousBackStackEntry
+            ?.savedStateHandle
+            ?.set(KEY_PLAYLIST_CREATED, name)
+        findNavController().navigateUp()
     }
 
     private fun createDialog() {
@@ -137,7 +160,7 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
         )
     }
 
-    private fun hasUnsavedData() {
+    protected open fun handleBack() {
         if (vm.hasUnsavedData()) {
             createDialog()
         } else {
@@ -152,13 +175,14 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
                 viewLifecycleOwner,
                 object : OnBackPressedCallback(true) {
                     override fun handleOnBackPressed() {
-                        hasUnsavedData()
+                        handleBack()
                     }
                 })
     }
 
     override fun onDestroyView() {
         lastLoadedCoverUri = null
+        lastLoadedExistingPath = null
         super.onDestroyView()
     }
 
