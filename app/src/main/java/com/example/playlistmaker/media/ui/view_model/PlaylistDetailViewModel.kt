@@ -27,12 +27,13 @@ class PlaylistDetailViewModel(
 
     init {
         viewModelScope.launch {
-            val playlist = playlistInteractor.getPlaylistById(playlistId)
-            if (playlist == null) {
-                _closeEvent.value = Unit
-                return@launch
+            playlistInteractor.getPlaylistByIdFlow(playlistId).collect { playlist ->
+                if (playlist == null) {
+                    _closeEvent.value = Unit
+                    return@collect
+                }
+                _playlist.value = playlist
             }
-            _playlist.value = playlist
         }
         viewModelScope.launch {
             playlistInteractor.getTracksForPlaylist(playlistId).collect { songs ->
