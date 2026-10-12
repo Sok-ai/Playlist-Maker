@@ -37,9 +37,8 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        playlistSheetAdapter = PlaylistSheetAdapter {
-            viewModel.addSongToPlaylist(it)
-        }
+        playlistSheetAdapter =
+            PlaylistSheetAdapter(onPlaylistActionListener = { viewModel.addSongToPlaylist(it) })
 
         viewModel.observeAddStatus().observe(viewLifecycleOwner) { status ->
             when (status) {
