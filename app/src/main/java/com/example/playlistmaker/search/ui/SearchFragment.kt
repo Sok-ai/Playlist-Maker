@@ -59,9 +59,9 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
         binding.recyclerViewTrack.adapter = songAdapter
 
-        songHistoryAdapter = SongHistoryAdapter { song ->
+        songHistoryAdapter = SongHistoryAdapter(onSongActionListener = { song ->
             viewModel.onSongHistoryClicked(song)
-        }
+        })
 
         viewModel.observeHistory().observe(viewLifecycleOwner) {
             songHistoryAdapter?.songs = it
