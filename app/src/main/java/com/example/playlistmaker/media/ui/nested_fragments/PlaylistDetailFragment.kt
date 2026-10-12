@@ -1,5 +1,6 @@
 package com.example.playlistmaker.media.ui.nested_fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -70,6 +71,11 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
                 songs.size,
                 songs.size
             )
+            binding.playlistHeader.playlistAmountSongs.text = resources.getQuantityString(
+                R.plurals.media_playlist_amount_songs,
+                songs.size,
+                songs.size
+            )
         }
         vm.observePlaylist().observe(viewLifecycleOwner) { playlist ->
             playlist ?: return@observe
@@ -82,9 +88,23 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
                     .into(imagePlaylist)
                 playlistName.text = playlist.name
                 playlistDescription.text = playlist.description
+
+                playlistHeader.playlistName.text = playlist.name
+                Glide.with(this@PlaylistDetailFragment)
+                    .load(playlist.pathImage?.let {
+                        File(it)
+                    })
+                    .placeholder(R.drawable.ic_placeholder_312)
+                    .into(playlistHeader.playlistImageView)
             }
+        }
         settingBottomSheetSongs()
         settingsBottomSheetAdvancedInfo()
+
+        binding.recyclerSongs.adapter = songAdapter
+        binding.buttonBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
         binding.moreOption.setOnClickListener {
             bottomSheetAdvancedSetting.state = BottomSheetBehavior.STATE_COLLAPSED
             bottomSheetSongs.state = BottomSheetBehavior.STATE_HIDDEN
@@ -103,10 +123,6 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
             BottomSheetBehavior.from(binding.bottomSheetAdvancedSettingsLayout).apply {
                 state = BottomSheetBehavior.STATE_HIDDEN
             }
-        binding.recyclerSongs.adapter = songAdapter
-        binding.buttonBack.setOnClickListener {
-            findNavController().navigateUp()
-        }
         bottomSheetAdvancedSetting.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(p0: View, newState: Int) {
