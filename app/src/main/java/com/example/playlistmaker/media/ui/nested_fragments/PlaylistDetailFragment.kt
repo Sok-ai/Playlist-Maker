@@ -59,6 +59,11 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
             findNavController().navigateUp()
         }
         vm.observeSongsToPlaylist().observe(viewLifecycleOwner) { songs ->
+            if (songs.isEmpty()) {
+                showEmptyMessage()
+            } else {
+                showContent()
+            }
             songAdapter?.songs = songs
             val resTime = TimeFormatter.formatMinutes(songs.sumOf { it.trackTimeMillis })
             binding.playlistTrackDuration.text =
@@ -221,6 +226,20 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
             putExtra(Intent.EXTRA_TEXT, shareText)
         }
         startActivity(Intent.createChooser(shareIntent, null))
+    }
+
+    private fun showEmptyMessage() {
+        with(binding) {
+            recyclerSongs.visibility = View.GONE
+            emptyLayout.visibility = View.VISIBLE
+        }
+    }
+
+    private fun showContent() {
+        with(binding) {
+            recyclerSongs.visibility = View.VISIBLE
+            emptyLayout.visibility = View.GONE
+        }
     }
 
     override fun onDestroyView() {
