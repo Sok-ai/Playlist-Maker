@@ -32,8 +32,7 @@ class EditPlaylistViewModel(
         }
     }
 
-    override suspend fun save(playlist: Playlist) {
+    override suspend fun persist(playlist: Playlist) {
         playlistInteractor.updatePlaylist(playlist)
-        _responseSavePlaylist.value = playlist.name
     }
 }
