@@ -105,6 +105,9 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
         binding.buttonBack.setOnClickListener {
             findNavController().navigateUp()
         }
+        binding.sharePlaylist.setOnClickListener {
+            intentSharePlaylist()
+        }
         binding.moreOption.setOnClickListener {
             bottomSheetAdvancedSetting.state = BottomSheetBehavior.STATE_COLLAPSED
             bottomSheetSongs.state = BottomSheetBehavior.STATE_HIDDEN
@@ -115,7 +118,18 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
         bottomSheetSongs = BottomSheetBehavior.from(binding.bottomSheetSongsLayout).apply {
             state = BottomSheetBehavior.STATE_COLLAPSED
         }
-        val bottomSheetAdvancedSetting =
+
+        with(binding) {
+            buttonShare.setOnClickListener {
+                intentSharePlaylist()
+            }
+            buttonDeletePlaylist.setOnClickListener {
+                showDialogDeletePlaylist()
+            }
+            buttonEditPlaylist.setOnClickListener {
+
+            }
+        }
     }
 
     private fun settingsBottomSheetAdvancedInfo() {
@@ -146,6 +160,16 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
         }
     }
 
+    private fun showDialogDeletePlaylist() {
+        ConfirmationDialog.show(
+            context = requireContext(),
+            title = "",
+            message = getString(R.string.detail_message_delete_playlist),
+            onPositive = {
+            },
+            onNegative = {
+            }
+        )
     }
 
     private fun showDialogDeleteSong(id: Long) {
@@ -159,6 +183,37 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
             onNegative = {
             }
         )
+    }
+
+    private fun intentSharePlaylist() {
+        val shareData = vm.getShareData() ?: return
+        if (shareData.tracksCount == 0) {
+            Toast.makeText(
+                requireContext(),
+                R.string.detail_message_share_playlist,
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
+        val trackCountText = resources.getQuantityString(
+            R.plurals.media_playlist_amount_songs,
+            shareData.tracksCount,
+            shareData.tracksCount
+        )
+        val shareText = buildString {
+            append(shareData.name).append("\n")
+            if (shareData.description.isNotBlank()) {
+                append(shareData.description).append("\n")
+            }
+            append(trackCountText).append("\n")
+            append(shareData.tracksList)
+        }
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, shareText)
+        }
+        startActivity(Intent.createChooser(shareIntent, null))
     }
 
     override fun onDestroyView() {
