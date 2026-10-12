@@ -40,6 +40,7 @@ class PlaylistDetailViewModel(
             }
         }
     }
+
     fun getShareData(): ShareData? {
         val playlist = _playlist.value ?: return null
         val songs = _songsToPlaylist.value.orEmpty()
@@ -59,6 +60,13 @@ class PlaylistDetailViewModel(
     fun deleteSong(songId: Long) {
         viewModelScope.launch {
             playlistInteractor.deleteSong(playlistId, songId)
+        }
+    }
+
+    fun deletePlaylist() {
+        viewModelScope.launch {
+            playlistInteractor.deletePlaylist(playlistId)
+            _closeEvent.value = Unit
         }
     }
 }
