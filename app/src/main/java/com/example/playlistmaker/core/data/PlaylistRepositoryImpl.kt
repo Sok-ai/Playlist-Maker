@@ -42,6 +42,11 @@ class PlaylistRepositoryImpl(
         return playlistConverter.toPlaylist(entity)
     }
 
+    override fun getPlaylistByIdFlow(id: Long): Flow<Playlist?> =
+        playlistDao.getPlaylistByIdFlow(id)
+            .map { entity -> entity?.let { playlistConverter.toPlaylist(it) } }
+
+
     override fun getTracksForPlaylist(id: Long): Flow<List<Song>> {
         return playlistTrackRefDao.getSongFromPlaylist(id)
             .distinctUntilChanged()
