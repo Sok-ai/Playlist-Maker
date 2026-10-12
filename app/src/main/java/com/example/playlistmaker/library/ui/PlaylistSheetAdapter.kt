@@ -17,9 +17,10 @@ class PlaylistSheetAdapter(private val onPlaylistActionListener: OnPlaylistActio
         holder: PlaylistSheetViewHolder,
         position: Int
     ) {
-        holder.bind(getItem(position))
+        val playlist = getItem(position)
+        holder.bind(playlist)
         holder.itemView.setOnClickListener {
-            onPlaylistActionListener?.onPlaylistClick(getItem(position))
+            onPlaylistActionListener?.onPlaylistClick(playlist)
         }
     }
 }
