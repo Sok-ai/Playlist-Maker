@@ -77,6 +77,9 @@
         <item quantity="other">%d минут</item>
     </plurals>
 
+    <string name="media_title_edit_playlist">Редактировать</string>
+    <string name="media_btn_edit_playlist">Сохранить</string>
+
     <!--  Create playlist  -->
     <string name="new_playlist_page">Новый плейлист</string>
     <string name="hint_name_input">Название*</string>
