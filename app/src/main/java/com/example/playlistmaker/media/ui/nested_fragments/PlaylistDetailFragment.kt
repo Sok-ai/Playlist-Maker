@@ -15,6 +15,7 @@ import com.example.playlistmaker.core.ui.adapter.SongAdapter
 import com.example.playlistmaker.core.ui.dialog.ConfirmationDialog
 import com.example.playlistmaker.databinding.FragmentPlaylistDetailBinding
 import com.example.playlistmaker.library.ui.LibraryFragment
+import com.example.playlistmaker.media.ui.EditPlaylistFragment
 import com.example.playlistmaker.media.ui.view_model.PlaylistDetailViewModel
 import com.example.playlistmaker.utils.TimeFormatter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -127,7 +128,10 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
                 showDialogDeletePlaylist()
             }
             buttonEditPlaylist.setOnClickListener {
-
+                findNavController().navigate(
+                    R.id.action_playlistDetailFragment_to_editPlaylistFragment,
+                    EditPlaylistFragment.createArgs(playlistId)
+                )
             }
         }
     }
