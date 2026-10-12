@@ -7,7 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.core.domain.interactor.PlaylistInteractor
 import com.example.playlistmaker.core.domain.model.Playlist
 import com.example.playlistmaker.core.domain.model.Song
+import com.example.playlistmaker.media.ui.model.ShareData
 import com.example.playlistmaker.utils.SingleLiveEvent
+import com.example.playlistmaker.utils.TimeFormatter
 import kotlinx.coroutines.launch
 
 class PlaylistDetailViewModel(
@@ -37,6 +39,21 @@ class PlaylistDetailViewModel(
                 _songsToPlaylist.value = songs
             }
         }
+    }
+    fun getShareData(): ShareData? {
+        val playlist = _playlist.value ?: return null
+        val songs = _songsToPlaylist.value.orEmpty()
+        val tracksList = songs.mapIndexed { index, song ->
+            "${index + 1}. ${song.artistName} - ${song.trackName} " +
+                    "(${TimeFormatter.format(song.trackTimeMillis)})"
+        }.joinToString("\n")
+
+        return ShareData(
+            name = playlist.name,
+            description = playlist.description,
+            tracksCount = songs.size,
+            tracksList = tracksList
+        )
     }
 
     fun deleteSong(songId: Long) {
