@@ -162,6 +162,13 @@
             tools:listitem="@layout/song_view" />
     </LinearLayout>
 
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/YP_Black"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/bottom_sheet_advanced_settings_layout"
         android:layout_width="match_parent"
