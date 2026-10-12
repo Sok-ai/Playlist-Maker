@@ -166,6 +166,7 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
             title = "",
             message = getString(R.string.detail_message_delete_playlist),
             onPositive = {
+                vm.deletePlaylist()
             },
             onNegative = {
             }
