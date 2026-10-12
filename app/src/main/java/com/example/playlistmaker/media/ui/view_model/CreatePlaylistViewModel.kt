@@ -35,9 +35,12 @@ open class CreatePlaylistViewModel(
     fun createPlaylist() {
         debouncedCreatePlaylist(Unit)
     }
-
-    open suspend fun save(playlist: Playlist) {
+    protected open suspend fun persist(playlist: Playlist) {
         playlistInteractor.insertPlaylist(playlist)
+    }
+
+    suspend fun save(playlist: Playlist) {
+        persist(playlist)
         _responseSavePlaylist.value = playlist.name
     }
 
