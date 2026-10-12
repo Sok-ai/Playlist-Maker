@@ -40,4 +40,7 @@ interface PlaylistTrackRefDao {
 
     @Query("SELECT COUNT(*) FROM playlist_track_ref WHERE ref_song_id = :songId")
     suspend fun countPlaylistsWithTrack(songId: Long): Int
+
+    @Query("SELECT ref_song_id FROM playlist_track_ref WHERE ref_playlist_id = :playlistId")
+    suspend fun getSongIdsFromPlaylist(playlistId: Long): List<Long>
 }
