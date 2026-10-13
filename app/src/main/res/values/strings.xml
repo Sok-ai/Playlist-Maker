@@ -70,6 +70,9 @@
     <string name="detail_dialog_delete_playlist_negative_btn">Отмена</string>
 
     <string name="detail_dialog_title_message_delete_song">Хотите удалить трек?</string>
+    <string name="detail_dialog_positive_btn_delete_song">Да</string>
+    <string name="detail_dialog_negative_btn_delete_song">Нет</string>
+
     <string name="detail_message_share_playlist">В этом плейлисте нет списка треков, которым можно поделиться</string>
     <string name="detail_info_playlist_share">Поделиться</string>
     <string name="detail_info_playlist_edit">Редактировать информацию</string>
