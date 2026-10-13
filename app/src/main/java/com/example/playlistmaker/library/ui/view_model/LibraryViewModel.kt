@@ -9,7 +9,6 @@ import com.example.playlistmaker.core.domain.interactor.PlaylistInteractor
 import com.example.playlistmaker.core.domain.model.Playlist
 import com.example.playlistmaker.library.domain.api.MusicPlayer
 import com.example.playlistmaker.library.domain.model.PlayerUiState
-import com.example.playlistmaker.search.domain.api.SearchInteractor
 import com.example.playlistmaker.core.domain.model.Song
 import com.example.playlistmaker.utils.SingleLiveEvent
 import kotlinx.coroutines.Job
@@ -19,10 +18,9 @@ import kotlinx.coroutines.launch
 
 class LibraryViewModel(
     private val musicPlayer: MusicPlayer,
-    private val searchInteractor: SearchInteractor,
     private val favoriteInteractor: FavoriteInteractor,
     private val playlistInteractor: PlaylistInteractor,
-    private val songId: Long
+    private val song: Song
 ) : ViewModel() {
     private var timerJob: Job? = null
 
@@ -36,8 +34,8 @@ class LibraryViewModel(
     fun observeAddStatus(): LiveData<AddStatus> = _addStatus
 
     init {
-        checkIsFavorite(songId)
-        gettingMusic()
+        checkIsFavorite(song.trackId)
+        setupInitPlayer(song)
         getPlaylists()
     }
 
@@ -47,49 +45,6 @@ class LibraryViewModel(
                 _playlists.value = list
             }
         }
-    }
-
-    private fun gettingMusic() {
-        viewModelScope.launch {
-            val songFromDB = favoriteInteractor.getFavoriteById(songId)
-
-            if (songFromDB != null) {
-                setupInitPlayer(songFromDB)
-                return@launch
-            }
-
-            val resSong = searchInteractor.getSongByIdFromHistory(songId)
-
-            if (resSong != null) {
-                isLastSong(resSong)
-                return@launch
-            }
-
-            loadLastTrack()
-        }
-    }
-
-    private fun loadLastTrack() {
-        val songData = searchInteractor.getLastTrackFromHistory()
-        if (songData != null) {
-            setupInitPlayer(songData)
-        } else {
-            _uiState.value = _uiState.value?.copy(
-                isLoading = false,
-                isReady = false,
-                song = null
-            )
-        }
-    }
-
-    private fun isLastSong(newSong: Song) {
-        val lastTrack = searchInteractor.getLastTrackFromHistory()
-
-        if (lastTrack?.trackId != newSong.trackId) {
-            searchInteractor.saveLastTrack(newSong)
-        }
-
-        setupInitPlayer(newSong)
     }
 
     private fun setupInitPlayer(resSong: Song) {
@@ -126,8 +81,6 @@ class LibraryViewModel(
     }
 
     fun addSongToPlaylist(playlist: Playlist) {
-        val song = _uiState.value?.song ?: return
-
         viewModelScope.launch {
             if (playlistInteractor.isSongInPlaylist(playlist.id, song.trackId)) {
                 _addStatus.value = AddStatus.AlreadyAdded(playlist.name)
