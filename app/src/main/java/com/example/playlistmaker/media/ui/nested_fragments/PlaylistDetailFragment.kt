@@ -189,6 +189,8 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
             context = requireContext(),
             title = "",
             message = getString(R.string.detail_dialog_title_message_delete_song),
+            positiveText = getString(R.string.detail_dialog_positive_btn_delete_song),
+            negativeText = getString(R.string.detail_dialog_negative_btn_delete_song),
             onPositive = {
                 vm.deleteSong(id)
             },
