@@ -25,8 +25,8 @@ class SearchViewModel(private val interactor: SearchInteractor) : ViewModel() {
     private val _isClickAllowed = MutableLiveData(true)
     fun observeDebounceClick(): LiveData<Boolean> = _isClickAllowed
 
-    private val _navigationToPlayer = SingleLiveEvent<Long>()
-    fun observeNavigationToPlayer(): LiveData<Long> = _navigationToPlayer
+    private val _navigationToPlayer = SingleLiveEvent<Song>()
+    fun observeNavigationToPlayer(): LiveData<Song> = _navigationToPlayer
 
     private val _stateNetwork = MutableLiveData<SearchResult>()
     fun observeStateNetwork(): LiveData<SearchResult> = _stateNetwork
@@ -50,7 +50,7 @@ class SearchViewModel(private val interactor: SearchInteractor) : ViewModel() {
     fun onSongHistoryClicked(song: Song) {
         if (_isClickAllowed.value ?: false) {
             _isClickAllowed.postValue(false)
-            _navigationToPlayer.value = song.trackId
+            _navigationToPlayer.value = song
             allowNextRequest()
         }
     }
@@ -59,7 +59,7 @@ class SearchViewModel(private val interactor: SearchInteractor) : ViewModel() {
         if (_isClickAllowed.value ?: false) {
             addToHistory(song)
             _isClickAllowed.postValue(false)
-            _navigationToPlayer.value = song.trackId
+            _navigationToPlayer.value = song
             allowNextRequest()
         }
     }

@@ -17,8 +17,8 @@ class FavoriteViewModel(private val favoriteInteractor: FavoriteInteractor) : Vi
     private val _favoriteList = MutableLiveData<List<Song>>()
     fun observeFavoriteList(): LiveData<List<Song>> = _favoriteList
 
-    private val _navigateToLibrary = SingleLiveEvent<Long>()
-    fun observeNavigateToLibrary(): LiveData<Long> = _navigateToLibrary
+    private val _navigateToLibrary = SingleLiveEvent<Song>()
+    fun observeNavigateToLibrary(): LiveData<Song> = _navigateToLibrary
 
     private val _isClickAllowed = MutableLiveData(true)
     private fun observeIsClickAllowed(): LiveData<Boolean> = _isClickAllowed
@@ -35,7 +35,7 @@ class FavoriteViewModel(private val favoriteInteractor: FavoriteInteractor) : Vi
     fun onSongClickListener(song: Song) {
         if (_isClickAllowed.value ?: false) {
             _isClickAllowed.postValue(false)
-            _navigateToLibrary.value = song.trackId
+            _navigateToLibrary.value = song
             allowNextRequest()
         }
     }

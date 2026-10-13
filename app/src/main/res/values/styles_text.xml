@@ -64,4 +64,17 @@
     <style name="SettingsOptionsTextStyle" parent="NormalTextStyle">
         <item name="android:textStyle">normal</item>
     </style>
+
+    <style name="PlaylistDetailTitleStyle">
+        <item name="android:textColor">@color/YP_Black</item>
+        <item name="android:textSize">@dimen/text_title_playlist_detail_size</item>
+        <item name="android:fontFamily">@font/ys_display_bold</item>
+        <item name="fontWeight">700</item>
+    </style>
+    <style name="PlaylistDetailSubTitleStyle">
+        <item name="android:textColor">@color/YP_Black</item>
+        <item name="android:textSize">@dimen/text_subtitle_playlist_detail_size</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="fontWeight">400</item>
+    </style>
 </resources>

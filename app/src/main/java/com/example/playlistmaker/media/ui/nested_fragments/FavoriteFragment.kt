@@ -8,7 +8,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.core.BindingFragment
-import com.example.playlistmaker.core.ui.SongAdapter
+import com.example.playlistmaker.core.domain.model.Song
+import com.example.playlistmaker.core.ui.adapter.SongAdapter
 import com.example.playlistmaker.databinding.FragmentFavoriteBinding
 import com.example.playlistmaker.library.ui.LibraryFragment
 import com.example.playlistmaker.media.ui.view_model.FavoriteViewModel
@@ -29,9 +30,9 @@ class FavoriteFragment : BindingFragment<FragmentFavoriteBinding>() {
             openMusic(it)
         }
 
-        songAdapter = SongAdapter { song ->
+        songAdapter = SongAdapter(onSongActionListener = { song ->
             vm.onSongClickListener(song)
-        }.apply {
+        }).apply {
             vm.observeFavoriteList().observe(viewLifecycleOwner) { listSong ->
                 if (listSong.isNotEmpty()) {
                     songs = listSong
@@ -69,10 +70,10 @@ class FavoriteFragment : BindingFragment<FragmentFavoriteBinding>() {
         songAdapter = null
     }
 
-    private fun openMusic(songId: Long) {
+    private fun openMusic(song: Song) {
         findNavController().navigate(
             R.id.action_mediaFragment_to_libraryFragment,
-            LibraryFragment.createArgs(songId),
+            LibraryFragment.createArgs(song),
             navOptions {
                 launchSingleTop = true
             }

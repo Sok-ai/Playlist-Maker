@@ -16,4 +16,18 @@ class SongInPlaylistConverter {
         artworkUrl100 = song.artworkUrl100,
         previewUrl = song.previewUrl
     )
+
+    fun toSong(songEntity: SongInPlaylistEntity): Song =
+        Song(
+            trackId = songEntity.trackId,
+            trackName = songEntity.trackName,
+            artistName = songEntity.artistName,
+            collectionName = songEntity.collectionName,
+            releaseDate = songEntity.releaseDate,
+            primaryGenreName = songEntity.primaryGenreName,
+            country = songEntity.country,
+            trackTimeMillis = songEntity.trackTimeMillis,
+            artworkUrl100 = songEntity.artworkUrl100,
+            previewUrl = songEntity.previewUrl
+        )
 }

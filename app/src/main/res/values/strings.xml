@@ -64,6 +64,31 @@
     <string name="dialog_exit_positive">Завершить</string>
     <string name="dialog_exit_negative">Отмена</string>
 
+    <string name="detail_dialog_title_message_delete_playlist">Удалить плейлист</string>
+    <string name="detail_dialog_message_delete_playlist">Вы уверены, что хотите удалить этот плейлист?</string>
+    <string name="detail_dialog_delete_playlist_positive_btn">Удалить</string>
+    <string name="detail_dialog_delete_playlist_negative_btn">Отмена</string>
+
+    <string name="detail_dialog_title_message_delete_song">Хотите удалить трек?</string>
+    <string name="detail_dialog_positive_btn_delete_song">Да</string>
+    <string name="detail_dialog_negative_btn_delete_song">Нет</string>
+
+    <string name="detail_message_share_playlist">В этом плейлисте нет списка треков, которым можно поделиться</string>
+    <string name="detail_info_playlist_share">Поделиться</string>
+    <string name="detail_info_playlist_edit">Редактировать информацию</string>
+    <string name="detail_info_playlist_delete">Удалить плейлист</string>
+    <plurals name="detail_duration_songs">
+        <item quantity="one">%d минута</item>
+        <item quantity="few">%d минуты</item>
+        <item quantity="many">%d минут</item>
+        <item quantity="other">%d минут</item>
+    </plurals>
+
+    <string name="media_title_edit_playlist">Редактировать</string>
+    <string name="media_btn_edit_playlist">Сохранить</string>
+
+    <string name="playlist_detail_empty_title">В этом плейлисте нет треков</string>
+
     <!--  Create playlist  -->
     <string name="new_playlist_page">Новый плейлист</string>
     <string name="hint_name_input">Название*</string>

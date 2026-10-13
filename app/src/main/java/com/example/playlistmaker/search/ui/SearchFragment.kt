@@ -11,7 +11,8 @@ import androidx.core.widget.doOnTextChanged
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.core.BindingFragment
-import com.example.playlistmaker.core.ui.SongAdapter
+import com.example.playlistmaker.core.domain.model.Song
+import com.example.playlistmaker.core.ui.adapter.SongAdapter
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.library.ui.LibraryFragment
 import com.example.playlistmaker.search.domain.model.SearchResult
@@ -49,9 +50,9 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
             openInformationAboutMusic(it)
         }
 
-        songAdapter = SongAdapter { song ->
+        songAdapter = SongAdapter(onSongActionListener = { song ->
             viewModel.onSongClicked(song)
-        }
+        })
 
         viewModel.observeSongsList().observe(viewLifecycleOwner) {
             songAdapter?.songs = it
@@ -59,9 +60,9 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
         binding.recyclerViewTrack.adapter = songAdapter
 
-        songHistoryAdapter = SongHistoryAdapter { song ->
+        songHistoryAdapter = SongHistoryAdapter(onSongActionListener = { song ->
             viewModel.onSongHistoryClicked(song)
-        }
+        })
 
         viewModel.observeHistory().observe(viewLifecycleOwner) {
             songHistoryAdapter?.songs = it
@@ -189,10 +190,10 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         }
     }
 
-    private fun openInformationAboutMusic(songId: Long) {
+    private fun openInformationAboutMusic(song: Song) {
         findNavController().navigate(
             R.id.action_searchFragment_to_libraryFragment,
-            LibraryFragment.createArgs(songId)
+            LibraryFragment.createArgs(song)
         )
     }
 

@@ -13,9 +13,9 @@ import com.example.playlistmaker.utils.SingleLiveEvent
 import com.example.playlistmaker.utils.debounce
 import kotlinx.coroutines.launch
 
-class CreatePlaylistViewModel(
-    private val playlistInteractor: PlaylistInteractor,
-    private val fileInteractor: FileInteractor
+open class CreatePlaylistViewModel(
+    protected val playlistInteractor: PlaylistInteractor,
+    protected val fileInteractor: FileInteractor
 ) : ViewModel() {
 
     private val debouncedCreatePlaylist = debounce<Unit>(
@@ -25,37 +25,49 @@ class CreatePlaylistViewModel(
         action = {
             createPlaylistInternal()
         })
-    private val _playlistState = MutableLiveData(CreatePlaylistState())
+
+    protected val _playlistState = MutableLiveData(CreatePlaylistState())
     fun observePlaylistState(): LiveData<CreatePlaylistState> = _playlistState
 
-    private val _responseSavePlaylist = SingleLiveEvent<String>()
+    protected val _responseSavePlaylist = SingleLiveEvent<String>()
     fun observeResponseSavePlaylist(): LiveData<String> = _responseSavePlaylist
 
     fun createPlaylist() {
         debouncedCreatePlaylist(Unit)
+    }
+    protected open suspend fun persist(playlist: Playlist) {
+        playlistInteractor.insertPlaylist(playlist)
+    }
+
+    suspend fun save(playlist: Playlist) {
+        persist(playlist)
+        _responseSavePlaylist.value = playlist.name
     }
 
     private fun createPlaylistInternal() {
         val state = _playlistState.value ?: return
         viewModelScope.launch {
             try {
-                val coverPath = saveCoverFile(state.coverUri)
+                val coverPath = if (state.coverUri != null) {
+                    saveCoverFile(state.coverUri)
+                } else {
+                    state.existingCoverPath
+                }
                 val playlist = Playlist(
+                    id = state.id,
                     name = state.name,
                     description = state.description,
                     pathImage = coverPath,
-                    songs = emptyList(),
-                    songCount = 0
+                    songCount = state.songCount
                 )
-                playlistInteractor.insertPlaylist(playlist)
-                _responseSavePlaylist.value = state.name
+                save(playlist)
             } catch (e: Exception) {
                 Log.e("PlaylistMaker", "create failed", e)
             }
         }
     }
 
-    private suspend fun saveCoverFile(uri: Uri?): String? = uri?.let { uri ->
+    protected suspend fun saveCoverFile(uri: Uri?): String? = uri?.let { uri ->
         fileInteractor.saveFile(uri.toString())
     }
 
