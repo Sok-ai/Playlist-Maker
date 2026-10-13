@@ -1,5 +1,6 @@
 package com.example.playlistmaker.library.ui
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,11 +24,16 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
-    private val trackId by lazy(LazyThreadSafetyMode.NONE) {
-        requireArguments().getLong(TRACK_ID_KEY)
+    private val track by lazy(LazyThreadSafetyMode.NONE) {
+        val song = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requireArguments().getParcelable(TRACK_KEY, Song::class.java)
+        } else {
+            requireArguments().getParcelable(TRACK_KEY)
+        }
+        song ?: error("Song must be provided")
     }
     private lateinit var bottomSheet: BottomSheetBehavior<LinearLayout>
-    private val viewModel: LibraryViewModel by viewModel<LibraryViewModel> { parametersOf(trackId) }
+    private val viewModel: LibraryViewModel by viewModel<LibraryViewModel> { parametersOf(track) }
     private var playlistSheetAdapter: PlaylistSheetAdapter? = null
 
     override fun createBinding(
@@ -199,9 +205,9 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
     }
 
     companion object {
-        const val TRACK_ID_KEY = "track_id_key"
-        fun createArgs(idSong: Long) = Bundle().apply {
-            putLong(TRACK_ID_KEY, idSong)
+        const val TRACK_KEY = "track_key"
+        fun createArgs(song: Song) = Bundle().apply {
+            putParcelable(TRACK_KEY, song)
         }
     }
 }
