@@ -48,7 +48,7 @@ class PlaylistDetailFragment : BindingFragment<FragmentPlaylistDetailBinding>() 
             onSongActionListener = { song ->
                 findNavController().navigate(
                     R.id.action_playlistDetailFragment_to_libraryFragment,
-                    LibraryFragment.createArgs(idSong = song.trackId)
+                    LibraryFragment.createArgs(song = song)
                 )
             },
             onSongActionLongListener = { song ->
