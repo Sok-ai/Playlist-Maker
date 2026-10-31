@@ -32,6 +32,10 @@
     <dimen name="text_title_playlist_detail_size">24sp</dimen>
     <dimen name="text_subtitle_playlist_detail_size">18sp</dimen>
     <dimen name="text_button_detail_info_playlist_size">16sp</dimen>
+
+
+    <dimen name="playback_button_size">100dp</dimen>
+
     <!-- Playlist view   -->
     <dimen name="playlist_info_text_size">12sp</dimen>
 
