@@ -79,12 +79,7 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
                 uiState.song?.let {
                     settingValuesToView(it)
                 }
-
-                if (uiState.isPlaying) {
-                    binding.playMusicButton.setImageResource(R.drawable.ic_button_pause_song)
-                } else {
-                    binding.playMusicButton.setImageResource(R.drawable.ic_button_start_song)
-                }
+                binding.playMusicButton.setPlayingState(uiState.isPlaying)
             }
         }
 

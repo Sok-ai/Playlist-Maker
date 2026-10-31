@@ -116,18 +116,18 @@
                 app:layout_constraintTop_toTopOf="@+id/playMusicButton"
                 app:srcCompat="@drawable/ic_button_add_playlist" />
 
-            <ImageButton
+            <com.example.playlistmaker.core.ui.custom.PlaybackButtonView
                 android:id="@+id/playMusicButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 android:enabled="false"
                 android:importantForAccessibility="no"
+                app:iconPause="@drawable/ic_button_pause_song"
+                app:iconStart="@drawable/ic_button_start_song"
                 app:layout_constraintEnd_toStartOf="@+id/likeMusicButton"
                 app:layout_constraintStart_toEndOf="@+id/addPlayListButton"
-                app:layout_constraintTop_toBottomOf="@+id/nameAuthorText"
-                app:srcCompat="@drawable/ic_button_start_song" />
+                app:layout_constraintTop_toBottomOf="@+id/nameAuthorText" />
 
             <ImageButton
                 android:id="@+id/likeMusicButton"
@@ -320,7 +320,8 @@
         android:orientation="vertical"
         app:behavior_hideable="true"
         app:behavior_peekHeight="240dp"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        tools:visibility="gone">
 
         <View
             android:layout_width="50dp"
