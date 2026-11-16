@@ -154,28 +154,14 @@ class LibraryViewModel(
         }
     }
 
-    private fun startUpdatingTime() {
-        timerJob?.cancel()
-        timerJob = viewModelScope.launch {
-            while (musicPlayer.isPlayer()) {
-                ensureActive()
-                delay(DELAY_UPDATE_TIMER)
-                _uiState.value =
-                    _uiState.value?.copy(currentPosition = musicPlayer.currentPosition())
-            }
+    fun onForegroundStarted() {
+        if (playerState is PlayerState.Playing) {
+            musicPlayer?.startForegroundMode()
         }
     }
 
-    private fun stopUpdatingTime() {
-        timerJob?.cancel()
-        timerJob = null
-        _uiState.value = _uiState.value?.copy(
-            currentPosition = musicPlayer.currentPosition()
-        )
-    }
-
-    private fun releasePlayer() {
-        musicPlayer.release()
+    fun onForegroundStopped() {
+        musicPlayer?.stopForegroundMode()
     }
 
     override fun onCleared() {
