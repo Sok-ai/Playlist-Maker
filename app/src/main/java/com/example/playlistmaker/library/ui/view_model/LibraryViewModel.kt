@@ -165,19 +165,8 @@ class LibraryViewModel(
     }
 
     override fun onCleared() {
-        timerJob?.cancel()
-        releasePlayer()
-    }
-
-    fun onPause() {
-        if (musicPlayer.isPlayer()) {
-            stopUpdatingTime()
-            musicPlayer.pausePlayer()
-            _uiState.value = _uiState.value?.copy(isPlaying = false)
-        }
-    }
-
-    companion object {
-        const val DELAY_UPDATE_TIMER = 300L
+        playerStateJob?.cancel()
+        playerStateJob = null
+        musicPlayer = null
     }
 }
