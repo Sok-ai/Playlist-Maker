@@ -7,22 +7,23 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.core.domain.interactor.FavoriteInteractor
 import com.example.playlistmaker.core.domain.interactor.PlaylistInteractor
 import com.example.playlistmaker.core.domain.model.Playlist
-import com.example.playlistmaker.library.domain.api.MusicPlayer
 import com.example.playlistmaker.library.domain.model.PlayerUiState
 import com.example.playlistmaker.core.domain.model.Song
+import com.example.playlistmaker.library.domain.api.MusicPlayer
+import com.example.playlistmaker.library.services.PlayerState
 import com.example.playlistmaker.utils.SingleLiveEvent
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 
 class LibraryViewModel(
-    private val musicPlayer: MusicPlayer,
     private val favoriteInteractor: FavoriteInteractor,
     private val playlistInteractor: PlaylistInteractor,
     private val song: Song
 ) : ViewModel() {
-    private var timerJob: Job? = null
+
+    private var musicPlayer: MusicPlayer? = null
+
+    private var playerState: PlayerState = PlayerState.Default
 
     private val _uiState = MutableLiveData(PlayerUiState())
     fun observeUiState(): LiveData<PlayerUiState> = _uiState
