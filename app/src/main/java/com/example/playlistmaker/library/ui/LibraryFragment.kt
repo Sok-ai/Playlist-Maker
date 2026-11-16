@@ -45,7 +45,9 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
         }
         song ?: error("Song must be provided")
     }
-    private lateinit var bottomSheet: BottomSheetBehavior<LinearLayout>
+
+    private var isBound = false
+
     private val viewModel: LibraryViewModel by viewModel<LibraryViewModel> { parametersOf(track) }
     private var mediaService: MusicPlayer? = null
 
@@ -82,6 +84,32 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
     }
     private lateinit var bottomSheet: BottomSheetBehavior<LinearLayout>
     private var playlistSheetAdapter: PlaylistSheetAdapter? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= 33) {
+            when {
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    startBindService()
+                }
+
+                else -> {
+                    resultLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    startBindService()
+                }
+            }
+        } else {
+            startBindService()
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.onForegroundStopped()
+    }
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -243,15 +271,23 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
         return song.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
     }
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.onPause()
-    }
-
     override fun onDestroyView() {
         binding.bottomSheetRecycler.adapter = null
         playlistSheetAdapter = null
         super.onDestroyView()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.onForegroundStarted()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isBound) {
+            requireActivity().unbindService(serviceConnection)
+            isBound = false
+        }
     }
 
     companion object {
