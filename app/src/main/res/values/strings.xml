@@ -34,6 +34,7 @@
     <string name="library_bottom_sheet_text">Добавить в плейлист</string>
     <string name="library_added_playlist_text">Добавлено в плейлист %s</string>
     <string name="library_not_added_playlist_text">Трек уже добавлен в плейлист %s</string>
+    <string name="library_notification_permission_not_granted">Уведомления отключены, музыка будет играть без них</string>
 
     <!--  Search  -->
     <string name="search_name_page">Поиск</string>
