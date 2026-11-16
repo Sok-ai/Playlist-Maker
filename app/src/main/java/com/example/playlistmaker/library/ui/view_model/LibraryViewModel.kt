@@ -43,9 +43,48 @@ class LibraryViewModel(
 
     fun setMusicPlayer(musicPlayer: MusicPlayer) {
         this.musicPlayer = musicPlayer
+        collectPlayerState()
         setupInitPlayer(song)
         getPlaylists()
     }
+    }
+
+    fun removeMusicPlayer() {
+        this.musicPlayer = null
+        playerStateJob?.cancel()
+    }
+
+    private fun collectPlayerState() {
+        playerStateJob?.cancel()
+        playerStateJob = viewModelScope.launch {
+            musicPlayer?.playerState?.collect { state ->
+                playerState = state
+                when (state) {
+                    PlayerState.Default -> {}
+                    is PlayerState.Paused -> {
+                        _uiState.value = _uiState.value?.copy(
+                            isPlaying = false,
+                            currentPosition = state.position
+                        )
+                    }
+
+                    is PlayerState.Playing -> {
+                        _uiState.value = _uiState.value?.copy(
+                            isPlaying = true,
+                            currentPosition = state.position
+                        )
+                    }
+
+                    PlayerState.Prepared -> {
+                        _uiState.value = _uiState.value?.copy(
+                            isPlaying = false,
+                            currentPosition = 0,
+                            isReady = true
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun getPlaylists() {
