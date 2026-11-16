@@ -45,8 +45,6 @@ class LibraryViewModel(
         this.musicPlayer = musicPlayer
         collectPlayerState()
         setupInitPlayer(song)
-        getPlaylists()
-    }
     }
 
     fun removeMusicPlayer() {
@@ -98,25 +96,14 @@ class LibraryViewModel(
     private fun setupInitPlayer(resSong: Song) {
         _uiState.value = _uiState.value?.copy(isLoading = true)
 
-        musicPlayer.preparePlayer(
-            resSong.previewUrl
-        ) {
+        musicPlayer?.preparePlayer()
+        musicPlayer?.setOnPrepareListener {
             _uiState.value =
                 _uiState.value?.copy(
                     song = resSong,
                     isReady = true,
                     isLoading = false
                 )
-        }
-
-        musicPlayer.setOnCompletionListener {
-            _uiState.value =
-                _uiState.value?.copy(
-                    isPlaying = false,
-                    currentPosition = 0,
-                )
-            musicPlayer.resetToStart()
-            stopUpdatingTime()
         }
     }
 
