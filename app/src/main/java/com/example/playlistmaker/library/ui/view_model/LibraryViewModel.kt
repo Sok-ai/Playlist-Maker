@@ -139,18 +139,17 @@ class LibraryViewModel(
 
     fun onClickPlayer() {
         if (_uiState.value?.isReady == true) {
-            when {
-                musicPlayer.isPlayer() -> {
-                    _uiState.value = _uiState.value?.copy(isPlaying = false)
-                    musicPlayer.pausePlayer()
-                    stopUpdatingTime()
+            when (playerState) {
+                is PlayerState.Playing -> {
+                    musicPlayer?.pausePlayer()
                 }
 
-                musicPlayer.isPreparedOrPause() -> {
-                    _uiState.value = _uiState.value?.copy(isPlaying = true)
-                    musicPlayer.startPlayer()
-                    startUpdatingTime()
+                is PlayerState.Prepared, is PlayerState.Paused -> {
+                    musicPlayer?.startPlayer()
+                    musicPlayer?.startUpdatingTime()
                 }
+
+                else -> {}
             }
         }
     }
