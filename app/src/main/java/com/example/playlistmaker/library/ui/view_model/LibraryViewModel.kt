@@ -34,10 +34,18 @@ class LibraryViewModel(
     private val _addStatus = SingleLiveEvent<AddStatus>()
     fun observeAddStatus(): LiveData<AddStatus> = _addStatus
 
+    private var playerStateJob: Job? = null
+
     init {
         checkIsFavorite(song.trackId)
+        getPlaylists()
+    }
+
+    fun setMusicPlayer(musicPlayer: MusicPlayer) {
+        this.musicPlayer = musicPlayer
         setupInitPlayer(song)
         getPlaylists()
+    }
     }
 
     private fun getPlaylists() {
