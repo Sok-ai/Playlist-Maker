@@ -98,6 +98,14 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
         }
     }
 
+    private fun startBindService() {
+        val intent = Intent(requireContext(), PlayerService::class.java).apply {
+            putExtra(URL_KEY, track)
+        }
+
+        requireActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
     private fun showMessageToast(@StringRes res: Int, playlistName: String) {
         Toast.makeText(
             requireContext(),
