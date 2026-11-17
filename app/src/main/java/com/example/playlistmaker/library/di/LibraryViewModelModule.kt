@@ -8,7 +8,6 @@ import org.koin.dsl.module
 val libraryViewModelModule = module {
     viewModel { params ->
         LibraryViewModel(
-            musicPlayer = get(),
             song = params.get<Song>(),
             playlistInteractor = get(),
             favoriteInteractor = get()

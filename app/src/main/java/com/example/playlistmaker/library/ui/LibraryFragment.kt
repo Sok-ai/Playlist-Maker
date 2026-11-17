@@ -1,13 +1,22 @@
 package com.example.playlistmaker.library.ui
 
+import android.Manifest
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -16,12 +25,16 @@ import com.example.playlistmaker.core.BindingFragment
 import com.example.playlistmaker.databinding.FragmentLibraryBinding
 import com.example.playlistmaker.library.ui.view_model.LibraryViewModel
 import com.example.playlistmaker.core.domain.model.Song
+import com.example.playlistmaker.library.domain.api.MusicPlayer
+import com.example.playlistmaker.library.services.PlayerService
 import com.example.playlistmaker.library.ui.view_model.AddStatus
 import com.example.playlistmaker.utils.TimeFormatter
 import com.example.playlistmaker.utils.dpToPx
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+
+internal const val URL_KEY = "previewUrl"
 
 class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
     private val track by lazy(LazyThreadSafetyMode.NONE) {
@@ -32,9 +45,71 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
         }
         song ?: error("Song must be provided")
     }
-    private lateinit var bottomSheet: BottomSheetBehavior<LinearLayout>
+
+    private var isBound = false
+
     private val viewModel: LibraryViewModel by viewModel<LibraryViewModel> { parametersOf(track) }
+    private var mediaService: MusicPlayer? = null
+
+    private val resultLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (!isGranted) {
+                Toast.makeText(
+                    requireContext(),
+                    ContextCompat.getString(
+                        requireContext(),
+                        R.string.library_notification_permission_not_granted
+                    ),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(
+            name: ComponentName?,
+            service: IBinder?
+        ) {
+            mediaService = (service as PlayerService.PlayerServiceBinder).getService()
+            mediaService?.let { viewModel.setMusicPlayer(it) }
+            isBound = true
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            mediaService?.stopUpdatingTime()
+            mediaService = null
+            viewModel.removeMusicPlayer()
+        }
+
+    }
+    private lateinit var bottomSheet: BottomSheetBehavior<LinearLayout>
     private var playlistSheetAdapter: PlaylistSheetAdapter? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= 33) {
+            when {
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    startBindService()
+                }
+
+                else -> {
+                    resultLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    startBindService()
+                }
+            }
+        } else {
+            startBindService()
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.onForegroundStopped()
+    }
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -96,6 +171,14 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
         binding.btnLibraryToMain.setOnClickListener {
             findNavController().navigateUp()
         }
+    }
+
+    private fun startBindService() {
+        val intent = Intent(requireContext(), PlayerService::class.java).apply {
+            putExtra(URL_KEY, track)
+        }
+
+        requireActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
     private fun showMessageToast(@StringRes res: Int, playlistName: String) {
@@ -188,15 +271,23 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
         return song.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
     }
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.onPause()
-    }
-
     override fun onDestroyView() {
         binding.bottomSheetRecycler.adapter = null
         playlistSheetAdapter = null
         super.onDestroyView()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.onForegroundStarted()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isBound) {
+            requireActivity().unbindService(serviceConnection)
+            isBound = false
+        }
     }
 
     companion object {

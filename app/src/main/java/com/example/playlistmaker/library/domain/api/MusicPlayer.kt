@@ -1,13 +1,19 @@
 package com.example.playlistmaker.library.domain.api
 
+import com.example.playlistmaker.library.services.PlayerState
+import kotlinx.coroutines.flow.StateFlow
+
 interface MusicPlayer {
-    fun preparePlayer(previewUrl: String, onPrepare: () -> Unit)
+    val playerState: StateFlow<PlayerState>
+    fun preparePlayer()
     fun startPlayer()
     fun pausePlayer()
-    fun isPreparedOrPause(): Boolean
-    fun isPlayer(): Boolean
     fun currentPosition(): Int
     fun release()
-    fun setOnCompletionListener(listener: () -> Unit)
     fun resetToStart()
+    fun setOnPrepareListener(listener: () -> Unit)
+    fun stopUpdatingTime()
+    fun startUpdatingTime()
+    fun stopForegroundMode()
+    fun startForegroundMode()
 }

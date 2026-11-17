@@ -7,22 +7,23 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.core.domain.interactor.FavoriteInteractor
 import com.example.playlistmaker.core.domain.interactor.PlaylistInteractor
 import com.example.playlistmaker.core.domain.model.Playlist
-import com.example.playlistmaker.library.domain.api.MusicPlayer
 import com.example.playlistmaker.library.domain.model.PlayerUiState
 import com.example.playlistmaker.core.domain.model.Song
+import com.example.playlistmaker.library.domain.api.MusicPlayer
+import com.example.playlistmaker.library.services.PlayerState
 import com.example.playlistmaker.utils.SingleLiveEvent
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 
 class LibraryViewModel(
-    private val musicPlayer: MusicPlayer,
     private val favoriteInteractor: FavoriteInteractor,
     private val playlistInteractor: PlaylistInteractor,
     private val song: Song
 ) : ViewModel() {
-    private var timerJob: Job? = null
+
+    private var musicPlayer: MusicPlayer? = null
+
+    private var playerState: PlayerState = PlayerState.Default
 
     private val _uiState = MutableLiveData(PlayerUiState())
     fun observeUiState(): LiveData<PlayerUiState> = _uiState
@@ -33,10 +34,55 @@ class LibraryViewModel(
     private val _addStatus = SingleLiveEvent<AddStatus>()
     fun observeAddStatus(): LiveData<AddStatus> = _addStatus
 
+    private var playerStateJob: Job? = null
+
     init {
         checkIsFavorite(song.trackId)
-        setupInitPlayer(song)
         getPlaylists()
+    }
+
+    fun setMusicPlayer(musicPlayer: MusicPlayer) {
+        this.musicPlayer = musicPlayer
+        collectPlayerState()
+        setupInitPlayer(song)
+    }
+
+    fun removeMusicPlayer() {
+        this.musicPlayer = null
+        playerStateJob?.cancel()
+    }
+
+    private fun collectPlayerState() {
+        playerStateJob?.cancel()
+        playerStateJob = viewModelScope.launch {
+            musicPlayer?.playerState?.collect { state ->
+                playerState = state
+                when (state) {
+                    PlayerState.Default -> {}
+                    is PlayerState.Paused -> {
+                        _uiState.value = _uiState.value?.copy(
+                            isPlaying = false,
+                            currentPosition = state.position
+                        )
+                    }
+
+                    is PlayerState.Playing -> {
+                        _uiState.value = _uiState.value?.copy(
+                            isPlaying = true,
+                            currentPosition = state.position
+                        )
+                    }
+
+                    PlayerState.Prepared -> {
+                        _uiState.value = _uiState.value?.copy(
+                            isPlaying = false,
+                            currentPosition = 0,
+                            isReady = true
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun getPlaylists() {
@@ -50,25 +96,14 @@ class LibraryViewModel(
     private fun setupInitPlayer(resSong: Song) {
         _uiState.value = _uiState.value?.copy(isLoading = true)
 
-        musicPlayer.preparePlayer(
-            resSong.previewUrl
-        ) {
+        musicPlayer?.preparePlayer()
+        musicPlayer?.setOnPrepareListener {
             _uiState.value =
                 _uiState.value?.copy(
                     song = resSong,
                     isReady = true,
                     isLoading = false
                 )
-        }
-
-        musicPlayer.setOnCompletionListener {
-            _uiState.value =
-                _uiState.value?.copy(
-                    isPlaying = false,
-                    currentPosition = 0,
-                )
-            musicPlayer.resetToStart()
-            stopUpdatingTime()
         }
     }
 
@@ -104,60 +139,34 @@ class LibraryViewModel(
 
     fun onClickPlayer() {
         if (_uiState.value?.isReady == true) {
-            when {
-                musicPlayer.isPlayer() -> {
-                    _uiState.value = _uiState.value?.copy(isPlaying = false)
-                    musicPlayer.pausePlayer()
-                    stopUpdatingTime()
+            when (playerState) {
+                is PlayerState.Playing -> {
+                    musicPlayer?.pausePlayer()
                 }
 
-                musicPlayer.isPreparedOrPause() -> {
-                    _uiState.value = _uiState.value?.copy(isPlaying = true)
-                    musicPlayer.startPlayer()
-                    startUpdatingTime()
+                is PlayerState.Prepared, is PlayerState.Paused -> {
+                    musicPlayer?.startPlayer()
+                    musicPlayer?.startUpdatingTime()
                 }
+
+                else -> {}
             }
         }
     }
 
-    private fun startUpdatingTime() {
-        timerJob?.cancel()
-        timerJob = viewModelScope.launch {
-            while (musicPlayer.isPlayer()) {
-                ensureActive()
-                delay(DELAY_UPDATE_TIMER)
-                _uiState.value =
-                    _uiState.value?.copy(currentPosition = musicPlayer.currentPosition())
-            }
+    fun onForegroundStarted() {
+        if (playerState is PlayerState.Playing) {
+            musicPlayer?.startForegroundMode()
         }
     }
 
-    private fun stopUpdatingTime() {
-        timerJob?.cancel()
-        timerJob = null
-        _uiState.value = _uiState.value?.copy(
-            currentPosition = musicPlayer.currentPosition()
-        )
-    }
-
-    private fun releasePlayer() {
-        musicPlayer.release()
+    fun onForegroundStopped() {
+        musicPlayer?.stopForegroundMode()
     }
 
     override fun onCleared() {
-        timerJob?.cancel()
-        releasePlayer()
-    }
-
-    fun onPause() {
-        if (musicPlayer.isPlayer()) {
-            stopUpdatingTime()
-            musicPlayer.pausePlayer()
-            _uiState.value = _uiState.value?.copy(isPlaying = false)
-        }
-    }
-
-    companion object {
-        const val DELAY_UPDATE_TIMER = 300L
+        playerStateJob?.cancel()
+        playerStateJob = null
+        musicPlayer = null
     }
 }
